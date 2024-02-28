@@ -98,11 +98,49 @@
 
     function getJSON( element ) {
         var result = _string.empty,
-            resultJson = {};
+            elementJson = getElementObject( element );
+
+        var resultJson = {};
+        resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
         result = _parameter_JSON.stringify( resultJson );
 
         return result;
+    }
+
+    function getElementObject( element ) {
+        var result = {},
+            attributesLength = element.attributes.length;
+
+        for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
+            var attributeName = element.attributes[ attributeIndex ],
+                attributeValue = element.attr[ attributeName ];
+
+            result[ "@" + attributeName ] = attributeValue;
+        }
+
+        if ( _parameter_Window.getComputedStyle ) {
+            var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
+                cssComputedStylesLength = cssComputedStyles.length;
+
+            for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
+                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
+    
+                result[ "$" + cssComputedStyleName ] = cssComputedStyles.getPropertyValue( cssComputedStyleName );
+            }
+
+        } else if ( element.currentStyle ) {
+            for ( var cssStyleName in element.currentStyle ) {
+                if ( element.currentStyle.hasOwnProperty( cssStyleName ) ) {
+                    result[ "$" + cssStyleName ] = element.currentStyle[ cssStyleName ];
+                }
+            }
+        }
+
+        return {
+            nodeName: element.nodeName.toLowerCase(),
+            nodeValues: result
+        };
     }
 
 

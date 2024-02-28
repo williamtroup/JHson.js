@@ -16,6 +16,7 @@
         </div>
 
         <div class="contents">
+            <textarea id="json"></textarea>
         </div>
 
         <div class="contents">
@@ -45,7 +46,7 @@
         function getJSONData() {
             var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ] );
 
-            console.log( json );
+            document.getElementById( "json" ).value = json;
         }
     </script>
 </html>

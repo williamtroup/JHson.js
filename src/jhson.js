@@ -96,9 +96,12 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getJSON( element ) {
+    function getJSON( element, includeAttributes, includeCssStyles ) {
+        includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
+        includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : true;
+
         var result = _string.empty,
-            elementJson = getElementObject( element );
+            elementJson = getElementObject( element, includeAttributes, includeCssStyles );
 
         var resultJson = {};
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
@@ -108,32 +111,53 @@
         return result;
     }
 
-    function getElementObject( element ) {
+    function getElementObject( element, includeAttributes, includeCssStyles ) {
         var result = {},
-            attributesLength = element.attributes.length;
+            childrenLength = element.children.length;
 
-        for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
-            var attributeName = element.attributes[ attributeIndex ],
-                attributeValue = element.attr[ attributeName ];
+        if ( includeAttributes ) {
+            var attributesLength = element.attributes.length;
 
-            result[ "@" + attributeName ] = attributeValue;
+            for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
+                var attribute = element.attributes[ attributeIndex ];
+    
+                if ( isDefinedString( attribute.nodeName ) ) {
+                    result[ "@" + attribute.nodeName ] = attribute.nodeValue;
+                }
+            }
         }
 
-        if ( _parameter_Window.getComputedStyle ) {
-            var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
-                cssComputedStylesLength = cssComputedStyles.length;
-
-            for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
-                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
+        if ( includeCssStyles ) {
+            if ( _parameter_Window.getComputedStyle ) {
+                var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
+                    cssComputedStylesLength = cssComputedStyles.length;
     
-                result[ "$" + cssComputedStyleName ] = cssComputedStyles.getPropertyValue( cssComputedStyleName );
-            }
-
-        } else if ( element.currentStyle ) {
-            for ( var cssStyleName in element.currentStyle ) {
-                if ( element.currentStyle.hasOwnProperty( cssStyleName ) ) {
-                    result[ "$" + cssStyleName ] = element.currentStyle[ cssStyleName ];
+                for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
+                    var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
+        
+                    result[ "$" + cssComputedStyleName ] = cssComputedStyles.getPropertyValue( cssComputedStyleName );
                 }
+    
+            } else if ( element.currentStyle ) {
+                for ( var cssStyleName in element.currentStyle ) {
+                    if ( element.currentStyle.hasOwnProperty( cssStyleName ) ) {
+                        result[ "$" + cssStyleName ] = element.currentStyle[ cssStyleName ];
+                    }
+                }
+            }
+        }
+
+        if ( childrenLength > 0 ) {
+            result.children = [];
+
+            for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+                var child = element.children[ childrenIndex ],
+                    childElementData = getElementObject( child, includeAttributes, includeCssStyles ),
+                    childJson = {};
+
+                childJson[ childElementData.nodeName ] = childElementData.nodeValues;
+
+                result.children.push( childJson );
             }
         }
 
@@ -324,12 +348,14 @@
      * 
      * @public
      * 
-     * @param       {Options}   element                                     The DOM element to get the JSON for.
+     * @param       {Object}    element                                     The DOM element to get the JSON for.
+     * @param       {boolean}   [includeAttributes]                         Should the Attributes be included in the JSON.
+     * @param       {boolean}   [includeCssStyles]                          Should the CSS Styles be included in the JSON.
      * 
      * @returns     {Object}                                                The HTML JSON.
      */
-    this.get = function( element ) {
-        return getJSON( element );
+    this.get = function( element, includeAttributes, includeCssStyles ) {
+        return getJSON( element, includeAttributes, includeCssStyles );
     };
 
 
@@ -346,7 +372,7 @@
      * 
      * @public
      * 
-     * @param       {Options}   newConfiguration                            All the configuration options that should be set (refer to "Options" documentation for properties).
+     * @param       {Object}    newConfiguration                            All the configuration options that should be set (refer to "Options" documentation for properties).
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */

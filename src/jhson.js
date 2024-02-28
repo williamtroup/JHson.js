@@ -67,7 +67,7 @@
         }
 
         if ( childrenLength > 0 ) {
-            getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles, includeText );
+            getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText );
         }
 
         if ( includeText && element.innerText === element.innerHTML ) {
@@ -112,7 +112,7 @@
         }
     }
 
-    function getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles, includeText ) {
+    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText ) {
         result.children = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {

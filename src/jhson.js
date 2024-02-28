@@ -307,10 +307,6 @@
 
         buildDefaultConfiguration();
 
-        _parameter_Document.addEventListener( "DOMContentLoaded", function() {
-            render();
-        } );
-
         if ( !isDefined( _parameter_Window.$jhson ) ) {
             _parameter_Window.$jhson = this;
         }

@@ -101,11 +101,10 @@
         includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : true;
 
         var result = _string.empty,
+            resultJson = {},
             elementJson = getElementObject( element, includeAttributes, includeCssStyles );
 
-        var resultJson = {};
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
-
         result = _parameter_JSON.stringify( resultJson );
 
         return result;
@@ -116,55 +115,67 @@
             childrenLength = element.children.length;
 
         if ( includeAttributes ) {
-            var attributesLength = element.attributes.length;
-
-            for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
-                var attribute = element.attributes[ attributeIndex ];
-    
-                if ( isDefinedString( attribute.nodeName ) ) {
-                    result[ "@" + attribute.nodeName ] = attribute.nodeValue;
-                }
-            }
+            getElementAttributes( element, result );
         }
 
         if ( includeCssStyles ) {
-            if ( _parameter_Window.getComputedStyle ) {
-                var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
-                    cssComputedStylesLength = cssComputedStyles.length;
-    
-                for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
-                    var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
-        
-                    result[ "$" + cssComputedStyleName ] = cssComputedStyles.getPropertyValue( cssComputedStyleName );
-                }
-    
-            } else if ( element.currentStyle ) {
-                for ( var cssStyleName in element.currentStyle ) {
-                    if ( element.currentStyle.hasOwnProperty( cssStyleName ) ) {
-                        result[ "$" + cssStyleName ] = element.currentStyle[ cssStyleName ];
-                    }
-                }
-            }
+            getElementCssStyles( element, result );
         }
 
         if ( childrenLength > 0 ) {
-            result.children = [];
-
-            for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
-                var child = element.children[ childrenIndex ],
-                    childElementData = getElementObject( child, includeAttributes, includeCssStyles ),
-                    childJson = {};
-
-                childJson[ childElementData.nodeName ] = childElementData.nodeValues;
-
-                result.children.push( childJson );
-            }
+            getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles );
         }
 
         return {
             nodeName: element.nodeName.toLowerCase(),
             nodeValues: result
         };
+    }
+
+    function getElementAttributes( element, result ) {
+        var attributesLength = element.attributes.length;
+
+        for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
+            var attribute = element.attributes[ attributeIndex ];
+
+            if ( isDefinedString( attribute.nodeName ) ) {
+                result[ "@" + attribute.nodeName ] = attribute.nodeValue;
+            }
+        }
+    }
+
+    function getElementCssStyles( element, result ) {
+        if ( _parameter_Window.getComputedStyle ) {
+            var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
+                cssComputedStylesLength = cssComputedStyles.length;
+
+            for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
+                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
+    
+                result[ "$" + cssComputedStyleName ] = cssComputedStyles.getPropertyValue( cssComputedStyleName );
+            }
+
+        } else if ( element.currentStyle ) {
+            for ( var cssStyleName in element.currentStyle ) {
+                if ( element.currentStyle.hasOwnProperty( cssStyleName ) ) {
+                    result[ "$" + cssStyleName ] = element.currentStyle[ cssStyleName ];
+                }
+            }
+        }
+    }
+
+    function getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles ) {
+        result.children = [];
+
+        for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+            var child = element.children[ childrenIndex ],
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles ),
+                childJson = {};
+
+            childJson[ childElementData.nodeName ] = childElementData.nodeValues;
+
+            result.children.push( childJson );
+        }
     }
 
 

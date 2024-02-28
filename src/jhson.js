@@ -25,6 +25,11 @@
         _string = {
             empty: "",
             space: " "
+        },
+
+        // Variables: Values
+        _value = {
+            notFound: -1
         };
 
 
@@ -114,7 +119,7 @@
             var child = element.children[ childrenIndex ],
                 childElementData = getElementObject( child, includeAttributes, includeCssStyles );
 
-            if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === -1 ) {
+            if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === _value.notFound ) {
                 var childJson = {};
                 childJson[ childElementData.nodeName ] = childElementData.nodeValues;
 

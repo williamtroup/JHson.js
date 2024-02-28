@@ -1,0 +1,1 @@
+nuget pack jhson.js.nuspec

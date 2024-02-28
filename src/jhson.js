@@ -98,13 +98,16 @@
                 cssComputedStylesLength = cssComputedStyles.length;
 
             for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
-                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ],
-                    cssComputedStyleNameStorage = "$" + cssComputedStyleName,
-                    cssComputedValue = cssComputedStyles.getPropertyValue( cssComputedStyleName );
+                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
 
-                if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
-                    result[ cssComputedStyleNameStorage ] = cssComputedValue;
-                    parentCssStyles[ cssComputedStyleNameStorage ] = result[ cssComputedStyleNameStorage ];
+                if ( _configuration.cssPropertiesToIgnore.indexOf( cssComputedStyleName ) === _value.notFound ) {
+                    var cssComputedStyleNameStorage = "$" + cssComputedStyleName,
+                        cssComputedValue = cssComputedStyles.getPropertyValue( cssComputedStyleName );
+
+                    if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
+                        result[ cssComputedStyleNameStorage ] = cssComputedValue;
+                        parentCssStyles[ cssComputedStyleNameStorage ] = result[ cssComputedStyleNameStorage ];
+                    }
                 }
             }
         }
@@ -281,6 +284,7 @@
 
     function buildDefaultConfiguration() {
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [ "script" ] );
+        _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
     }
 
 

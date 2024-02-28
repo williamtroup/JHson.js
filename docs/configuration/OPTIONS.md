@@ -5,7 +5,8 @@ Below are all the configuration options that can be passed to the "setConfigurat
 
 | Type: | Name: | Description: |
 | --- | --- | --- |
-| *Object* | nodeTypesToIgnore | The DOM node types to ignore (can be either an array of strings, or a space separated string, and defaults to "*"). |
+| *Object* | nodeTypesToIgnore | The DOM node types to ignore (can be either an array of strings, or a space separated string, and defaults to ["script"]). |
+| *Object* | cssPropertiesToIgnore | The CSS properties to ignore (can be either an array of strings, or a space separated string, and defaults to []). |
 
 <br/>
 

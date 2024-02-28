@@ -25,69 +25,8 @@
         _string = {
             empty: "",
             space: " "
-        },
+        };
 
-        // Variables: Attribute Names
-        _attribute_Name_Options = "data-jhson-options";
-
-    
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Rendering
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function render() {
-        var tagTypes = _configuration.domElementTypes,
-            tagTypesLength = tagTypes.length;
-
-        for ( var tagTypeIndex = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++ ) {
-            var domElements = _parameter_Document.getElementsByTagName( tagTypes[ tagTypeIndex ] ),
-                elements = [].slice.call( domElements ),
-                elementsLength = elements.length;
-
-            for ( var elementIndex = 0; elementIndex < elementsLength; elementIndex++ ) {
-                if ( !renderElement( elements[ elementIndex ] ) ) {
-                    break;
-                }
-            }
-        }
-    }
-
-    function renderElement( element ) {
-        var result = true;
-
-        if ( isDefined( element ) && element.hasAttribute( _attribute_Name_Options ) ) {
-            var bindingOptionsData = element.getAttribute( _attribute_Name_Options );
-
-            if ( isDefinedString( bindingOptionsData ) ) {
-                var bindingOptions = getObjectFromString( bindingOptionsData );
-
-                if ( bindingOptions.parsed && isDefinedObject( bindingOptions.result ) ) {
-                    bindingOptions = buildAttributeOptions( bindingOptions.result );
-                    bindingOptions.element = element;
-
-                    element.removeAttribute( _attribute_Name_Options );
-
-                    fireCustomTrigger( bindingOptions.onBeforeRender, bindingOptions.element );
-
-                } else {
-                    if ( !_configuration.safeMode ) {
-                        console.error( "The attribute '" + _attribute_Name_Options + "' is not a valid object." );
-                        result = false;
-                    }
-                }
-
-            } else {
-                if ( !_configuration.safeMode ) {
-                    console.error( "The attribute '" + _attribute_Name_Options + "' has not been set correctly." );
-                    result = false;
-                }
-            }
-        }
-
-        return result;
-    }
 
 
     /*
@@ -173,34 +112,15 @@
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles ),
-                childJson = {};
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles );
 
-            childJson[ childElementData.nodeName ] = childElementData.nodeValues;
+            if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === -1 ) {
+                var childJson = {};
+                childJson[ childElementData.nodeName ] = childElementData.nodeValues;
 
-            result.children.push( childJson );
+                result.children.push( childJson );
+            }
         }
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Options
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function buildAttributeOptions( newOptions ) {
-        var options = !isDefinedObject( newOptions ) ? {} : newOptions;
-        options.speed = getDefaultNumber( options.speed, 100 );
-
-        return buildAttributeOptionCustomTriggers( options );
-    }
-
-    function buildAttributeOptionCustomTriggers( options ) {
-        options.onBeforeRender = getDefaultFunction( options.onBeforeRender, null );
-        options.onRenderComplete = getDefaultFunction( options.onRenderComplete, null );
-
-        return options;
     }
 
 
@@ -293,62 +213,6 @@
         return value;
     }
 
-    function getObjectFromString( objectString ) {
-        var parsed = true,
-            result = null;
-
-        try {
-            if ( isDefinedString( objectString ) ) {
-                result = _parameter_JSON.parse( objectString );
-            }
-
-        } catch ( e1 ) {
-
-            try {
-                result = eval( "(" + objectString + ")" );
-
-                if ( isDefinedFunction( result ) ) {
-                    result = result();
-                }
-                
-            } catch ( e2 ) {
-                if ( !_configuration.safeMode ) {
-                    console.error( "Errors in object: " + e1.message + ", " + e2.message );
-                    parsed = false;
-                }
-                
-                result = null;
-            }
-        }
-
-        return {
-            parsed: parsed,
-            result: result
-        };
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * String Handling
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function newGuid() {
-        var result = [];
-
-        for ( var charIndex = 0; charIndex < 32; charIndex++ ) {
-            if ( charIndex === 8 || charIndex === 12 || charIndex === 16 || charIndex === 20 ) {
-                result.push( "-" );
-            }
-
-            var character = _parameter_Math.floor( _parameter_Math.random() * 16 ).toString( 16 );
-            result.push( character );
-        }
-
-        return result.join( _string.empty );
-    }
-
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -400,8 +264,7 @@
     };
 
     function buildDefaultConfiguration() {
-        _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.domElementTypes = getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
+        _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [ "script" ] );
     }
 
 

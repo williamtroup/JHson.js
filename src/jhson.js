@@ -15,7 +15,6 @@
     var // Variables: Constructor Parameters
         _parameter_Document = null,
         _parameter_Window = null,
-        _parameter_Math = null,
         _parameter_JSON = null,
 
         // Variables: Configuration
@@ -299,10 +298,9 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    ( function ( documentObject, windowObject, mathObject, jsonObject ) {
+    ( function ( documentObject, windowObject, jsonObject ) {
         _parameter_Document = documentObject;
         _parameter_Window = windowObject;
-        _parameter_Math = mathObject;
         _parameter_JSON = jsonObject;
 
         buildDefaultConfiguration();
@@ -315,5 +313,5 @@
             _parameter_Window.$jhson = this;
         }
 
-    } ) ( document, window, Math, JSON );
+    } ) ( document, window, JSON );
 } )();

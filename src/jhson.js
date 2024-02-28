@@ -46,7 +46,7 @@
 
         var result = _string.empty,
             resultJson = {},
-            elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText );
+            elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText, {} );
 
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
         result = _parameter_JSON.stringify( resultJson );
@@ -54,7 +54,7 @@
         return result;
     }
 
-    function getElementObject( element, includeAttributes, includeCssStyles, includeText ) {
+    function getElementObject( element, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
         var result = {},
             childrenLength = element.children.length;
 
@@ -63,11 +63,11 @@
         }
 
         if ( includeCssStyles ) {
-            getElementCssStyles( element, result );
+            getElementCssStyles( element, result, parentCssStyles );
         }
 
         if ( childrenLength > 0 ) {
-            getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText );
+            getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles );
         }
 
         if ( includeText && element.innerText === element.innerHTML ) {
@@ -92,32 +92,30 @@
         }
     }
 
-    function getElementCssStyles( element, result ) {
+    function getElementCssStyles( element, result, parentCssStyles ) {
         if ( _parameter_Window.getComputedStyle ) {
             var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
                 cssComputedStylesLength = cssComputedStyles.length;
 
             for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
-                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
-    
-                result[ "$" + cssComputedStyleName ] = cssComputedStyles.getPropertyValue( cssComputedStyleName );
-            }
+                var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ],
+                    cssComputedStyleNameStorage = "$" + cssComputedStyleName,
+                    cssComputedValue = cssComputedStyles.getPropertyValue( cssComputedStyleName );
 
-        } else if ( element.currentStyle ) {
-            for ( var cssStyleName in element.currentStyle ) {
-                if ( element.currentStyle.hasOwnProperty( cssStyleName ) ) {
-                    result[ "$" + cssStyleName ] = element.currentStyle[ cssStyleName ];
+                if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
+                    result[ cssComputedStyleNameStorage ] = cssComputedValue;
+                    parentCssStyles[ cssComputedStyleNameStorage ] = result[ cssComputedStyleNameStorage ];
                 }
             }
         }
     }
 
-    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText ) {
+    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, cssStyles ) {
         result.children = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText );
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, cssStyles );
 
             if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === _value.notFound ) {
                 var childJson = {};

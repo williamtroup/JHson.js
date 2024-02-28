@@ -110,12 +110,12 @@
         }
     }
 
-    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, cssStyles ) {
+    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
         result.children = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, cssStyles );
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy( parentCssStyles ) );
 
             if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === _value.notFound ) {
                 var childJson = {};
@@ -124,6 +124,18 @@
                 result.children.push( childJson );
             }
         }
+    }
+
+    function getParentCssStylesCopy( parentCssStyles ) {
+        var copy = {};
+
+        for ( var cssStyleName in parentCssStyles ) {
+            if ( parentCssStyles.hasOwnProperty( cssStyleName ) ) {
+                copy[ cssStyleName ] = parentCssStyles[ cssStyleName ];
+            }
+        }
+
+        return copy;
     }
 
 

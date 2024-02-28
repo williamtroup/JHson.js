@@ -98,7 +98,7 @@
 
     function getJSON( element, includeAttributes, includeCssStyles ) {
         includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
-        includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : true;
+        includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
 
         var result = _string.empty,
             resultJson = {},

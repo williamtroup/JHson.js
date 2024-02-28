@@ -126,7 +126,7 @@
             getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles );
         }
 
-        if ( isDefinedString( element.innerText ) && element.innerText === element.innerHTML ) {
+        if ( element.innerText === element.innerHTML ) {
             result[ "#text" ] = element.innerText;
         }
 

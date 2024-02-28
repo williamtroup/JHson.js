@@ -19,6 +19,10 @@
         </div>
 
         <div class="contents">
+            <h2>JSON:</h2>
+            <button class="btn btn-primary" onclick="getJSONData();">Get</button>
+            <br />
+
             <h2>Configuration:</h2>
             <button class="btn btn-primary" onclick="setupConfiguration();">Set Configuration</button>
             <br />
@@ -36,6 +40,12 @@
             $jhson.setConfiguration( {
                 safeMode: false
             } );
+        }
+
+        function getJSONData() {
+            var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ] );
+
+            console.log( json );
         }
     </script>
 </html>

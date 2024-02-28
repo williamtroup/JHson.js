@@ -39,13 +39,14 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getJSON( element, includeAttributes, includeCssStyles ) {
+    function getJSON( element, includeAttributes, includeCssStyles, includeText ) {
         includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
         includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
+        includeText = isDefinedBoolean( includeText ) ? includeText : true;
 
         var result = _string.empty,
             resultJson = {},
-            elementJson = getElementObject( element, includeAttributes, includeCssStyles );
+            elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText );
 
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
         result = _parameter_JSON.stringify( resultJson );
@@ -53,7 +54,7 @@
         return result;
     }
 
-    function getElementObject( element, includeAttributes, includeCssStyles ) {
+    function getElementObject( element, includeAttributes, includeCssStyles, includeText ) {
         var result = {},
             childrenLength = element.children.length;
 
@@ -66,10 +67,10 @@
         }
 
         if ( childrenLength > 0 ) {
-            getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles );
+            getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles, includeText );
         }
 
-        if ( element.innerText === element.innerHTML ) {
+        if ( includeText && element.innerText === element.innerHTML ) {
             result[ "#text" ] = element.innerText;
         }
 
@@ -111,12 +112,12 @@
         }
     }
 
-    function getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles ) {
+    function getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles, includeText ) {
         result.children = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles );
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText );
 
             if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === _value.notFound ) {
                 var childJson = {};
@@ -234,11 +235,12 @@
      * @param       {Object}    element                                     The DOM element to get the JSON for.
      * @param       {boolean}   [includeAttributes]                         Should the Attributes be included in the JSON.
      * @param       {boolean}   [includeCssStyles]                          Should the CSS Styles be included in the JSON.
+     * @param       {boolean}   [includeText]                               Should the Text be included in the JSON.
      * 
      * @returns     {Object}                                                The HTML JSON.
      */
-    this.get = function( element, includeAttributes, includeCssStyles ) {
-        return getJSON( element, includeAttributes, includeCssStyles );
+    this.get = function( element, includeAttributes, includeCssStyles, includeText ) {
+        return getJSON( element, includeAttributes, includeCssStyles, includeText );
     };
 
 

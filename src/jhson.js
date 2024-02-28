@@ -15,6 +15,8 @@
     var // Variables: Constructor Parameters
         _parameter_Document = null,
         _parameter_Window = null,
+        _parameter_Math = null,
+        _parameter_JSON = null,
 
         // Variables: Configuration
         _configuration = {},
@@ -83,6 +85,22 @@
                 }
             }
         }
+
+        return result;
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * JSON - Write
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function getJSON( element ) {
+        var result = _string.empty,
+            resultJson = {};
+
+        result = _parameter_JSON.stringify( resultJson );
 
         return result;
     }
@@ -204,7 +222,7 @@
 
         try {
             if ( isDefinedString( objectString ) ) {
-                result = JSON.parse( objectString );
+                result = _parameter_JSON.parse( objectString );
             }
 
         } catch ( e1 ) {
@@ -247,7 +265,7 @@
                 result.push( "-" );
             }
 
-            var character = Math.floor( Math.random() * 16 ).toString( 16 );
+            var character = _parameter_Math.floor( _parameter_Math.random() * 16 ).toString( 16 );
             result.push( character );
         }
 
@@ -312,9 +330,11 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    ( function ( documentObject, windowObject ) {
+    ( function ( documentObject, windowObject, mathObject, jsonObject ) {
         _parameter_Document = documentObject;
         _parameter_Window = windowObject;
+        _parameter_Math = mathObject;
+        _parameter_JSON = jsonObject;
 
         buildDefaultConfiguration();
 
@@ -326,5 +346,5 @@
             _parameter_Window.$jhson = this;
         }
 
-    } ) ( document, window );
+    } ) ( document, window, Math, JSON );
 } )();

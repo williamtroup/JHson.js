@@ -126,6 +126,10 @@
             getElementChildren( childrenLength, element, result, includeAttributes, includeCssStyles );
         }
 
+        if ( isDefinedString( element.innerText ) && element.innerText === element.innerHTML ) {
+            result[ "#text" ] = element.innerText;
+        }
+
         return {
             nodeName: element.nodeName.toLowerCase(),
             nodeValues: result

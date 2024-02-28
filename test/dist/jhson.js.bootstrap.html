@@ -21,7 +21,13 @@
 
         <div class="contents">
             <h2>JSON:</h2>
-            <button class="btn btn-primary" onclick="getJSONData();">Get</button>
+            <button class="btn btn-primary" onclick="getJSONData();">Get (default)</button>
+            <br />
+            <button class="btn btn-primary" onclick="getJSONData( true, false, false );">Get ( Attr: True, CSS: False, Text: False )</button>
+            <br />
+            <button class="btn btn-primary" onclick="getJSONData( true, true, false );">Get ( Attr: True, CSS: True, Text: False )</button>
+            <br />
+            <button class="btn btn-primary" onclick="getJSONData( true, true, true );">Get ( Attr: True, CSS: True, Text: True )</button>
             <br />
             
             <h2>Configuration:</h2>
@@ -43,10 +49,10 @@
             } );
         }
 
-        function getJSONData() {
-            var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ] );
+        function getJSONData( includeAttributes, includeCssStyles, includeText ) {
+            var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ], includeAttributes, includeCssStyles, includeText );
 
-            console.log( json );
+            document.getElementById( "json" ).value = json;
         }
     </script>
 </html>

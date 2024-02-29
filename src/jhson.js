@@ -29,8 +29,21 @@
         // Variables: Values
         _value = {
             notFound: -1
-        };
+        },
 
+        // Variables: Formatting Nodes
+        _formatting_Nodes = [
+            "b",
+            "strong",
+            "i",
+            "em",
+            "mark",
+            "small",
+            "del",
+            "ins",
+            "sub",
+            "sup"
+        ];
 
 
     /*
@@ -57,7 +70,8 @@
 
     function getElementObject( element, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
         var result = {},
-            childrenLength = element.children.length;
+            childrenLength = element.children.length,
+            childrenAdded = 0;
 
         if ( includeAttributes ) {
             getElementAttributes( element, result );
@@ -68,11 +82,15 @@
         }
 
         if ( childrenLength > 0 ) {
-            getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles );
+            childrenAdded = getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles );
         }
 
-        if ( includeText && element.innerText === element.innerHTML ) {
-            result[ "#text" ] = element.innerText;
+        if ( includeText ) {
+            getElementText( element, result, childrenAdded );
+        }
+
+        if ( isDefined( result.children ) && result.children.length === 0 ) {
+            delete result.children;
         }
 
         return {
@@ -115,17 +133,45 @@
     }
 
     function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
+        var totalChildren = 0;
+        
         result.children = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy( parentCssStyles ) );
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy( parentCssStyles ) ),
+                addChild = false;
 
-            if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName ) === _value.notFound ) {
+            if ( _formatting_Nodes.indexOf( childElementData.nodeName.toLowerCase() ) > _value.notFound ) {
+                totalChildren++;
+            } else {
+
+                if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName.toLowerCase() ) === _value.notFound ) {
+                    addChild = true;
+                    totalChildren++;
+                }
+            }
+
+            if ( addChild ) {
                 var childJson = {};
                 childJson[ childElementData.nodeName ] = childElementData.nodeValues;
 
                 result.children.push( childJson );
+            }
+        }
+
+        return totalChildren;
+    }
+
+    function getElementText( element, result, childrenAdded ) {
+        if ( isDefinedString( element.innerText ) ) {
+            if ( childrenAdded > 0 && isDefined( result.children ) && result.children.length === 0 ) {
+                result[ "#text" ] = element.innerHTML;
+            } else {
+    
+                if ( element.innerText === element.innerHTML ) {
+                    result[ "#text" ] = element.innerText;
+                }
             }
         }
     }

@@ -115,6 +115,10 @@
     function getElementAttributes( element, result ) {
         var attributesLength = element.attributes.length;
 
+        if ( element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
+            result[ _json.text ] = element.value;
+        }
+
         for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
             var attribute = element.attributes[ attributeIndex ];
 

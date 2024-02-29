@@ -201,10 +201,33 @@
         var convertedJsonObject = getObjectFromString( json );
 
         if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
-            parentElement.innerHTML = _string.empty;
+            for ( var key in convertedJsonObject.result ) {
+                if ( key === parentElement.nodeName.toLowerCase() ) {
+                    parentElement.innerHTML = _string.empty;
+
+                    writeNode( parentElement, convertedJsonObject.result[ key ] );
+                }
+            }
         }
 
         return _this;
+    }
+
+    function writeNode( parentElement, jsonObject ) {
+        for ( var jsonKey in jsonObject ) {
+            if ( startsWithAnyCase( jsonKey, "@" ) ) {
+                var attributeName = jsonKey.replace( "@", _string.empty ),
+                    attributeValue = jsonObject[ jsonKey ];
+
+                parentElement.setAttribute( attributeName, attributeValue );
+
+            } else if ( startsWithAnyCase( jsonKey, "$" ) ) {
+                var cssStyleName = jsonKey.replace( "$", _string.empty ),
+                    cssStyleValue = jsonObject[ jsonKey ];
+
+                parentElement.style[ cssStyleName ] = cssStyleValue;
+            }
+        }
     }
 
 
@@ -240,6 +263,17 @@
 
     function isDefinedArray( object ) {
         return isDefinedObject( object ) && object instanceof Array;
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * String Handling
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function startsWithAnyCase( data, start ) {
+        return data.substring( 0, start.length ).toLowerCase() === start.toLowerCase();
     }
 
 

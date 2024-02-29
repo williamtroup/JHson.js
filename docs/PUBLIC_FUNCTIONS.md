@@ -1,4 +1,4 @@
-# JHson.js - Functions:
+# JHson.js - Public Functions:
 
 Below is a list of all the public functions that can be called from the JHson.js instance.
 <br>

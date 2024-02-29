@@ -17,17 +17,27 @@
 
         <div class="contents">
             <textarea id="json"></textarea>
+            <br>
+
+            <input type="checkbox" id="includeAttributes" name="includeAttributes" checked="checked">
+            <label for="includeAttributes">Include Attributes</label>
+            <br>
+
+            <input type="checkbox" id="includeCssStyles" name="includeCssStyles">
+            <label for="includeCssStyles">Include CSS Styles</label>
+            <br>
+
+            <input type="checkbox" id="includeText" name="includeText" checked="checked">
+            <label for="includeText">Include Text</label>
+            <br>
+
+            <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
+            <label for="includeChildren">Include Children</label>
         </div>
 
         <div class="contents">
             <h2>JSON - GET:</h2>
-            <button class="btn btn-primary" onclick="getJSONData();">Get (default)</button>
-            <br />
-            <button class="btn btn-primary" onclick="getJSONData( true, false, false );">Get ( Attr: True, CSS: False, Text: False )</button>
-            <br />
-            <button class="btn btn-primary" onclick="getJSONData( true, true, false );">Get ( Attr: True, CSS: True, Text: False )</button>
-            <br />
-            <button class="btn btn-primary" onclick="getJSONData( true, true, true );">Get ( Attr: True, CSS: True, Text: True )</button>
+            <button class="btn btn-primary" onclick="getJSONData();">Get</button>
             <br />
 
             <h2>JSON - Write:</h2>
@@ -43,26 +53,32 @@
     </body>
 
     <script>
+        var _BODY = document.getElementsByTagName( "body" )[ 0 ],
+            _JSON_TEXTAREA = document.getElementById( "json" ),
+            _INCLUDE_ATTRIBUTES = document.getElementById( "includeAttributes" ),
+            _INCLUDE_CSS_STYLES = document.getElementById( "includeCssStyles" ),
+            _INCLUDE_TEXT = document.getElementById( "includeText" ),
+            _INCLUDE_CHILDREN = document.getElementById( "includeChildren" );
+
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
-        
+
         function setupConfiguration() {
             $jhson.setConfiguration( {
                 nodeTypesToIgnore: [ "div" ]
             } );
         }
 
-        function getJSONData( includeAttributes, includeCssStyles, includeText ) {
-            var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ], includeAttributes, includeCssStyles, includeText );
+        function getJSONData() {
+            var json = $jhson.get( _BODY, _INCLUDE_ATTRIBUTES.checked, _INCLUDE_CSS_STYLES.checked, _INCLUDE_TEXT.checked, _INCLUDE_CHILDREN.checked );
 
-            document.getElementById( "json" ).value = json;
+            _JSON_TEXTAREA.value = json;
         }
 
         function writeJSONData() {
-            var parentNode = document.getElementsByTagName( "body" )[ 0 ]
-                json = document.getElementById( "json" ).value;
+            var json = _JSON_TEXTAREA.value;
 
-                $jhson.write( parentNode, json, { "{{template_data}}": "this template data" } );
+            $jhson.write( _BODY, json, { "{{template_data}}": "this template data" } );
         }
     </script>
 </html>

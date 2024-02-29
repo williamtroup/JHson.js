@@ -51,10 +51,10 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat ) {
+    function getJSON( element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat ) {
         var result = _string.empty,
             resultJson = {},
-            elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText, {} );
+            elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText, includeChildren, {} );
 
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
@@ -67,7 +67,7 @@
         return result;
     }
 
-    function getElementObject( element, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
+    function getElementObject( element, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles ) {
         var result = {},
             childrenLength = element.children.length,
             childrenAdded = 0;
@@ -80,8 +80,8 @@
             getElementCssStyles( element, result, parentCssStyles );
         }
 
-        if ( childrenLength > 0 ) {
-            childrenAdded = getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles );
+        if ( includeChildren && childrenLength > 0 ) {
+            childrenAdded = getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles );
         }
 
         if ( includeText ) {
@@ -135,14 +135,14 @@
         }
     }
 
-    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
+    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles ) {
         var totalChildren = 0;
         
         result[ _json.children ] = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy( parentCssStyles ) ),
+                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, includeChildren, getParentCssStylesCopy( parentCssStyles ) ),
                 addChild = false;
 
             if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName.toLowerCase() ) > _value.notFound ) {
@@ -436,17 +436,19 @@
      * @param       {boolean}   [includeAttributes]                         Should the Attributes be included in the JSON (defaults to true).
      * @param       {boolean}   [includeCssStyles]                          Should the CSS Styles be included in the JSON (defaults to false).
      * @param       {boolean}   [includeText]                               Should the Text be included in the JSON (defaults to true).
+     * @param       {boolean}   [includeChildren]                           Should the Children be included in the JSON (defaults to true).
      * @param       {boolean}   [friendlyFormat]                            Should the JSON be returned in an easy-to-read format (defaults to true).
      * 
      * @returns     {Object}                                                The HTML JSON.
      */
-    this.get = function( element, includeAttributes, includeCssStyles, includeText, friendlyFormat ) {
+    this.get = function( element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat ) {
         includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
         includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
         includeText = isDefinedBoolean( includeText ) ? includeText : true;
+        includeChildren = isDefinedBoolean( includeChildren ) ? includeChildren : true;
         friendlyFormat = isDefinedBoolean( friendlyFormat ) ? friendlyFormat : true;
         
-        return getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat );
+        return getJSON( element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat );
     };
 
     /**

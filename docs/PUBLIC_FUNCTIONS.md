@@ -7,7 +7,7 @@ Below is a list of all the public functions that can be called from the JHson.js
 
 ## JSON:
 
-### **get( *element*, *includeAttributes*, *includeCssStyles*, *includeText*, *friendlyFormat* )**:
+### **get( *element*, *includeAttributes*, *includeCssStyles*, *includeText*, *includeChildren*, *friendlyFormat* )**:
 Gets the JSON from a DOM element.
 <br>
 ***Parameter: element***: '*Object*' - The DOM element to get the JSON for.
@@ -17,6 +17,8 @@ Gets the JSON from a DOM element.
 ***Parameter: includeCssStyles***: '*boolean*' - Should the CSS Styles be included in the JSON (defaults to false).
 <br>
 ***Parameter: includeText***: '*boolean*' - Should the Text be included in the JSON (defaults to true).
+<br>
+***Parameter: includeChildren***: '*boolean*' - Should the Children be included in the JSON (defaults to true).
 <br>
 ***Parameter: friendlyFormat***: '*boolean*' - Should the JSON be returned in an easy-to-read format (defaults to true).
 <br>

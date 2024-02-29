@@ -1,9 +1,9 @@
 /*! JHson.js v0.2.0 | (c) Bunoon 2024 | MIT License */
 (function() {
-  function getJSON(element, includeAttributes, includeCssStyles, includeText, friendlyFormat) {
+  function getJSON(element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat) {
     var result = _string.empty;
     var resultJson = {};
-    var elementJson = getElementObject(element, includeAttributes, includeCssStyles, includeText, {});
+    var elementJson = getElementObject(element, includeAttributes, includeCssStyles, includeText, includeChildren, {});
     resultJson[elementJson.nodeName] = elementJson.nodeValues;
     if (friendlyFormat) {
       result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
@@ -12,7 +12,7 @@
     }
     return result;
   }
-  function getElementObject(element, includeAttributes, includeCssStyles, includeText, parentCssStyles) {
+  function getElementObject(element, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles) {
     var result = {};
     var childrenLength = element.children.length;
     var childrenAdded = 0;
@@ -22,8 +22,8 @@
     if (includeCssStyles) {
       getElementCssStyles(element, result, parentCssStyles);
     }
-    if (childrenLength > 0) {
-      childrenAdded = getElementChildren(element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles);
+    if (includeChildren && childrenLength > 0) {
+      childrenAdded = getElementChildren(element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles);
     }
     if (includeText) {
       getElementText(element, result, childrenAdded);
@@ -64,13 +64,13 @@
       }
     }
   }
-  function getElementChildren(element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles) {
+  function getElementChildren(element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles) {
     var totalChildren = 0;
     result[_json.children] = [];
     var childrenIndex = 0;
     for (; childrenIndex < childrenLength; childrenIndex++) {
       var child = element.children[childrenIndex];
-      var childElementData = getElementObject(child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy(parentCssStyles));
+      var childElementData = getElementObject(child, includeAttributes, includeCssStyles, includeText, includeChildren, getParentCssStylesCopy(parentCssStyles));
       var addChild = false;
       if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
         totalChildren++;
@@ -273,12 +273,13 @@
   var _string = {empty:"", space:" "};
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
-  this.get = function(element, includeAttributes, includeCssStyles, includeText, friendlyFormat) {
+  this.get = function(element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat) {
     includeAttributes = isDefinedBoolean(includeAttributes) ? includeAttributes : true;
     includeCssStyles = isDefinedBoolean(includeCssStyles) ? includeCssStyles : false;
     includeText = isDefinedBoolean(includeText) ? includeText : true;
+    includeChildren = isDefinedBoolean(includeChildren) ? includeChildren : true;
     friendlyFormat = isDefinedBoolean(friendlyFormat) ? friendlyFormat : true;
-    return getJSON(element, includeAttributes, includeCssStyles, includeText, friendlyFormat);
+    return getJSON(element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat);
   };
   this.write = function(element, json, templateData) {
     return writeJson(element, json, templateData);

@@ -28,6 +28,13 @@
             space: " "
         },
 
+        // Variables: JSON
+        _json = {
+            text: "#text",
+            cssStyle: "$",
+            attribute: "@"
+        },
+
         // Variables: Values
         _value = {
             notFound: -1
@@ -108,7 +115,7 @@
             var attribute = element.attributes[ attributeIndex ];
 
             if ( isDefinedString( attribute.nodeName ) ) {
-                result[ "@" + attribute.nodeName ] = attribute.nodeValue;
+                result[ _json.attribute + attribute.nodeName ] = attribute.nodeValue;
             }
         }
     }
@@ -122,7 +129,7 @@
                 var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
 
                 if ( _configuration.cssPropertiesToIgnore.indexOf( cssComputedStyleName ) === _value.notFound ) {
-                    var cssComputedStyleNameStorage = "$" + cssComputedStyleName,
+                    var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName,
                         cssComputedValue = cssComputedStyles.getPropertyValue( cssComputedStyleName );
 
                     if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
@@ -168,11 +175,11 @@
     function getElementText( element, result, childrenAdded ) {
         if ( isDefinedString( element.innerText ) ) {
             if ( childrenAdded > 0 && isDefined( result.children ) && result.children.length === 0 ) {
-                result[ "#text" ] = element.innerHTML;
+                result[ _json.text ] = element.innerHTML;
             } else {
     
                 if ( element.innerText === element.innerHTML ) {
-                    result[ "#text" ] = element.innerText;
+                    result[ _json.text ] = element.innerText;
                 }
             }
         }
@@ -219,17 +226,20 @@
 
     function writeNode( parentElement, jsonObject ) {
         for ( var jsonKey in jsonObject ) {
-            if ( startsWithAnyCase( jsonKey, "@" ) ) {
-                var attributeName = jsonKey.replace( "@", _string.empty ),
+            if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
+                var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
                     attributeValue = jsonObject[ jsonKey ];
 
                 parentElement.setAttribute( attributeName, attributeValue );
 
-            } else if ( startsWithAnyCase( jsonKey, "$" ) ) {
-                var cssStyleName = jsonKey.replace( "$", _string.empty ),
+            } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
+                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty ),
                     cssStyleValue = jsonObject[ jsonKey ];
 
                 parentElement.style[ cssStyleName ] = cssStyleValue;
+
+            } else if ( jsonKey === _json.text ) {
+                parentElement.innerHTML = jsonObject[ jsonKey ];
             }
         }
     }

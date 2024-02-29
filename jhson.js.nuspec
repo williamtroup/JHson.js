@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>jJHson.js</id>
+        <id>JHson.js</id>
         <version>0.1.0</version>
         <title>JHson.js</title>
         <description>A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.</description>

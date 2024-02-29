@@ -1,7 +1,7 @@
 /**
  * JHson.js
  * 
- * A JavaScript library for converting HTML to JSON, and JSON to HTML, with template, attributes, and CSS support.
+ * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
  * @version     v0.1.0

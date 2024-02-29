@@ -485,14 +485,24 @@
      * @returns     {Object}                                                The JHson.js class instance.
      */
     this.setConfiguration = function( newConfiguration ) {
-        _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
-        
-        buildDefaultConfiguration();
+        var configurationChanges = false;
+
+        for ( var propertyName in newConfiguration ) {
+            if ( newConfiguration.hasOwnProperty( propertyName ) && _configuration.hasOwnProperty( propertyName ) && newConfiguration[ propertyName ] !== _configuration[ propertyName ] ) {
+                _configuration[ propertyName ] = newConfiguration[ propertyName ];
+                configurationChanges = true;
+            }
+        }
+
+        if ( configurationChanges ) {
+            buildDefaultConfiguration( _configuration );
+        }
 
         return this;
     };
 
-    function buildDefaultConfiguration() {
+    function buildDefaultConfiguration( newConfiguration ) {
+        _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );

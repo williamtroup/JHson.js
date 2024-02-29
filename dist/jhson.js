@@ -256,7 +256,8 @@
     }
     return {parsed:parsed, result:result};
   }
-  function buildDefaultConfiguration() {
+  function buildDefaultConfiguration(newConfiguration) {
+    _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
     _configuration.nodeTypesToIgnore = getDefaultStringOrArray(_configuration.nodeTypesToIgnore, []);
     _configuration.cssPropertiesToIgnore = getDefaultStringOrArray(_configuration.cssPropertiesToIgnore, []);
@@ -283,8 +284,17 @@
     return writeJson(element, json, templateData);
   };
   this.setConfiguration = function(newConfiguration) {
-    _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
-    buildDefaultConfiguration();
+    var configurationChanges = false;
+    var propertyName;
+    for (propertyName in newConfiguration) {
+      if (newConfiguration.hasOwnProperty(propertyName) && _configuration.hasOwnProperty(propertyName) && newConfiguration[propertyName] !== _configuration[propertyName]) {
+        _configuration[propertyName] = newConfiguration[propertyName];
+        configurationChanges = true;
+      }
+    }
+    if (configurationChanges) {
+      buildDefaultConfiguration(_configuration);
+    }
     return this;
   };
   this.getVersion = function() {

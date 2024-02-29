@@ -5,6 +5,9 @@
 #### **Configuration Options:**
 - Added new configuration option "formattingNodeTypes", which states the text formatting nodes to check for (defaults to "b strong i em mark small del ins sub sup").
 
+#### **Configuration Options:**
+- Fixed a fault that caused all pre-configured configuration options to be wiped out when calling "setConfiguration()".
+
 <br>
 
 

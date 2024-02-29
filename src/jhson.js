@@ -208,8 +208,21 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function write( parentElement, json ) {
-        var convertedJsonObject = getObjectFromString( json );
+    function write( parentElement, json, templateData ) {
+        var convertedJsonObject = getObjectFromString( json ),
+            templateDataKeys = [];
+
+        if ( isDefinedObject( templateData ) ) {
+            for ( var templateDataKey in templateData ) {
+                if ( templateData.hasOwnProperty( templateDataKey ) ) {
+                    templateDataKeys.push( templateDataKey );
+                }
+            }
+
+            templateDataKeys = templateDataKeys.sort( function( a, b ) {
+                return b.length - a.length;
+            } );
+        }
 
         if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
             for ( var key in convertedJsonObject.result ) {
@@ -220,7 +233,7 @@
 
                     parentElement.innerHTML = _string.empty;
 
-                    writeNode( parentElement, convertedJsonObject.result[ key ] );
+                    writeNode( parentElement, convertedJsonObject.result[ key ], templateDataKeys, templateData );
                 }
             }
         }
@@ -228,7 +241,9 @@
         return _this;
     }
 
-    function writeNode( parentElement, jsonObject ) {
+    function writeNode( parentElement, jsonObject, templateDataKeys, templateData ) {
+        var templateDataKeysLength = templateDataKeys.length;
+
         for ( var jsonKey in jsonObject ) {
             if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
                 var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
@@ -245,6 +260,16 @@
             } else if ( jsonKey === _json.text ) {
                 parentElement.innerHTML = jsonObject[ jsonKey ];
 
+                if ( templateDataKeysLength > 0 ) {
+                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  templateDataKeysLength; templateDataKeyIndex++ ) {
+                        var templateDataKey = templateDataKeys[ templateDataKeyIndex ];
+
+                        if ( templateData.hasOwnProperty( templateDataKey ) ) {
+                            parentElement.innerHTML = replaceAll( parentElement.innerHTML, templateDataKey, templateData[ templateDataKey ] );
+                        }
+                    }
+                }
+
             } else if ( jsonKey === _json.children ) {
                 var childrenLength = jsonObject[ jsonKey ].length;
 
@@ -255,7 +280,7 @@
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
                             var childElement = createElement( parentElement, childJsonKey.toLowerCase() );
 
-                            writeNode( childElement, childJson[ childJsonKey ] );
+                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, templateData );
                         }
                     }
                 }
@@ -329,6 +354,10 @@
 
     function startsWithAnyCase( data, start ) {
         return data.substring( 0, start.length ).toLowerCase() === start.toLowerCase();
+    }
+
+    function replaceAll( string, find, replace ) {
+        return string.replace( new RegExp( find, "g" ), replace );
     }
 
 
@@ -439,11 +468,12 @@
      * 
      * @param       {Object}    parentElement                               The DOM element to add the new JSON HTML nodes to.
      * @param       {string}    json                                        The JSON that should be converted to HTML.
+     * @param       {Object}    templateData                                The template data to set (defaults to null).
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    this.write = function( parentElement, json ) {
-        return write( parentElement, json );
+    this.write = function( parentElement, json, templateData ) {
+        return write( parentElement, json, templateData );
     };
 
 

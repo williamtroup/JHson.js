@@ -12,7 +12,7 @@
     <body data-random-attribute="attribute-value">
         <div class="header">
             <h1 id="header">JHson.js - Bootstrap</h1>
-            <p>This is a basic example of how to use <b>JHson.js</b> ... alongside Bootstrap.</p>
+            <p>This is a basic example of how to use <b>JHson.js</b> ... alongside Bootstrap and {{template_data}}.</p>
         </div>
 
         <div class="contents">
@@ -62,7 +62,7 @@
             var parentNode = document.getElementsByTagName( "body" )[ 0 ]
                 json = document.getElementById( "json" ).value;
 
-            $jhson.write( parentNode, json );
+            $jhson.write( parentNode, json, { "{{template_data}}": "this template data" } );
         }
     </script>
 </html>

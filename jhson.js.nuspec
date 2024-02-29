@@ -4,13 +4,13 @@
         <id>jJHson.js</id>
         <version>0.1.0</version>
         <title>JHson.js</title>
-        <description>A lightweight, and easy-to-use, JavaScript library.</description>
+        <description>A JavaScript library for converting HTML to JSON, and JSON to HTML, with template support.</description>
         <authors>William Troup</authors>
         <projectUrl>https://www.william-troup.com/jhson-js/</projectUrl>
         <repository type="git" url="https://github.com/williamtroup/JHson.js" branch="main" />
         <readme>README_NUGET.md</readme>
         <license type="expression">MIT</license>
-        <tags>javascript css html5 JHson.js</tags>
+        <tags>javascript css html5 jhson.js json html convert render template conversion converter</tags>
         <icon>docs\images\icon.png</icon>
         <copyright>William Troup</copyright>
     </metadata>

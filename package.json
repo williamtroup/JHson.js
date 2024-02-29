@@ -1,7 +1,7 @@
 {
     "name": "jjhson.js",
     "title": "JHson.js",
-    "description": "A lightweight, and easy-to-use, JavaScript library.",
+    "description": "A JavaScript library for converting HTML to JSON, and JSON to HTML, with template support.",
     "version": "0.1.0",
     "main": "dist/jhson.js",
     "homepage": "https://www.william-troup.com/jhson-js/",
@@ -16,7 +16,14 @@
       "javascript",
       "css",
       "html5",
-      "JHson.js"
+      "jhson.js",
+      "json",
+      "html",
+      "convert",
+      "conversion",
+      "converter",
+      "template",
+      "render"
     ],
     "bugs": {
       "url": "https://github.com/williamtroup/JHson.js/issues"

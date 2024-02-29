@@ -22,6 +22,9 @@
         // Variables: Configuration
         _configuration = {},
 
+        // Variables: Elements
+        _elements_Type = {},
+
         // Variables: Strings
         _string = {
             empty: "",
@@ -32,7 +35,8 @@
         _json = {
             text: "#text",
             cssStyle: "$",
-            attribute: "@"
+            attribute: "@",
+            children: "children",
         },
 
         // Variables: Values
@@ -98,8 +102,8 @@
             getElementText( element, result, childrenAdded );
         }
 
-        if ( isDefined( result.children ) && result.children.length === 0 ) {
-            delete result.children;
+        if ( isDefined( result[ _json.children ] ) && result[ _json.children ].length === 0 ) {
+            delete result[ _json.children ];
         }
 
         return {
@@ -144,7 +148,7 @@
     function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, parentCssStyles ) {
         var totalChildren = 0;
         
-        result.children = [];
+        result[ _json.children ] = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
@@ -165,7 +169,7 @@
                 var childJson = {};
                 childJson[ childElementData.nodeName ] = childElementData.nodeValues;
 
-                result.children.push( childJson );
+                result[ _json.children ].push( childJson );
             }
         }
 
@@ -174,7 +178,7 @@
 
     function getElementText( element, result, childrenAdded ) {
         if ( isDefinedString( element.innerText ) ) {
-            if ( childrenAdded > 0 && isDefined( result.children ) && result.children.length === 0 ) {
+            if ( childrenAdded > 0 && isDefined( result[ _json.children ] ) && result[ _json.children ].length === 0 ) {
                 result[ _json.text ] = element.innerHTML;
             } else {
     
@@ -240,8 +244,43 @@
 
             } else if ( jsonKey === _json.text ) {
                 parentElement.innerHTML = jsonObject[ jsonKey ];
+
+            } else if ( jsonKey === _json.children ) {
+                var childrenLength = jsonObject[ jsonKey ].length;
+
+                for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+                    var childJson = jsonObject[ jsonKey ][ childrenIndex ];
+
+                    for ( var key in childJson ) {
+                        var childElement = createElement( parentElement, key.toLowerCase() );
+
+                        writeNode( childElement, childJson[ key ] );
+                    }
+                }
             }
         }
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Element Handling
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function createElement( container, type ) {
+        var nodeType = type.toLowerCase(),
+            isText = nodeType === "text";
+
+        if ( !_elements_Type.hasOwnProperty( nodeType ) ) {
+            _elements_Type[ nodeType ] = isText ? _parameter_Document.createTextNode( _string.empty ) : _parameter_Document.createElement( nodeType );
+        }
+
+        var result = _elements_Type[ nodeType ].cloneNode( false );
+
+        container.appendChild( result );
+
+        return result;
     }
 
 

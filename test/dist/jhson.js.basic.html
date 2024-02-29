@@ -15,11 +15,23 @@
         </div>
 
         <div class="contents">
+            <textarea id="json"></textarea>
+        </div>
+
+        <div class="contents">
+            <h2>JSON:</h2>
+            <button onclick="getJSONData();">Get (default)</button>
         </div>
     </body>
 
     <script>
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
+
+        function getJSONData( includeAttributes, includeCssStyles, includeText ) {
+            var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ], includeAttributes, includeCssStyles, includeText );
+
+            document.getElementById( "json" ).value = json;
+        }
     </script>
 </html>

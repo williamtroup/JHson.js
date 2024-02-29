@@ -198,7 +198,11 @@
      */
 
     function write( parentElement, json ) {
-        parentElement.innerHTML = _string.empty;
+        var convertedJsonObject = getObjectFromString( json );
+
+        if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
+            parentElement.innerHTML = _string.empty;
+        }
 
         return _this;
     }
@@ -293,6 +297,40 @@
         return value;
     }
 
+    function getObjectFromString( objectString ) {
+        var parsed = true,
+            result = null;
+
+        try {
+            if ( isDefinedString( objectString ) ) {
+                result = _parameter_JSON.parse( objectString );
+            }
+
+        } catch ( e1 ) {
+
+            try {
+                result = eval( "(" + objectString + ")" );
+
+                if ( isDefinedFunction( result ) ) {
+                    result = result();
+                }
+                
+            } catch ( e2 ) {
+                if ( !_configuration.safeMode ) {
+                    console.error( "Errors in object: " + e1.message + ", " + e2.message );
+                    parsed = false;
+                }
+                
+                result = null;
+            }
+        }
+
+        return {
+            parsed: parsed,
+            result: result
+        };
+    }
+
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -367,6 +405,7 @@
     };
 
     function buildDefaultConfiguration() {
+        _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
         _configuration.jsonIndentationSpaces = getDefaultNumber( _configuration.jsonIndentationSpaces, 2 );

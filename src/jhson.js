@@ -203,6 +203,10 @@
         if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
             for ( var key in convertedJsonObject.result ) {
                 if ( key === parentElement.nodeName.toLowerCase() ) {
+                    while( parentElement.attributes.length > 0 ) {
+                        parentElement.removeAttribute( parentElement.attributes[ 0 ].name );
+                    }
+
                     parentElement.innerHTML = _string.empty;
 
                     writeNode( parentElement, convertedJsonObject.result[ key ] );

@@ -12,7 +12,9 @@
 
 
 ( function() {
-    var // Variables: Constructor Parameters
+    var _this = this,
+
+        // Variables: Constructor Parameters
         _parameter_Document = null,
         _parameter_Window = null,
         _parameter_JSON = null,
@@ -191,6 +193,17 @@
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * JSON - Write
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function write( parentElement, json ) {
+        return _this;
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * Validation
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
@@ -307,6 +320,22 @@
         friendlyFormat = isDefinedBoolean( friendlyFormat ) ? friendlyFormat : true;
         
         return getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat );
+    };
+
+    /**
+     * write().
+     * 
+     * Converts JSON to HTML and adds it to a parent node.
+     * 
+     * @public
+     * 
+     * @param       {Object}    parentElement                               The DOM element to add the new JSON HTML nodes to.
+     * @param       {string}    json                                        The JSON that should be converted to HTML.
+     * 
+     * @returns     {Object}                                                The JHson.js class instance.
+     */
+    this.write = function( parentElement, json ) {
+        return write( parentElement, json );
     };
 
 

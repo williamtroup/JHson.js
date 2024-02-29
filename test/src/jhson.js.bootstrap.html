@@ -20,7 +20,7 @@
         </div>
 
         <div class="contents">
-            <h2>JSON:</h2>
+            <h2>JSON - GET:</h2>
             <button class="btn btn-primary" onclick="getJSONData();">Get (default)</button>
             <br />
             <button class="btn btn-primary" onclick="getJSONData( true, false, false );">Get ( Attr: True, CSS: False, Text: False )</button>
@@ -29,6 +29,9 @@
             <br />
             <button class="btn btn-primary" onclick="getJSONData( true, true, true );">Get ( Attr: True, CSS: True, Text: True )</button>
             <br />
+
+            <h2>JSON - Write:</h2>
+            <button class="btn btn-primary" onclick="writeJSONData();">Write (default)</button>
 
             <h2>Configuration:</h2>
             <button class="btn btn-primary" onclick="setupConfiguration();">Set Configuration</button>
@@ -53,6 +56,13 @@
             var json = $jhson.get( document.getElementsByTagName( "body" )[ 0 ], includeAttributes, includeCssStyles, includeText );
 
             document.getElementById( "json" ).value = json;
+        }
+
+        function writeJSONData() {
+            var parentNode = document.getElementsByTagName( "body" )[ 0 ]
+                json = document.getElementById( "json" ).value;
+
+            $jhson.write( parentNode, json );
         }
     </script>
 </html>

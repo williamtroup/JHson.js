@@ -198,6 +198,8 @@
      */
 
     function write( parentElement, json ) {
+        parentElement.innerHTML = _string.empty;
+
         return _this;
     }
 
@@ -365,7 +367,7 @@
     };
 
     function buildDefaultConfiguration() {
-        _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [ "script" ] );
+        _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
         _configuration.jsonIndentationSpaces = getDefaultNumber( _configuration.jsonIndentationSpaces, 2 );
     }

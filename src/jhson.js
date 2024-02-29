@@ -36,7 +36,7 @@
             text: "#text",
             cssStyle: "$",
             attribute: "@",
-            children: "children",
+            children: "&children",
         },
 
         // Variables: Values

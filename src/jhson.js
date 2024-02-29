@@ -60,7 +60,7 @@
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
         if ( friendlyFormat ) {
-            result = _parameter_JSON.stringify( resultJson, null, 4 );
+            result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
         } else {
             result = _parameter_JSON.stringify( resultJson );
         }
@@ -338,6 +338,7 @@
     function buildDefaultConfiguration() {
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [ "script" ] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
+        _configuration.jsonIndentationSpaces = getDefaultNumber( _configuration.jsonIndentationSpaces, 2 );
     }
 
 

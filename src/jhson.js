@@ -39,18 +39,24 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getJSON( element, includeAttributes, includeCssStyles, includeText ) {
+    function getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat ) {
         includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
         includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
         includeText = isDefinedBoolean( includeText ) ? includeText : true;
+        friendlyFormat = isDefinedBoolean( friendlyFormat ) ? friendlyFormat : true;
 
         var result = _string.empty,
             resultJson = {},
             elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText, {} );
 
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
-        result = _parameter_JSON.stringify( resultJson );
 
+        if ( friendlyFormat ) {
+            result = _parameter_JSON.stringify( resultJson, null, 4 );
+        } else {
+            result = _parameter_JSON.stringify( resultJson );
+        }
+        
         return result;
     }
 
@@ -246,14 +252,15 @@
      * @public
      * 
      * @param       {Object}    element                                     The DOM element to get the JSON for.
-     * @param       {boolean}   [includeAttributes]                         Should the Attributes be included in the JSON.
-     * @param       {boolean}   [includeCssStyles]                          Should the CSS Styles be included in the JSON.
-     * @param       {boolean}   [includeText]                               Should the Text be included in the JSON.
+     * @param       {boolean}   [includeAttributes]                         Should the Attributes be included in the JSON (defaults to true).
+     * @param       {boolean}   [includeCssStyles]                          Should the CSS Styles be included in the JSON (defaults to false).
+     * @param       {boolean}   [includeText]                               Should the Text be included in the JSON (defaults to true).
+     * @param       {boolean}   [friendlyFormat]                            Should the JSON be returned in an easy-to-read format (defaults to true).
      * 
      * @returns     {Object}                                                The HTML JSON.
      */
-    this.get = function( element, includeAttributes, includeCssStyles, includeText ) {
-        return getJSON( element, includeAttributes, includeCssStyles, includeText );
+    this.get = function( element, includeAttributes, includeCssStyles, includeText, friendlyFormat ) {
+        return getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat );
     };
 
 

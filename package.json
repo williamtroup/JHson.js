@@ -23,7 +23,9 @@
       "conversion",
       "converter",
       "template",
-      "render"
+      "render",
+      "text",
+      "formatting"
     ],
     "bugs": {
       "url": "https://github.com/williamtroup/JHson.js/issues"

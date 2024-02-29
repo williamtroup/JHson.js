@@ -42,21 +42,7 @@
         // Variables: Values
         _value = {
             notFound: -1
-        },
-
-        // Variables: Formatting Nodes
-        _formatting_Nodes = [
-            "b",
-            "strong",
-            "i",
-            "em",
-            "mark",
-            "small",
-            "del",
-            "ins",
-            "sub",
-            "sup"
-        ];
+        };
 
 
     /*
@@ -159,7 +145,7 @@
                 childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy( parentCssStyles ) ),
                 addChild = false;
 
-            if ( _formatting_Nodes.indexOf( childElementData.nodeName.toLowerCase() ) > _value.notFound ) {
+            if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName.toLowerCase() ) > _value.notFound ) {
                 totalChildren++;
             } else {
 
@@ -212,7 +198,7 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function write( element, json, templateData ) {
+    function writeJson( element, json, templateData ) {
         var convertedJsonObject = getObjectFromString( json ),
             templateDataKeys = [];
 
@@ -477,7 +463,7 @@
      * @returns     {Object}                                                The JHson.js class instance.
      */
     this.write = function( element, json, templateData ) {
-        return write( element, json, templateData );
+        return writeJson( element, json, templateData );
     };
 
 
@@ -511,6 +497,18 @@
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
         _configuration.jsonIndentationSpaces = getDefaultNumber( _configuration.jsonIndentationSpaces, 2 );
+        _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
+            "b",
+            "strong",
+            "i",
+            "em",
+            "mark",
+            "small",
+            "del",
+            "ins",
+            "sub",
+            "sup"
+        ] );
     }
 
 

@@ -72,7 +72,7 @@
       var child = element.children[childrenIndex];
       var childElementData = getElementObject(child, includeAttributes, includeCssStyles, includeText, getParentCssStylesCopy(parentCssStyles));
       var addChild = false;
-      if (_formatting_Nodes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
+      if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
         totalChildren++;
       } else {
         if (_configuration.nodeTypesToIgnore.indexOf(childElementData.nodeName.toLowerCase()) === _value.notFound) {
@@ -109,7 +109,7 @@
     }
     return copy;
   }
-  function write(element, json, templateData) {
+  function writeJson(element, json, templateData) {
     var convertedJsonObject = getObjectFromString(json);
     var templateDataKeys = [];
     if (isDefinedObject(templateData)) {
@@ -261,6 +261,7 @@
     _configuration.nodeTypesToIgnore = getDefaultStringOrArray(_configuration.nodeTypesToIgnore, []);
     _configuration.cssPropertiesToIgnore = getDefaultStringOrArray(_configuration.cssPropertiesToIgnore, []);
     _configuration.jsonIndentationSpaces = getDefaultNumber(_configuration.jsonIndentationSpaces, 2);
+    _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
   }
   var _this = this;
   var _parameter_Document = null;
@@ -271,7 +272,6 @@
   var _string = {empty:"", space:" "};
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
-  var _formatting_Nodes = ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"];
   this.get = function(element, includeAttributes, includeCssStyles, includeText, friendlyFormat) {
     includeAttributes = isDefinedBoolean(includeAttributes) ? includeAttributes : true;
     includeCssStyles = isDefinedBoolean(includeCssStyles) ? includeCssStyles : false;
@@ -280,7 +280,7 @@
     return getJSON(element, includeAttributes, includeCssStyles, includeText, friendlyFormat);
   };
   this.write = function(element, json, templateData) {
-    return write(element, json, templateData);
+    return writeJson(element, json, templateData);
   };
   this.setConfiguration = function(newConfiguration) {
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;

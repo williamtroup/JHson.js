@@ -251,10 +251,12 @@
                 for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
                     var childJson = jsonObject[ jsonKey ][ childrenIndex ];
 
-                    for ( var key in childJson ) {
-                        var childElement = createElement( parentElement, key.toLowerCase() );
+                    for ( var childJsonKey in childJson ) {
+                        if ( childJson.hasOwnProperty( childJsonKey ) ) {
+                            var childElement = createElement( parentElement, childJsonKey.toLowerCase() );
 
-                        writeNode( childElement, childJson[ key ] );
+                            writeNode( childElement, childJson[ childJsonKey ] );
+                        }
                     }
                 }
             }
@@ -332,33 +334,12 @@
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Triggering Custom Events
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function fireCustomTrigger( triggerFunction ) {
-        if ( isDefinedFunction( triggerFunction ) ) {
-            triggerFunction.apply( null, [].slice.call( arguments, 1 ) );
-        }
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * Default Parameter/Option Handling
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getDefaultString( value, defaultValue ) {
-        return isDefinedString( value ) ? value : defaultValue;
-    }
-
     function getDefaultBoolean( value, defaultValue ) {
         return isDefinedBoolean( value ) ? value : defaultValue;
-    }
-
-    function getDefaultFunction( value, defaultValue ) {
-        return isDefinedFunction( value ) ? value : defaultValue;
     }
 
     function getDefaultArray( value, defaultValue ) {

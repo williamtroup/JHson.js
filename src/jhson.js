@@ -40,11 +40,6 @@
      */
 
     function getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat ) {
-        includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
-        includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
-        includeText = isDefinedBoolean( includeText ) ? includeText : true;
-        friendlyFormat = isDefinedBoolean( friendlyFormat ) ? friendlyFormat : true;
-
         var result = _string.empty,
             resultJson = {},
             elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText, {} );
@@ -260,6 +255,11 @@
      * @returns     {Object}                                                The HTML JSON.
      */
     this.get = function( element, includeAttributes, includeCssStyles, includeText, friendlyFormat ) {
+        includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
+        includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
+        includeText = isDefinedBoolean( includeText ) ? includeText : true;
+        friendlyFormat = isDefinedBoolean( friendlyFormat ) ? friendlyFormat : true;
+        
         return getJSON( element, includeAttributes, includeCssStyles, includeText, friendlyFormat );
     };
 

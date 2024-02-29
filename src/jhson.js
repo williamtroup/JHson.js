@@ -208,7 +208,7 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function write( parentElement, json, templateData ) {
+    function write( element, json, templateData ) {
         var convertedJsonObject = getObjectFromString( json ),
             templateDataKeys = [];
 
@@ -226,14 +226,14 @@
 
         if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
             for ( var key in convertedJsonObject.result ) {
-                if ( key === parentElement.nodeName.toLowerCase() ) {
-                    while ( parentElement.attributes.length > 0 ) {
-                        parentElement.removeAttribute( parentElement.attributes[ 0 ].name );
+                if ( key === element.nodeName.toLowerCase() ) {
+                    while ( element.attributes.length > 0 ) {
+                        element.removeAttribute( element.attributes[ 0 ].name );
                     }
 
-                    parentElement.innerHTML = _string.empty;
+                    element.innerHTML = _string.empty;
 
-                    writeNode( parentElement, convertedJsonObject.result[ key ], templateDataKeys, templateData );
+                    writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, templateData );
                 }
             }
         }
@@ -241,7 +241,7 @@
         return _this;
     }
 
-    function writeNode( parentElement, jsonObject, templateDataKeys, templateData ) {
+    function writeNode( element, jsonObject, templateDataKeys, templateData ) {
         var templateDataKeysLength = templateDataKeys.length;
 
         for ( var jsonKey in jsonObject ) {
@@ -249,23 +249,23 @@
                 var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
                     attributeValue = jsonObject[ jsonKey ];
 
-                parentElement.setAttribute( attributeName, attributeValue );
+                element.setAttribute( attributeName, attributeValue );
 
             } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
                 var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty ),
                     cssStyleValue = jsonObject[ jsonKey ];
 
-                parentElement.style[ cssStyleName ] = cssStyleValue;
+                element.style[ cssStyleName ] = cssStyleValue;
 
             } else if ( jsonKey === _json.text ) {
-                parentElement.innerHTML = jsonObject[ jsonKey ];
+                element.innerHTML = jsonObject[ jsonKey ];
 
                 if ( templateDataKeysLength > 0 ) {
                     for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  templateDataKeysLength; templateDataKeyIndex++ ) {
                         var templateDataKey = templateDataKeys[ templateDataKeyIndex ];
 
                         if ( templateData.hasOwnProperty( templateDataKey ) ) {
-                            parentElement.innerHTML = replaceAll( parentElement.innerHTML, templateDataKey, templateData[ templateDataKey ] );
+                            element.innerHTML = replaceAll( element.innerHTML, templateDataKey, templateData[ templateDataKey ] );
                         }
                     }
                 }
@@ -278,7 +278,7 @@
 
                     for ( var childJsonKey in childJson ) {
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
-                            var childElement = createElement( parentElement, childJsonKey.toLowerCase() );
+                            var childElement = createElement( element, childJsonKey.toLowerCase() );
 
                             writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, templateData );
                         }
@@ -438,7 +438,7 @@
     /**
      * get().
      * 
-     * Gets the JSON from a parent DOM element.
+     * Gets the JSON from a DOM element.
      * 
      * @public
      * 
@@ -466,14 +466,14 @@
      * 
      * @public
      * 
-     * @param       {Object}    parentElement                               The DOM element to add the new JSON HTML nodes to.
+     * @param       {Object}    element                                     The DOM element to add the new JSON HTML nodes to.
      * @param       {string}    json                                        The JSON that should be converted to HTML.
      * @param       {Object}    templateData                                The template data to set (defaults to null).
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    this.write = function( parentElement, json, templateData ) {
-        return write( parentElement, json, templateData );
+    this.write = function( element, json, templateData ) {
+        return write( element, json, templateData );
     };
 
 
@@ -494,8 +494,8 @@
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    this.setConfiguration = function( newOptions ) {
-        _configuration = !isDefinedObject( newOptions ) ? {} : newOptions;
+    this.setConfiguration = function( newConfiguration ) {
+        _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
         
         buildDefaultConfiguration();
 

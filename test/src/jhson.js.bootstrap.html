@@ -33,6 +33,10 @@
 
             <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
             <label for="includeChildren">Include Children</label>
+            <br>
+
+            <input type="checkbox" id="friendlyFormat" name="friendlyFormat" checked="checked">
+            <label for="friendlyFormat">Friendly Format</label>
         </div>
 
         <div class="contents">
@@ -58,7 +62,8 @@
             _INCLUDE_ATTRIBUTES = document.getElementById( "includeAttributes" ),
             _INCLUDE_CSS_STYLES = document.getElementById( "includeCssStyles" ),
             _INCLUDE_TEXT = document.getElementById( "includeText" ),
-            _INCLUDE_CHILDREN = document.getElementById( "includeChildren" );
+            _INCLUDE_CHILDREN = document.getElementById( "includeChildren" ),
+            _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -70,15 +75,38 @@
         }
 
         function getJSONData() {
-            var json = $jhson.get( _BODY, _INCLUDE_ATTRIBUTES.checked, _INCLUDE_CSS_STYLES.checked, _INCLUDE_TEXT.checked, _INCLUDE_CHILDREN.checked );
+            var json = $jhson.json();
 
-            _JSON_TEXTAREA.value = json;
+            if ( _INCLUDE_ATTRIBUTES.checked ) {
+                json = json.includeAttributes();
+            }
+
+            if ( _INCLUDE_CSS_STYLES.checked ) {
+                json = json.includeCssStyles();
+            }
+
+            if ( _INCLUDE_TEXT.checked ) {
+                json = json.includeText();
+            }
+
+            if ( _INCLUDE_CHILDREN.checked ) {
+                json = json.includeChildren();
+            }
+
+            if ( _FRIENDLY_FORMAT.checked ) {
+                json = json.friendlyFormat();
+            }
+
+            _JSON_TEXTAREA.value = json.get( _BODY );
         }
 
         function writeJSONData() {
-            var json = _JSON_TEXTAREA.value;
-
-            $jhson.write( _BODY, json, { "{{template_data}}": "this template data" } );
+            $jhson
+                .html()
+                .json( _JSON_TEXTAREA.value )
+                .templateData( { "{{template_data}}": "this template data" } )
+                .resetAttributes()
+                .write( _BODY );
         }
     </script>
 </html>

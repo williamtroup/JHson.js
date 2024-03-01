@@ -51,14 +51,14 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getJSON( element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat ) {
+    function getJSON( element, properties ) {
         var result = _string.empty,
             resultJson = {},
-            elementJson = getElementObject( element, includeAttributes, includeCssStyles, includeText, includeChildren, {} );
+            elementJson = getElementObject( element, properties, {} );
 
         resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
-        if ( friendlyFormat ) {
+        if ( properties.friendlyFormat ) {
             result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
         } else {
             result = _parameter_JSON.stringify( resultJson );
@@ -67,24 +67,24 @@
         return result;
     }
 
-    function getElementObject( element, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles ) {
+    function getElementObject( element, properties, parentCssStyles ) {
         var result = {},
             childrenLength = element.children.length,
             childrenAdded = 0;
 
-        if ( includeAttributes ) {
+        if ( properties.includeAttributes ) {
             getElementAttributes( element, result );
         }
 
-        if ( includeCssStyles ) {
+        if ( properties.includeCssStyles ) {
             getElementCssStyles( element, result, parentCssStyles );
         }
 
-        if ( includeChildren && childrenLength > 0 ) {
-            childrenAdded = getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles );
+        if ( properties.includeChildren && childrenLength > 0 ) {
+            childrenAdded = getElementChildren( element, result, childrenLength, properties, parentCssStyles );
         }
 
-        if ( includeText ) {
+        if ( properties.includeText ) {
             getElementText( element, result, childrenAdded );
         }
 
@@ -135,14 +135,14 @@
         }
     }
 
-    function getElementChildren( element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles ) {
+    function getElementChildren( element, result, childrenLength, properties, parentCssStyles ) {
         var totalChildren = 0;
         
         result[ _json.children ] = [];
 
         for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             var child = element.children[ childrenIndex ],
-                childElementData = getElementObject( child, includeAttributes, includeCssStyles, includeText, includeChildren, getParentCssStylesCopy( parentCssStyles ) ),
+                childElementData = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) ),
                 addChild = false;
 
             if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName.toLowerCase() ) > _value.notFound ) {
@@ -194,17 +194,17 @@
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * JSON - Write
+     * JSON - Write HTML
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function writeJson( element, json, templateData ) {
-        var convertedJsonObject = getObjectFromString( json ),
+    function writeHtml( element, properties ) {
+        var convertedJsonObject = getObjectFromString( properties.json ),
             templateDataKeys = [];
 
-        if ( isDefinedObject( templateData ) ) {
-            for ( var templateDataKey in templateData ) {
-                if ( templateData.hasOwnProperty( templateDataKey ) ) {
+        if ( isDefinedObject( properties.templateData ) ) {
+            for ( var templateDataKey in properties.templateData ) {
+                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
                     templateDataKeys.push( templateDataKey );
                 }
             }
@@ -217,13 +217,15 @@
         if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
             for ( var key in convertedJsonObject.result ) {
                 if ( key === element.nodeName.toLowerCase() ) {
-                    while ( element.attributes.length > 0 ) {
-                        element.removeAttribute( element.attributes[ 0 ].name );
+                    if ( properties.resetAttributes ) {
+                        while ( element.attributes.length > 0 ) {
+                            element.removeAttribute( element.attributes[ 0 ].name );
+                        }
                     }
 
                     element.innerHTML = _string.empty;
 
-                    writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, templateData );
+                    writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
                 }
             }
         }
@@ -361,12 +363,16 @@
         return isDefinedBoolean( value ) ? value : defaultValue;
     }
 
+    function getDefaultNumber( value, defaultValue ) {
+        return isDefinedNumber( value ) ? value : defaultValue;
+    }
+
     function getDefaultArray( value, defaultValue ) {
         return isDefinedArray( value ) ? value : defaultValue;
     }
 
-    function getDefaultNumber( value, defaultValue ) {
-        return isDefinedNumber( value ) ? value : defaultValue;
+    function getDefaultObject( value, defaultValue ) {
+        return isDefinedObject( value ) ? value : defaultValue;
     }
 
     function getDefaultStringOrArray( value, defaultValue ) {
@@ -426,46 +432,110 @@
      */
 
     /**
-     * get().
+     * json().
      * 
-     * Gets the JSON from a DOM element.
+     * Gets the JSON from a HTML DOM element.
      * 
      * @public
      * 
-     * @param       {Object}    element                                     The DOM element to get the JSON for.
-     * @param       {boolean}   [includeAttributes]                         Should the Attributes be included in the JSON (defaults to true).
-     * @param       {boolean}   [includeCssStyles]                          Should the CSS Styles be included in the JSON (defaults to false).
-     * @param       {boolean}   [includeText]                               Should the Text be included in the JSON (defaults to true).
-     * @param       {boolean}   [includeChildren]                           Should the Children be included in the JSON (defaults to true).
-     * @param       {boolean}   [friendlyFormat]                            Should the JSON be returned in an easy-to-read format (defaults to true).
-     * 
      * @returns     {Object}                                                The HTML JSON.
      */
-    this.get = function( element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat ) {
-        includeAttributes = isDefinedBoolean( includeAttributes ) ? includeAttributes : true;
-        includeCssStyles = isDefinedBoolean( includeCssStyles ) ? includeCssStyles : false;
-        includeText = isDefinedBoolean( includeText ) ? includeText : true;
-        includeChildren = isDefinedBoolean( includeChildren ) ? includeChildren : true;
-        friendlyFormat = isDefinedBoolean( friendlyFormat ) ? friendlyFormat : true;
+    this.json = function() {
+        var result = null;
+
+        ( function() {
+            result = this;
+
+            var properties = {
+                includeAttributes: false,
+                includeCssStyles: false,
+                includeText: false,
+                includeChildren: false,
+                friendlyFormat: false,
+            };
+
+            this.includeAttributes = function() {
+                properties.includeAttributes = true;
+                return this;
+            };
+
+            this.includeCssStyles = function() {
+                properties.includeCssStyles = true;
+                return this;
+            };
+
+            this.includeText = function() {
+                properties.includeText = true;
+                return this;
+            };
+
+            this.includeChildren = function() {
+                properties.includeChildren = true;
+                return this;
+            };
+
+            this.friendlyFormat = function() {
+                properties.friendlyFormat = true;
+                return this;
+            };
+
+            this.get = function( element ) {
+                return getJSON( element, properties );
+            };
+        } )();
         
-        return getJSON( element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat );
+        return result;
     };
 
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Public Functions:  HTML
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
     /**
-     * write().
+     * html().
      * 
      * Converts JSON to HTML and adds it to a parent node.
      * 
      * @public
      * 
-     * @param       {Object}    element                                     The DOM element to add the new JSON HTML nodes to.
-     * @param       {string}    json                                        The JSON that should be converted to HTML.
-     * @param       {Object}    templateData                                The template data to set (defaults to null).
-     * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    this.write = function( element, json, templateData ) {
-        return writeJson( element, json, templateData );
+    this.html = function() {
+        var result = null;
+
+        ( function() {
+            result = this;
+            
+            var properties = {
+                json: _string.empty,
+                templateData: {},
+                resetAttributes: false
+            };
+
+            this.json = function( json ) {
+                properties.json = json;
+                return this;
+            };
+
+            this.templateData = function( templateData ) {
+                properties.templateData = getDefaultObject( templateData, {} );
+                return this;
+            };
+
+            this.resetAttributes = function() {
+                properties.resetAttributes = true;
+                return this;
+            };
+
+            this.write = function( element ) {
+                return writeHtml( element, properties );
+            };
+        } )();
+        
+        return result;
     };
 
 

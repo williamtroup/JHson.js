@@ -463,10 +463,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeAttributes = function() {
-                __properties.includeAttributes = true;
+            this.includeAttributes = function( flag ) {
+                __properties.includeAttributes = getDefaultBoolean( flag, false );
 
                 return this;
             };
@@ -478,10 +480,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeCssStyles = function() {
-                __properties.includeCssStyles = true;
+            this.includeCssStyles = function( flag ) {
+                __properties.includeCssStyles = getDefaultBoolean( flag, false );
 
                 return this;
             };
@@ -493,10 +497,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeText = function() {
-                __properties.includeText = true;
+            this.includeText = function( flag ) {
+                __properties.includeText = getDefaultBoolean( flag, false );
 
                 return this;
             };
@@ -508,10 +514,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeChildren = function() {
-                __properties.includeChildren = true;
+            this.includeChildren = function( flag ) {
+                __properties.includeChildren = getDefaultBoolean( flag, false );
 
                 return this;
             };
@@ -523,10 +531,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.friendlyFormat = function() {
-                __properties.friendlyFormat = true;
+            this.friendlyFormat = function( flag ) {
+                __properties.friendlyFormat = getDefaultBoolean( flag, false );
 
                 return this;
             };
@@ -618,10 +628,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.removeAttributes = function() {
-                __properties.removeAttributes = true;
+            this.removeAttributes = function( flag ) {
+                __properties.removeAttributes = getDefaultBoolean( flag, false );
                 return this;
             };
 
@@ -632,10 +644,12 @@
              * 
              * @public
              * 
+             * @param       {string}    flag                                The boolean flag that states the condition.
+             * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.clearHTML = function() {
-                __properties.clearHTML = true;
+            this.clearHTML = function( flag ) {
+                __properties.clearHTML = getDefaultBoolean( flag, false );
                 return this;
             };
 

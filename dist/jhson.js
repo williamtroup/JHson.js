@@ -285,24 +285,24 @@
     (function() {
       result = this;
       var __properties = {includeAttributes:false, includeCssStyles:false, includeText:false, includeChildren:false, friendlyFormat:false};
-      this.includeAttributes = function() {
-        __properties.includeAttributes = true;
+      this.includeAttributes = function(flag) {
+        __properties.includeAttributes = getDefaultBoolean(flag, false);
         return this;
       };
-      this.includeCssStyles = function() {
-        __properties.includeCssStyles = true;
+      this.includeCssStyles = function(flag) {
+        __properties.includeCssStyles = getDefaultBoolean(flag, false);
         return this;
       };
-      this.includeText = function() {
-        __properties.includeText = true;
+      this.includeText = function(flag) {
+        __properties.includeText = getDefaultBoolean(flag, false);
         return this;
       };
-      this.includeChildren = function() {
-        __properties.includeChildren = true;
+      this.includeChildren = function(flag) {
+        __properties.includeChildren = getDefaultBoolean(flag, false);
         return this;
       };
-      this.friendlyFormat = function() {
-        __properties.friendlyFormat = true;
+      this.friendlyFormat = function(flag) {
+        __properties.friendlyFormat = getDefaultBoolean(flag, false);
         return this;
       };
       this.get = function(element) {
@@ -324,12 +324,12 @@
         __properties.templateData = getDefaultObject(templateData, {});
         return this;
       };
-      this.removeAttributes = function() {
-        __properties.removeAttributes = true;
+      this.removeAttributes = function(flag) {
+        __properties.removeAttributes = getDefaultBoolean(flag, false);
         return this;
       };
-      this.clearHTML = function() {
-        __properties.clearHTML = true;
+      this.clearHTML = function(flag) {
+        __properties.clearHTML = getDefaultBoolean(flag, false);
         return this;
       };
       this.write = function(element) {

@@ -434,11 +434,11 @@
     /**
      * json().
      * 
-     * Gets the JSON from a HTML DOM element.
+     * Returns all the properties that will allow an HTML DOM element to be converted to JSON.
      * 
      * @public
      * 
-     * @returns     {Object}                                                The HTML JSON.
+     * @returns     {Object}                                                The JSON properties object.
      */
     this.json = function() {
         var result = null;
@@ -446,7 +446,7 @@
         ( function() {
             result = this;
 
-            var properties = {
+            var __properties = {
                 includeAttributes: false,
                 includeCssStyles: false,
                 includeText: false,
@@ -454,33 +454,82 @@
                 friendlyFormat: false,
             };
 
+            /**
+             * includeAttributes().
+             * 
+             * States if the attributes should be included.
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
             this.includeAttributes = function() {
-                properties.includeAttributes = true;
+                __properties.includeAttributes = true;
+
                 return this;
             };
 
+            /**
+             * includeCssStyles().
+             * 
+             * States if the CSS style properties should be included.
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
             this.includeCssStyles = function() {
-                properties.includeCssStyles = true;
+                __properties.includeCssStyles = true;
+
                 return this;
             };
 
+            /**
+             * includeText().
+             * 
+             * States if the node text should be included.
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
             this.includeText = function() {
-                properties.includeText = true;
+                __properties.includeText = true;
+
                 return this;
             };
 
+            /**
+             * includeChildren().
+             * 
+             * States if the children should be included.
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
             this.includeChildren = function() {
-                properties.includeChildren = true;
+                __properties.includeChildren = true;
+
                 return this;
             };
 
+            /**
+             * friendlyFormat().
+             * 
+             * States if the JSON should be formatted in an easy-to-read layout.
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
             this.friendlyFormat = function() {
-                properties.friendlyFormat = true;
+                __properties.friendlyFormat = true;
+
                 return this;
             };
 
+            /**
+             * get().
+             * 
+             * Uses all the properties selected to get the JSON from the HTML DOM element.
+             * 
+             * @param       {Object}    element                             The DOM element to get the JSON for.
+             * 
+             * @returns     {string}                                        The JSON string.
+             */
             this.get = function( element ) {
-                return getJSON( element, properties );
+                return getJSON( element, __properties );
             };
         } )();
         
@@ -497,11 +546,11 @@
     /**
      * html().
      * 
-     * Converts JSON to HTML and adds it to a parent node.
+     * Returns all the properties that will allow JSON to be written as HTML DOM elements.
      * 
      * @public
      * 
-     * @returns     {Object}                                                The JHson.js class instance.
+     * @returns     {Object}                                                The HTML properties object.
      */
     this.html = function() {
         var result = null;
@@ -509,29 +558,63 @@
         ( function() {
             result = this;
             
-            var properties = {
+            var __properties = {
                 json: _string.empty,
                 templateData: {},
                 resetAttributes: false
             };
 
+            /**
+             * json().
+             * 
+             * States the JSON that should be written as HTML DOM elements.
+             * 
+             * @param       {string}    json                                The JSON that should be converted to HTML.
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
             this.json = function( json ) {
-                properties.json = json;
+                __properties.json = json;
                 return this;
             };
 
+            /**
+             * templateData().
+             * 
+             * States the template data that should be used inside each HTML DOM elements HTML.
+             * 
+             * @param       {Object}    templateData                        The template data to set inside each nodes HTML.
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
             this.templateData = function( templateData ) {
-                properties.templateData = getDefaultObject( templateData, {} );
+                __properties.templateData = getDefaultObject( templateData, {} );
                 return this;
             };
 
+            /**
+             * resetAttributes().
+             * 
+             * States if the original attributes on the element should be removed.
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
             this.resetAttributes = function() {
-                properties.resetAttributes = true;
+                __properties.resetAttributes = true;
                 return this;
             };
 
+            /**
+             * write().
+             * 
+             * Uses all the properties selected to convert the JSON into HTML DOM elements.
+             * 
+             * @param       {Object}    element                             The DOM element to add the new JSON HTML nodes to.
+             * 
+             * @returns     {string}                                        The JHson.js class instance.
+             */
             this.write = function( element ) {
-                return writeHtml( element, properties );
+                return writeHtml( element, __properties );
             };
         } )();
         

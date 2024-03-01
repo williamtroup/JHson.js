@@ -138,15 +138,16 @@
             if (properties.clearHTML) {
               element.innerHTML = _string.empty;
             }
-            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties.templateData);
+            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties);
           }
         }
       }
     }
     return _this;
   }
-  function writeNode(element, jsonObject, templateDataKeys, templateData) {
+  function writeNode(element, jsonObject, templateDataKeys, properties) {
     var templateDataKeysLength = templateDataKeys.length;
+    var cssStyles = [];
     var jsonKey;
     for (jsonKey in jsonObject) {
       if (startsWithAnyCase(jsonKey, _json.attribute)) {
@@ -155,15 +156,19 @@
         element.setAttribute(attributeName, attributeValue);
       } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
         var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
-        element.style[cssStyleName] = jsonObject[jsonKey];
+        if (!properties.writeCssToHead) {
+          element.style[cssStyleName] = jsonObject[jsonKey];
+        } else {
+          cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
+        }
       } else if (jsonKey === _json.text) {
         element.innerHTML = jsonObject[jsonKey];
         if (templateDataKeysLength > 0) {
           var templateDataKeyIndex = 0;
           for (; templateDataKeyIndex < templateDataKeysLength; templateDataKeyIndex++) {
             var templateDataKey = templateDataKeys[templateDataKeyIndex];
-            if (templateData.hasOwnProperty(templateDataKey)) {
-              element.innerHTML = replaceAll(element.innerHTML, templateDataKey, templateData[templateDataKey]);
+            if (properties.templateData.hasOwnProperty(templateDataKey)) {
+              element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
             }
           }
         }
@@ -176,12 +181,28 @@
           for (childJsonKey in childJson) {
             if (childJson.hasOwnProperty(childJsonKey)) {
               var childElement = createElement(element, childJsonKey.toLowerCase());
-              writeNode(childElement, childJson[childJsonKey], templateDataKeys, templateData);
+              writeNode(childElement, childJson[childJsonKey], templateDataKeys, properties);
             }
           }
         }
       }
     }
+    if (cssStyles.length > 0) {
+      writeCssStyleTag(element, cssStyles);
+    }
+  }
+  function writeCssStyleTag(element, cssStyles) {
+    var head = _parameter_Document.getElementsByTagName("head")[0];
+    if (!isDefinedString(element.id)) {
+      element.id = newGuid();
+    }
+    var cssLines = [];
+    cssLines.push("#" + element.id + " {");
+    cssLines = cssLines.concat(cssStyles);
+    cssLines.push("}");
+    var style = createElement(head, "style");
+    style.type = "text/css";
+    style.appendChild(_parameter_Document.createTextNode(cssLines.join(_string.newLine)));
   }
   function createElement(container, type) {
     var nodeType = type.toLowerCase();
@@ -213,6 +234,18 @@
   }
   function isDefinedArray(object) {
     return isDefinedObject(object) && object instanceof Array;
+  }
+  function newGuid() {
+    var result = [];
+    var charIndex = 0;
+    for (; charIndex < 32; charIndex++) {
+      if (charIndex === 8 || charIndex === 12 || charIndex === 16 || charIndex === 20) {
+        result.push(_string.dash);
+      }
+      var character = _parameter_Math.floor(_parameter_Math.random() * 16).toString(16);
+      result.push(character);
+    }
+    return result.join(_string.empty);
   }
   function startsWithAnyCase(data, start) {
     return data.substring(0, start.length).toLowerCase() === start.toLowerCase();
@@ -281,9 +314,10 @@
   var _parameter_Document = null;
   var _parameter_Window = null;
   var _parameter_JSON = null;
+  var _parameter_Math = null;
   var _configuration = {};
   var _elements_Type = {};
-  var _string = {empty:"", space:" "};
+  var _string = {empty:"", space:" ", newLine:"\n"};
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
   this.json = function() {
@@ -321,7 +355,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true};
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, writeCssToHead:false};
       scope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -336,6 +370,10 @@
       };
       scope.clearHTML = function(flag) {
         __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
+        return this;
+      };
+      scope.writeCssToHead = function(flag) {
+        __properties.writeCssToHead = getDefaultBoolean(flag, __properties.writeCssToHead);
         return this;
       };
       scope.write = function(element) {
@@ -361,13 +399,14 @@
   this.getVersion = function() {
     return "0.4.0";
   };
-  (function(documentObject, windowObject, jsonObject) {
+  (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;
     _parameter_Window = windowObject;
     _parameter_JSON = jsonObject;
+    _parameter_Math = mathObject;
     buildDefaultConfiguration();
     if (!isDefined(_parameter_Window.$jhson)) {
       _parameter_Window.$jhson = this;
     }
-  })(document, window, JSON);
+  })(document, window, JSON, Math);
 })();

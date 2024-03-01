@@ -82,6 +82,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .templateData( { "{{template_data}}": "this template data" } )
         .removeAttributes( true )
         .clearHTML( true )
+        .writeCssToHead( false )
         .write( header );
 </script>
 ```

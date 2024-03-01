@@ -251,10 +251,9 @@
                 element.setAttribute( attributeName, attributeValue );
 
             } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
-                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty ),
-                    cssStyleValue = jsonObject[ jsonKey ];
+                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
 
-                element.style[ cssStyleName ] = cssStyleValue;
+                element.style[ cssStyleName ] = jsonObject[jsonKey];
 
             } else if ( jsonKey === _json.text ) {
                 element.innerHTML = jsonObject[ jsonKey ];
@@ -472,7 +471,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -489,7 +488,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to false).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -506,7 +505,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -523,7 +522,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -540,7 +539,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -637,7 +636,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
@@ -653,7 +652,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The HTML properties object.
              */

@@ -1,5 +1,11 @@
 # JHson.js - Change Log:
 
+## Version 0.4.0:
+- 
+
+<br>
+
+
 ## Version 0.3.0:
 
 #### **Public Functions:**

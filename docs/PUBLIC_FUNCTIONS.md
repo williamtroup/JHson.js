@@ -16,7 +16,7 @@ Returns all the chained functions that will allow an HTML DOM element to be conv
 #### **json() > includeAttributes( *flag* )**:
 States if the attributes should be included.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -24,7 +24,7 @@ States if the attributes should be included.
 #### **json() > includeCssStyles( *flag* )**:
 States if the CSS style properties should be included.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -32,7 +32,7 @@ States if the CSS style properties should be included.
 #### **json() > includeText( *flag* )**:
 States if the node text should be included.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -40,7 +40,7 @@ States if the node text should be included.
 #### **json() > includeChildren( *flag* )**:
 States if the children should be included.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -48,7 +48,7 @@ States if the children should be included.
 #### **json() > friendlyFormat( *flag* )**:
 States if the JSON should be formatted in an easy-to-read layout.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -90,7 +90,7 @@ States the template data that should be used inside each HTML DOM elements HTML.
 #### **html() > removeAttributes( *flag* )**:
 States if the original attributes on the element should be removed.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
@@ -98,7 +98,7 @@ States if the original attributes on the element should be removed.
 #### **html() > clearHTML( *flag* )**:
 States if the original HTML in the element should be cleared.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition.
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The HTML properties object.
 <br>

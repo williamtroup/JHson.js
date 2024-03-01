@@ -449,11 +449,11 @@
             result = this;
 
             var __properties = {
-                includeAttributes: false,
+                includeAttributes: true,
                 includeCssStyles: false,
-                includeText: false,
-                includeChildren: false,
-                friendlyFormat: false,
+                includeText: true,
+                includeChildren: true,
+                friendlyFormat: true,
             };
 
             /**
@@ -463,12 +463,12 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.includeAttributes = function( flag ) {
-                __properties.includeAttributes = getDefaultBoolean( flag, false );
+                __properties.includeAttributes = getDefaultBoolean( flag, true );
 
                 return this;
             };
@@ -480,7 +480,7 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to false).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -497,12 +497,12 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.includeText = function( flag ) {
-                __properties.includeText = getDefaultBoolean( flag, false );
+                __properties.includeText = getDefaultBoolean( flag, true );
 
                 return this;
             };
@@ -514,12 +514,12 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.includeChildren = function( flag ) {
-                __properties.includeChildren = getDefaultBoolean( flag, false );
+                __properties.includeChildren = getDefaultBoolean( flag, true );
 
                 return this;
             };
@@ -531,12 +531,12 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.friendlyFormat = function( flag ) {
-                __properties.friendlyFormat = getDefaultBoolean( flag, false );
+                __properties.friendlyFormat = getDefaultBoolean( flag, true );
 
                 return this;
             };
@@ -585,8 +585,8 @@
             var __properties = {
                 json: _string.empty,
                 templateData: {},
-                removeAttributes: false,
-                clearHTML: false
+                removeAttributes: true,
+                clearHTML: true
             };
 
             /**
@@ -628,12 +628,12 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
             this.removeAttributes = function( flag ) {
-                __properties.removeAttributes = getDefaultBoolean( flag, false );
+                __properties.removeAttributes = getDefaultBoolean( flag, true );
                 return this;
             };
 
@@ -644,12 +644,12 @@
              * 
              * @public
              * 
-             * @param       {string}    flag                                The boolean flag that states the condition.
+             * @param       {string}    flag                                The boolean flag that states the condition (defaults to true).
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
             this.clearHTML = function( flag ) {
-                __properties.clearHTML = getDefaultBoolean( flag, false );
+                __properties.clearHTML = getDefaultBoolean( flag, true );
                 return this;
             };
 

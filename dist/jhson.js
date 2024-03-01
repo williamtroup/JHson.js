@@ -284,9 +284,9 @@
     var result = null;
     (function() {
       result = this;
-      var __properties = {includeAttributes:false, includeCssStyles:false, includeText:false, includeChildren:false, friendlyFormat:false};
+      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true};
       this.includeAttributes = function(flag) {
-        __properties.includeAttributes = getDefaultBoolean(flag, false);
+        __properties.includeAttributes = getDefaultBoolean(flag, true);
         return this;
       };
       this.includeCssStyles = function(flag) {
@@ -294,15 +294,15 @@
         return this;
       };
       this.includeText = function(flag) {
-        __properties.includeText = getDefaultBoolean(flag, false);
+        __properties.includeText = getDefaultBoolean(flag, true);
         return this;
       };
       this.includeChildren = function(flag) {
-        __properties.includeChildren = getDefaultBoolean(flag, false);
+        __properties.includeChildren = getDefaultBoolean(flag, true);
         return this;
       };
       this.friendlyFormat = function(flag) {
-        __properties.friendlyFormat = getDefaultBoolean(flag, false);
+        __properties.friendlyFormat = getDefaultBoolean(flag, true);
         return this;
       };
       this.get = function(element) {
@@ -315,7 +315,7 @@
     var result = null;
     (function() {
       result = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:false, clearHTML:false};
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true};
       this.json = function(json) {
         __properties.json = json;
         return this;
@@ -325,11 +325,11 @@
         return this;
       };
       this.removeAttributes = function(flag) {
-        __properties.removeAttributes = getDefaultBoolean(flag, false);
+        __properties.removeAttributes = getDefaultBoolean(flag, true);
         return this;
       };
       this.clearHTML = function(flag) {
-        __properties.clearHTML = getDefaultBoolean(flag, false);
+        __properties.clearHTML = getDefaultBoolean(flag, true);
         return this;
       };
       this.write = function(element) {

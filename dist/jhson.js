@@ -156,7 +156,7 @@
         element.setAttribute(attributeName, attributeValue);
       } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
         var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
-        if (!properties.writeCssToHead) {
+        if (!properties.addCssToHead) {
           element.style[cssStyleName] = jsonObject[jsonKey];
         } else {
           cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
@@ -355,7 +355,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, writeCssToHead:false};
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false};
       scope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -372,8 +372,8 @@
         __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
         return this;
       };
-      scope.writeCssToHead = function(flag) {
-        __properties.writeCssToHead = getDefaultBoolean(flag, __properties.writeCssToHead);
+      scope.addCssToHead = function(flag) {
+        __properties.addCssToHead = getDefaultBoolean(flag, __properties.addCssToHead);
         return this;
       };
       scope.write = function(element) {

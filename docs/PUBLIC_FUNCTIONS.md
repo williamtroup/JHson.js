@@ -104,7 +104,7 @@ States if the original HTML in the element should be cleared.
 <br>
 
 
-#### **html() > writeCssToHead( *flag* )**:
+#### **html() > addCssToHead( *flag* )**:
 States if the CSS style properties should be written to a "style" tag in the HTML documents HEAD DOM element.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).

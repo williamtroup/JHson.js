@@ -256,7 +256,7 @@
             } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
                 var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
 
-                if ( !properties.writeCssToHead ) {
+                if ( !properties.addCssToHead ) {
                     element.style[ cssStyleName ] = jsonObject[ jsonKey ];
                 } else {
                     cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
@@ -638,7 +638,7 @@
                 templateData: {},
                 removeAttributes: true,
                 clearHTML: true,
-                writeCssToHead: false
+                addCssToHead: false
             };
 
             /**
@@ -710,7 +710,7 @@
             };
 
             /**
-             * writeCssToHead().
+             * addCssToHead().
              * 
              * States if the CSS style properties should be written to a "style" tag in the HTML documents HEAD DOM element.
              * 
@@ -720,8 +720,8 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.writeCssToHead = function( flag ) {
-                __properties.writeCssToHead = getDefaultBoolean( flag, __properties.writeCssToHead );
+            scope.addCssToHead = function( flag ) {
+                __properties.addCssToHead = getDefaultBoolean( flag, __properties.addCssToHead );
 
                 return this;
             };

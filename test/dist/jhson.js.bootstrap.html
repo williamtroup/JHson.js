@@ -63,8 +63,8 @@
                 <label for="clearHTML">Clear HTML</label>
                 <br>
     
-                <input type="checkbox" id="writeCssToHead" name="writeCssToHead">
-                <label for="writeCssToHead">Write CSS To Head</label>
+                <input type="checkbox" id="addCssToHead" name="addCssToHead">
+                <label for="addCssToHead">Add CSS To Head</label>
             </div>
             <br>
 
@@ -88,7 +88,7 @@
             _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" ),
             _REMOVE_ATTRIBUTES = document.getElementById( "removeAttributes" ),
             _CLEAR_HTML = document.getElementById( "clearHTML" ),
-            _WRITE_CSS_TO_HEAD = document.getElementById( "writeCssToHead" );
+            _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -118,7 +118,7 @@
 
             html.removeAttributes( _REMOVE_ATTRIBUTES.checked )
                 .clearHTML( _CLEAR_HTML.checked )
-                .writeCssToHead( _WRITE_CSS_TO_HEAD.checked )
+                .addCssToHead( _WRITE_CSS_TO_HEAD.checked )
                 .write( _BODY );
         }
     </script>

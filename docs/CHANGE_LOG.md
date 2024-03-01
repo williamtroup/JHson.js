@@ -3,7 +3,7 @@
 ## Version 0.4.0:
 
 #### **Public Functions:**
-- Added "writeCssToHead()" support for "html()", which will force all CSS style properties to be added as "style" tags to the head of the HTML document.
+- Added "addCssToHead()" support for "html()", which will force all CSS style properties to be added as "style" tags to the head of the HTML document.
 
 <br>
 

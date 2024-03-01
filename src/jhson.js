@@ -476,7 +476,7 @@
              * @returns     {Object}                                        The JSON properties object.
              */
             scope.includeAttributes = function( flag ) {
-                __properties.includeAttributes = getDefaultBoolean( flag, true );
+                __properties.includeAttributes = getDefaultBoolean( flag, __properties.includeAttributes );
 
                 return this;
             };
@@ -493,7 +493,7 @@
              * @returns     {Object}                                        The JSON properties object.
              */
             scope.includeCssStyles = function( flag ) {
-                __properties.includeCssStyles = getDefaultBoolean( flag, false );
+                __properties.includeCssStyles = getDefaultBoolean( flag, __properties.includeCssStyles );
 
                 return this;
             };
@@ -510,7 +510,7 @@
              * @returns     {Object}                                        The JSON properties object.
              */
             scope.includeText = function( flag ) {
-                __properties.includeText = getDefaultBoolean( flag, true );
+                __properties.includeText = getDefaultBoolean( flag, __properties.includeText );
 
                 return this;
             };
@@ -527,7 +527,7 @@
              * @returns     {Object}                                        The JSON properties object.
              */
             scope.includeChildren = function( flag ) {
-                __properties.includeChildren = getDefaultBoolean( flag, true );
+                __properties.includeChildren = getDefaultBoolean( flag, __properties.includeChildren );
 
                 return this;
             };
@@ -544,7 +544,7 @@
              * @returns     {Object}                                        The JSON properties object.
              */
             scope.friendlyFormat = function( flag ) {
-                __properties.friendlyFormat = getDefaultBoolean( flag, true );
+                __properties.friendlyFormat = getDefaultBoolean( flag, __properties.friendlyFormat );
 
                 return this;
             };
@@ -609,7 +609,7 @@
              * @returns     {Object}                                        The HTML properties object.
              */
             scope.json = function( json ) {
-                __properties.json = getDefaultString( json, _string.empty );
+                __properties.json = getDefaultString( json, __properties.json );
 
                 return this;
             };
@@ -626,7 +626,7 @@
              * @returns     {Object}                                        The HTML properties object.
              */
             scope.templateData = function( templateData ) {
-                __properties.templateData = getDefaultObject( templateData, {} );
+                __properties.templateData = getDefaultObject( templateData, __properties.templateData );
 
                 return this;
             };
@@ -643,7 +643,7 @@
              * @returns     {Object}                                        The HTML properties object.
              */
             scope.removeAttributes = function( flag ) {
-                __properties.removeAttributes = getDefaultBoolean( flag, true );
+                __properties.removeAttributes = getDefaultBoolean( flag, __properties.removeAttributes );
 
                 return this;
             };
@@ -660,8 +660,8 @@
              * @returns     {Object}                                        The HTML properties object.
              */
             scope.clearHTML = function( flag ) {
-                __properties.clearHTML = getDefaultBoolean( flag, true );
-                
+                __properties.clearHTML = getDefaultBoolean( flag, __properties.clearHTML );
+
                 return this;
             };
 

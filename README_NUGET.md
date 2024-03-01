@@ -69,21 +69,19 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
     var header = document.getElementById( "header" );
 
     var json = $jhson.json()
-        .includeAttributes()
+        .includeAttributes( true )
         .includeCssStyles( true )
-        .includeText()
-        .includeChildren()
-        .friendlyFormat()
+        .includeText( true )
+        .includeChildren( true )
+        .friendlyFormat( true )
         .get( header );
-
-    $jhson.write( header, json, { "{{template_data}}": "here" } );
 
     $jhson
         .html()
         .json( json )
         .templateData( { "{{template_data}}": "this template data" } )
-        .removeAttributes()
-        .clearHTML()
+        .removeAttributes( true )
+        .clearHTML( true )
         .write( header );
 </script>
 ```

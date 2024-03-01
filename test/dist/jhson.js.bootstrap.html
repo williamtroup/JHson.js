@@ -95,29 +95,13 @@
         }
 
         function getJSONData() {
-            var json = $jhson.json();
-
-            if ( _INCLUDE_ATTRIBUTES.checked ) {
-                json = json.includeAttributes();
-            }
-
-            if ( _INCLUDE_CSS_STYLES.checked ) {
-                json = json.includeCssStyles();
-            }
-
-            if ( _INCLUDE_TEXT.checked ) {
-                json = json.includeText();
-            }
-
-            if ( _INCLUDE_CHILDREN.checked ) {
-                json = json.includeChildren();
-            }
-
-            if ( _FRIENDLY_FORMAT.checked ) {
-                json = json.friendlyFormat();
-            }
-
-            _JSON_TEXTAREA.value = json.get( _BODY );
+            _JSON_TEXTAREA.value = $jhson.json()
+                .includeAttributes( _INCLUDE_ATTRIBUTES.checked )
+                .includeCssStyles( _INCLUDE_CSS_STYLES.checked )
+                .includeText( _INCLUDE_TEXT.checked )
+                .includeChildren( _INCLUDE_CHILDREN.checked )
+                .friendlyFormat( _FRIENDLY_FORMAT.checked )
+                .get( _BODY );
         }
 
         function writeJSONData() {
@@ -127,15 +111,9 @@
                 html = html.templateData( { "{{template_data}}": "this template data" } );
             }
 
-            if ( _REMOVE_ATTRIBUTES.checked ) {
-                html = html.removeAttributes();
-            }
-
-            if ( _CLEAR_HTML.checked ) {
-                html = html.clearHTML();
-            }
-
-            html.write( _BODY );
+            html.removeAttributes( _REMOVE_ATTRIBUTES.checked )
+                .clearHTML( _CLEAR_HTML.checked )
+                .write( _BODY );
         }
     </script>
 </html>

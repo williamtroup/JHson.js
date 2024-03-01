@@ -89,7 +89,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 
     var json = $jhson.json()
         .includeAttributes()
-        .includeCssStyles()
+        .includeCssStyles( true )
         .includeText()
         .includeChildren()
         .friendlyFormat()

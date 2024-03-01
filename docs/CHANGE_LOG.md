@@ -8,7 +8,7 @@
 #### **Public Functions:**
 - BREAKING: "get()" as been renamed to "json()" and now supports function-chaining, which allows greater control over the options used when generating the JSON.
 - BREAKING: "write()" as been renamed to "html()" and now supports function-chaining, which allows greater control over the options used when converting JSON to HTML.
-- "html()" now supports: "removeAttributes()" and "clearHTML".
+- "html()" now supports: "removeAttributes()" and "clearHTML()".
 - "json()" now supports: "includeChildren()".
 
 #### **Configuration Options:**

@@ -85,9 +85,25 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 </div>
 
 <script>
-    var json = $jhson.get( document.getElementById( "header" ) );
+    var header = document.getElementById( "header" );
 
-    $jhson.write( document.getElementById( "header" ), json, { "{{template_data}}": "here" } );
+    var json = $jhson.json()
+        .includeAttributes()
+        .includeCssStyles()
+        .includeText()
+        .includeChildren()
+        .friendlyFormat()
+        .get( header );
+
+    $jhson.write( header, json, { "{{template_data}}": "here" } );
+
+    $jhson
+        .html()
+        .json( json )
+        .templateData( { "{{template_data}}": "this template data" } )
+        .removeAttributes()
+        .clearHTML()
+        .write( header );
 </script>
 ```
 

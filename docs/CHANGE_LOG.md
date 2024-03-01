@@ -2,8 +2,14 @@
 
 ## Version 0.2.0:
 
+#### **New Features:**
+- Added function chaining support when getting and writing (see detailed changes).
+
 #### **Public Functions:**
-- Added public function "get()" now has an extra parameter called "includeChildren" (defaults to true), which states if the children for an element should be included.
+- BREAKING: "get()" as been renamed to "json()" and now supports function-chaining, which allows greater control over the options used when generating the JSON.
+- BREAKING: "write()" as been renamed to "html()" and now supports function-chaining, which allows greater control over the options used when converting JSON to HTML.
+- "html()" now supports: "removeAttributes()" and "clearHTML".
+- "json()" now supports: "includeChildren()".
 
 #### **Configuration Options:**
 - Added new configuration option "formattingNodeTypes", which states the text formatting nodes to check for (defaults to "b strong i em mark small del ins sub sup").

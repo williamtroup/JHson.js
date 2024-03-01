@@ -5,6 +5,7 @@
 #### **Public Functions:**
 - All boolean-based chained functions (such as "json()" > "includeAttributes()") now support flags (with proper defaults).
 - Restored all original defaults for the new chained functions.
+- Object types now have to be valid for all public functions.
 
 <br>
 

@@ -52,16 +52,19 @@
      */
 
     function getJSON( element, properties ) {
-        var result = _string.empty,
-            resultJson = {},
-            elementJson = getElementObject( element, properties, {} );
+        var result = _string.empty;
 
-        resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
+        if ( isDefinedObject( element ) ) {
+            var resultJson = {},
+                elementJson = getElementObject( element, properties, {} );
 
-        if ( properties.friendlyFormat ) {
-            result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
-        } else {
-            result = _parameter_JSON.stringify( resultJson );
+            resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
+
+            if ( properties.friendlyFormat ) {
+                result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
+            } else {
+                result = _parameter_JSON.stringify( resultJson );
+            }
         }
         
         return result;
@@ -199,35 +202,37 @@
      */
 
     function writeHtml( element, properties ) {
-        var convertedJsonObject = getObjectFromString( properties.json ),
-            templateDataKeys = [];
+        if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
+            var convertedJsonObject = getObjectFromString( properties.json ),
+                templateDataKeys = [];
 
-        if ( isDefinedObject( properties.templateData ) ) {
-            for ( var templateDataKey in properties.templateData ) {
-                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
-                    templateDataKeys.push( templateDataKey );
+            if ( isDefinedObject( properties.templateData ) ) {
+                for ( var templateDataKey in properties.templateData ) {
+                    if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                        templateDataKeys.push( templateDataKey );
+                    }
                 }
+
+                templateDataKeys = templateDataKeys.sort( function( a, b ) {
+                    return b.length - a.length;
+                } );
             }
 
-            templateDataKeys = templateDataKeys.sort( function( a, b ) {
-                return b.length - a.length;
-            } );
-        }
-
-        if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
-            for ( var key in convertedJsonObject.result ) {
-                if ( key === element.nodeName.toLowerCase() ) {
-                    if ( properties.removeAttributes ) {
-                        while ( element.attributes.length > 0 ) {
-                            element.removeAttribute( element.attributes[ 0 ].name );
+            if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
+                for ( var key in convertedJsonObject.result ) {
+                    if ( key === element.nodeName.toLowerCase() ) {
+                        if ( properties.removeAttributes ) {
+                            while ( element.attributes.length > 0 ) {
+                                element.removeAttribute( element.attributes[ 0 ].name );
+                            }
                         }
-                    }
 
-                    if ( properties.clearHTML ) {
-                        element.innerHTML = _string.empty;
-                    }
+                        if ( properties.clearHTML ) {
+                            element.innerHTML = _string.empty;
+                        }
 
-                    writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
+                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
+                    }
                 }
             }
         }
@@ -367,6 +372,10 @@
 
     function getDefaultNumber( value, defaultValue ) {
         return isDefinedNumber( value ) ? value : defaultValue;
+    }
+
+    function getDefaultString( value, defaultValue ) {
+        return isDefinedString( value ) ? value : defaultValue;
     }
 
     function getDefaultArray( value, defaultValue ) {
@@ -601,7 +610,7 @@
              * @returns     {Object}                                        The HTML properties object.
              */
             this.json = function( json ) {
-                __properties.json = json;
+                __properties.json = getDefaultString( json, _string.empty );
                 return this;
             };
 

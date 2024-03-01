@@ -2,13 +2,15 @@
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
-    var resultJson = {};
-    var elementJson = getElementObject(element, properties, {});
-    resultJson[elementJson.nodeName] = elementJson.nodeValues;
-    if (properties.friendlyFormat) {
-      result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
-    } else {
-      result = _parameter_JSON.stringify(resultJson);
+    if (isDefinedObject(element)) {
+      var resultJson = {};
+      var elementJson = getElementObject(element, properties, {});
+      resultJson[elementJson.nodeName] = elementJson.nodeValues;
+      if (properties.friendlyFormat) {
+        result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
+      } else {
+        result = _parameter_JSON.stringify(resultJson);
+      }
     }
     return result;
   }
@@ -110,32 +112,34 @@
     return copy;
   }
   function writeHtml(element, properties) {
-    var convertedJsonObject = getObjectFromString(properties.json);
-    var templateDataKeys = [];
-    if (isDefinedObject(properties.templateData)) {
-      var templateDataKey;
-      for (templateDataKey in properties.templateData) {
-        if (properties.templateData.hasOwnProperty(templateDataKey)) {
-          templateDataKeys.push(templateDataKey);
+    if (isDefinedObject(element) && isDefinedString(properties.json)) {
+      var convertedJsonObject = getObjectFromString(properties.json);
+      var templateDataKeys = [];
+      if (isDefinedObject(properties.templateData)) {
+        var templateDataKey;
+        for (templateDataKey in properties.templateData) {
+          if (properties.templateData.hasOwnProperty(templateDataKey)) {
+            templateDataKeys.push(templateDataKey);
+          }
         }
+        templateDataKeys = templateDataKeys.sort(function(a, b) {
+          return b.length - a.length;
+        });
       }
-      templateDataKeys = templateDataKeys.sort(function(a, b) {
-        return b.length - a.length;
-      });
-    }
-    if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
-      var key;
-      for (key in convertedJsonObject.result) {
-        if (key === element.nodeName.toLowerCase()) {
-          if (properties.removeAttributes) {
-            for (; element.attributes.length > 0;) {
-              element.removeAttribute(element.attributes[0].name);
+      if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
+        var key;
+        for (key in convertedJsonObject.result) {
+          if (key === element.nodeName.toLowerCase()) {
+            if (properties.removeAttributes) {
+              for (; element.attributes.length > 0;) {
+                element.removeAttribute(element.attributes[0].name);
+              }
             }
+            if (properties.clearHTML) {
+              element.innerHTML = _string.empty;
+            }
+            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties.templateData);
           }
-          if (properties.clearHTML) {
-            element.innerHTML = _string.empty;
-          }
-          writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties.templateData);
         }
       }
     }
@@ -222,6 +226,9 @@
   }
   function getDefaultNumber(value, defaultValue) {
     return isDefinedNumber(value) ? value : defaultValue;
+  }
+  function getDefaultString(value, defaultValue) {
+    return isDefinedString(value) ? value : defaultValue;
   }
   function getDefaultArray(value, defaultValue) {
     return isDefinedArray(value) ? value : defaultValue;
@@ -317,7 +324,7 @@
       result = this;
       var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true};
       this.json = function(json) {
-        __properties.json = json;
+        __properties.json = getDefaultString(json, _string.empty);
         return this;
       };
       this.templateData = function(templateData) {

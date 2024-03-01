@@ -17,35 +17,52 @@
 
         <div class="contents">
             <textarea id="json"></textarea>
-            <br>
-
-            <input type="checkbox" id="includeAttributes" name="includeAttributes" checked="checked">
-            <label for="includeAttributes">Include Attributes</label>
-            <br>
-
-            <input type="checkbox" id="includeCssStyles" name="includeCssStyles">
-            <label for="includeCssStyles">Include CSS Styles</label>
-            <br>
-
-            <input type="checkbox" id="includeText" name="includeText" checked="checked">
-            <label for="includeText">Include Text</label>
-            <br>
-
-            <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
-            <label for="includeChildren">Include Children</label>
-            <br>
-
-            <input type="checkbox" id="friendlyFormat" name="friendlyFormat" checked="checked">
-            <label for="friendlyFormat">Friendly Format</label>
         </div>
 
         <div class="contents">
             <h2>JSON - GET:</h2>
             <button class="btn btn-primary" onclick="getJSONData();">Get</button>
-            <br />
+            <br>
+
+            <div class="ms-3 mt-1">
+                <input type="checkbox" id="includeAttributes" name="includeAttributes" checked="checked">
+                <label for="includeAttributes">Include Attributes</label>
+                <br>
+    
+                <input type="checkbox" id="includeCssStyles" name="includeCssStyles">
+                <label for="includeCssStyles">Include CSS Styles</label>
+                <br>
+    
+                <input type="checkbox" id="includeText" name="includeText" checked="checked">
+                <label for="includeText">Include Text</label>
+                <br>
+    
+                <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
+                <label for="includeChildren">Include Children</label>
+                <br>
+    
+                <input type="checkbox" id="friendlyFormat" name="friendlyFormat" checked="checked">
+                <label for="friendlyFormat">Friendly Format</label>
+            </div>
+            <br>
 
             <h2>JSON - Write:</h2>
             <button class="btn btn-primary" onclick="writeJSONData();">Write</button>
+            <br>
+
+            <div class="ms-3 mt-1">
+                <input type="checkbox" id="setTemplateData" name="setTemplateData" checked="checked">
+                <label for="setTemplateData">Set Template Set</label>
+                <br>
+    
+                <input type="checkbox" id="removeAttributes" name="removeAttributes" checked="checked">
+                <label for="removeAttributes">Remove Attributes</label>
+                <br>
+    
+                <input type="checkbox" id="clearHTML" name="clearHTML" checked="checked">
+                <label for="clearHTML">Clear HTML</label>
+            </div>
+            <br>
 
             <h2>Configuration:</h2>
             <button class="btn btn-primary" onclick="setupConfiguration();">Set Configuration</button>
@@ -63,7 +80,10 @@
             _INCLUDE_CSS_STYLES = document.getElementById( "includeCssStyles" ),
             _INCLUDE_TEXT = document.getElementById( "includeText" ),
             _INCLUDE_CHILDREN = document.getElementById( "includeChildren" ),
-            _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" );
+            _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" ),
+            _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" ),
+            _REMOVE_ATTRIBUTES = document.getElementById( "removeAttributes" ),
+            _CLEAR_HTML = document.getElementById( "clearHTML" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -101,12 +121,21 @@
         }
 
         function writeJSONData() {
-            $jhson
-                .html()
-                .json( _JSON_TEXTAREA.value )
-                .templateData( { "{{template_data}}": "this template data" } )
-                .resetAttributes()
-                .write( _BODY );
+            var html = $jhson.html().json( _JSON_TEXTAREA.value );
+
+            if ( _SET_TEMPLATE_DATA.checked ) {
+                html = html.templateData( { "{{template_data}}": "this template data" } );
+            }
+
+            if ( _REMOVE_ATTRIBUTES.checked ) {
+                html = html.removeAttributes();
+            }
+
+            if ( _CLEAR_HTML.checked ) {
+                html = html.clearHTML();
+            }
+
+            html.write( _BODY );
         }
     </script>
 </html>

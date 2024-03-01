@@ -1,31 +1,31 @@
 /*! JHson.js v0.2.0 | (c) Bunoon 2024 | MIT License */
 (function() {
-  function getJSON(element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat) {
+  function getJSON(element, properties) {
     var result = _string.empty;
     var resultJson = {};
-    var elementJson = getElementObject(element, includeAttributes, includeCssStyles, includeText, includeChildren, {});
+    var elementJson = getElementObject(element, properties, {});
     resultJson[elementJson.nodeName] = elementJson.nodeValues;
-    if (friendlyFormat) {
+    if (properties.friendlyFormat) {
       result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
     } else {
       result = _parameter_JSON.stringify(resultJson);
     }
     return result;
   }
-  function getElementObject(element, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles) {
+  function getElementObject(element, properties, parentCssStyles) {
     var result = {};
     var childrenLength = element.children.length;
     var childrenAdded = 0;
-    if (includeAttributes) {
+    if (properties.includeAttributes) {
       getElementAttributes(element, result);
     }
-    if (includeCssStyles) {
+    if (properties.includeCssStyles) {
       getElementCssStyles(element, result, parentCssStyles);
     }
-    if (includeChildren && childrenLength > 0) {
-      childrenAdded = getElementChildren(element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles);
+    if (properties.includeChildren && childrenLength > 0) {
+      childrenAdded = getElementChildren(element, result, childrenLength, properties, parentCssStyles);
     }
-    if (includeText) {
+    if (properties.includeText) {
       getElementText(element, result, childrenAdded);
     }
     if (isDefined(result[_json.children]) && result[_json.children].length === 0) {
@@ -64,13 +64,13 @@
       }
     }
   }
-  function getElementChildren(element, result, childrenLength, includeAttributes, includeCssStyles, includeText, includeChildren, parentCssStyles) {
+  function getElementChildren(element, result, childrenLength, properties, parentCssStyles) {
     var totalChildren = 0;
     result[_json.children] = [];
     var childrenIndex = 0;
     for (; childrenIndex < childrenLength; childrenIndex++) {
       var child = element.children[childrenIndex];
-      var childElementData = getElementObject(child, includeAttributes, includeCssStyles, includeText, includeChildren, getParentCssStylesCopy(parentCssStyles));
+      var childElementData = getElementObject(child, properties, getParentCssStylesCopy(parentCssStyles));
       var addChild = false;
       if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
         totalChildren++;
@@ -109,13 +109,13 @@
     }
     return copy;
   }
-  function writeJson(element, json, templateData) {
-    var convertedJsonObject = getObjectFromString(json);
+  function writeHtml(element, properties) {
+    var convertedJsonObject = getObjectFromString(properties.json);
     var templateDataKeys = [];
-    if (isDefinedObject(templateData)) {
+    if (isDefinedObject(properties.templateData)) {
       var templateDataKey;
-      for (templateDataKey in templateData) {
-        if (templateData.hasOwnProperty(templateDataKey)) {
+      for (templateDataKey in properties.templateData) {
+        if (properties.templateData.hasOwnProperty(templateDataKey)) {
           templateDataKeys.push(templateDataKey);
         }
       }
@@ -127,11 +127,15 @@
       var key;
       for (key in convertedJsonObject.result) {
         if (key === element.nodeName.toLowerCase()) {
-          for (; element.attributes.length > 0;) {
-            element.removeAttribute(element.attributes[0].name);
+          if (properties.removeAttributes) {
+            for (; element.attributes.length > 0;) {
+              element.removeAttribute(element.attributes[0].name);
+            }
           }
-          element.innerHTML = _string.empty;
-          writeNode(element, convertedJsonObject.result[key], templateDataKeys, templateData);
+          if (properties.clearHTML) {
+            element.innerHTML = _string.empty;
+          }
+          writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties.templateData);
         }
       }
     }
@@ -216,11 +220,14 @@
   function getDefaultBoolean(value, defaultValue) {
     return isDefinedBoolean(value) ? value : defaultValue;
   }
+  function getDefaultNumber(value, defaultValue) {
+    return isDefinedNumber(value) ? value : defaultValue;
+  }
   function getDefaultArray(value, defaultValue) {
     return isDefinedArray(value) ? value : defaultValue;
   }
-  function getDefaultNumber(value, defaultValue) {
-    return isDefinedNumber(value) ? value : defaultValue;
+  function getDefaultObject(value, defaultValue) {
+    return isDefinedObject(value) ? value : defaultValue;
   }
   function getDefaultStringOrArray(value, defaultValue) {
     if (isDefinedString(value)) {
@@ -273,16 +280,63 @@
   var _string = {empty:"", space:" "};
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
-  this.get = function(element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat) {
-    includeAttributes = isDefinedBoolean(includeAttributes) ? includeAttributes : true;
-    includeCssStyles = isDefinedBoolean(includeCssStyles) ? includeCssStyles : false;
-    includeText = isDefinedBoolean(includeText) ? includeText : true;
-    includeChildren = isDefinedBoolean(includeChildren) ? includeChildren : true;
-    friendlyFormat = isDefinedBoolean(friendlyFormat) ? friendlyFormat : true;
-    return getJSON(element, includeAttributes, includeCssStyles, includeText, includeChildren, friendlyFormat);
+  this.json = function() {
+    var result = null;
+    (function() {
+      result = this;
+      var __properties = {includeAttributes:false, includeCssStyles:false, includeText:false, includeChildren:false, friendlyFormat:false};
+      this.includeAttributes = function() {
+        __properties.includeAttributes = true;
+        return this;
+      };
+      this.includeCssStyles = function() {
+        __properties.includeCssStyles = true;
+        return this;
+      };
+      this.includeText = function() {
+        __properties.includeText = true;
+        return this;
+      };
+      this.includeChildren = function() {
+        __properties.includeChildren = true;
+        return this;
+      };
+      this.friendlyFormat = function() {
+        __properties.friendlyFormat = true;
+        return this;
+      };
+      this.get = function(element) {
+        return getJSON(element, __properties);
+      };
+    })();
+    return result;
   };
-  this.write = function(element, json, templateData) {
-    return writeJson(element, json, templateData);
+  this.html = function() {
+    var result = null;
+    (function() {
+      result = this;
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:false, clearHTML:false};
+      this.json = function(json) {
+        __properties.json = json;
+        return this;
+      };
+      this.templateData = function(templateData) {
+        __properties.templateData = getDefaultObject(templateData, {});
+        return this;
+      };
+      this.removeAttributes = function() {
+        __properties.removeAttributes = true;
+        return this;
+      };
+      this.clearHTML = function() {
+        __properties.clearHTML = true;
+        return this;
+      };
+      this.write = function(element) {
+        return writeHtml(element, __properties);
+      };
+    })();
+    return result;
   };
   this.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;

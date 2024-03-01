@@ -7,32 +7,92 @@ Below is a list of all the public functions that can be called from the JHson.js
 
 ## JSON:
 
-### **get( *element*, *includeAttributes*, *includeCssStyles*, *includeText*, *includeChildren*, *friendlyFormat* )**:
-Gets the JSON from a DOM element.
+### **json()**:
+Returns all the chained-functions that will allow an HTML DOM element to be converted to JSON.
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > includeAttributes()**:
+States if the attributes should be included.
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > includeCssStyles()**:
+States if the CSS style properties should be included.
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > includeText()**:
+States if the node text should be included.
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > includeChildren()**:
+States if the children should be included.
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > friendlyFormat()**:
+States if the JSON should be formatted in an easy-to-read layout.
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > get( *element* )**:
+Uses all the options selected via the chained-functions to get the JSON from the HTML DOM element.
 <br>
 ***Parameter: element***: '*Object*' - The DOM element to get the JSON for.
 <br>
-***Parameter: includeAttributes***: '*boolean*' - Should the Attributes be included in the JSON (defaults to true).
+***Returns***: '*string*' - The JSON string.
 <br>
-***Parameter: includeCssStyles***: '*boolean*' - Should the CSS Styles be included in the JSON (defaults to false).
-<br>
-***Parameter: includeText***: '*boolean*' - Should the Text be included in the JSON (defaults to true).
-<br>
-***Parameter: includeChildren***: '*boolean*' - Should the Children be included in the JSON (defaults to true).
-<br>
-***Parameter: friendlyFormat***: '*boolean*' - Should the JSON be returned in an easy-to-read format (defaults to true).
-<br>
-***Returns***: '*string*' - The HTML JSON.
 <br>
 
-### **write( *element*, *json*, *templateData* )**:
-Converts JSON to HTML and adds it to a parent node.
+
+## HTML:
+
+### **html()**:
+Returns all the chained-functions that will allow JSON to be written as HTML DOM elements.
 <br>
-***Parameter: element***: '*Object*' - The DOM element to add the new JSON HTML nodes to.
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > json( *json* )**:
+States the JSON that should be written as HTML DOM elements.
 <br>
 ***Parameter: json***: '*string*' - The JSON that should be converted to HTML.
 <br>
-***Parameter: templateData***: '*Object*' - The template data to set (defaults to null).
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > templateData( *templateData* )**:
+States the template data that should be used inside each HTML DOM elements HTML.
+<br>
+***Parameter: templateData***: '*Object*' - The template data to set inside each nodes HTML.
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > removeAttributes()**:
+States if the original attributes on the element should be removed.
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > clearHTML()**:
+States if the original HTML in the element should be cleared.
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > write( *element* )**:
+Uses all the options selected via the chained-functions to convert the JSON into HTML DOM elements.
+<br>
+***Parameter: element***: '*Object*' - The DOM element to add the new JSON HTML nodes to.
 <br>
 ***Returns***: '*Object*' - The JHson.js class instance.
 <br>
@@ -54,7 +114,7 @@ Sets the specific configuration options that should be used.
 ## Additional Data:
 
 ### **getVersion()**:
-Returns the version of v.js.
+Returns the version of JHson.js.
 <br>
 ***Returns***: '*string*' - The version number.
 <br>

@@ -217,13 +217,15 @@
         if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
             for ( var key in convertedJsonObject.result ) {
                 if ( key === element.nodeName.toLowerCase() ) {
-                    if ( properties.resetAttributes ) {
+                    if ( properties.removeAttributes ) {
                         while ( element.attributes.length > 0 ) {
                             element.removeAttribute( element.attributes[ 0 ].name );
                         }
                     }
 
-                    element.innerHTML = _string.empty;
+                    if ( properties.clearHTML ) {
+                        element.innerHTML = _string.empty;
+                    }
 
                     writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
                 }
@@ -434,7 +436,7 @@
     /**
      * json().
      * 
-     * Returns all the properties that will allow an HTML DOM element to be converted to JSON.
+     * Returns all the chained-functions that will allow an HTML DOM element to be converted to JSON.
      * 
      * @public
      * 
@@ -459,6 +461,8 @@
              * 
              * States if the attributes should be included.
              * 
+             * @public
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.includeAttributes = function() {
@@ -471,6 +475,8 @@
              * includeCssStyles().
              * 
              * States if the CSS style properties should be included.
+             * 
+             * @public
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -485,6 +491,8 @@
              * 
              * States if the node text should be included.
              * 
+             * @public
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.includeText = function() {
@@ -497,6 +505,8 @@
              * includeChildren().
              * 
              * States if the children should be included.
+             * 
+             * @public
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
@@ -511,6 +521,8 @@
              * 
              * States if the JSON should be formatted in an easy-to-read layout.
              * 
+             * @public
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
             this.friendlyFormat = function() {
@@ -522,7 +534,9 @@
             /**
              * get().
              * 
-             * Uses all the properties selected to get the JSON from the HTML DOM element.
+             * Uses all the options selected via the chained-functions to get the JSON from the HTML DOM element.
+             * 
+             * @public
              * 
              * @param       {Object}    element                             The DOM element to get the JSON for.
              * 
@@ -546,7 +560,7 @@
     /**
      * html().
      * 
-     * Returns all the properties that will allow JSON to be written as HTML DOM elements.
+     * Returns all the chained-functions that will allow JSON to be written as HTML DOM elements.
      * 
      * @public
      * 
@@ -561,13 +575,16 @@
             var __properties = {
                 json: _string.empty,
                 templateData: {},
-                resetAttributes: false
+                removeAttributes: false,
+                clearHTML: false
             };
 
             /**
              * json().
              * 
              * States the JSON that should be written as HTML DOM elements.
+             * 
+             * @public
              * 
              * @param       {string}    json                                The JSON that should be converted to HTML.
              * 
@@ -583,6 +600,8 @@
              * 
              * States the template data that should be used inside each HTML DOM elements HTML.
              * 
+             * @public
+             * 
              * @param       {Object}    templateData                        The template data to set inside each nodes HTML.
              * 
              * @returns     {Object}                                        The HTML properties object.
@@ -593,21 +612,39 @@
             };
 
             /**
-             * resetAttributes().
+             * removeAttributes().
              * 
              * States if the original attributes on the element should be removed.
              * 
+             * @public
+             * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.resetAttributes = function() {
-                __properties.resetAttributes = true;
+            this.removeAttributes = function() {
+                __properties.removeAttributes = true;
+                return this;
+            };
+
+            /**
+             * clearHTML().
+             * 
+             * States if the original HTML in the element should be cleared.
+             * 
+             * @public
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            this.clearHTML = function() {
+                __properties.clearHTML = true;
                 return this;
             };
 
             /**
              * write().
              * 
-             * Uses all the properties selected to convert the JSON into HTML DOM elements.
+             * Uses all the options selected via the chained-functions to convert the JSON into HTML DOM elements.
+             * 
+             * @public
              * 
              * @param       {Object}    element                             The DOM element to add the new JSON HTML nodes to.
              * 

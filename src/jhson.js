@@ -610,6 +610,7 @@
              */
             scope.json = function( json ) {
                 __properties.json = getDefaultString( json, _string.empty );
+
                 return this;
             };
 
@@ -626,6 +627,7 @@
              */
             scope.templateData = function( templateData ) {
                 __properties.templateData = getDefaultObject( templateData, {} );
+
                 return this;
             };
 
@@ -642,6 +644,7 @@
              */
             scope.removeAttributes = function( flag ) {
                 __properties.removeAttributes = getDefaultBoolean( flag, true );
+
                 return this;
             };
 
@@ -658,6 +661,7 @@
              */
             scope.clearHTML = function( flag ) {
                 __properties.clearHTML = getDefaultBoolean( flag, true );
+                
                 return this;
             };
 

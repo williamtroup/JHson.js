@@ -1,4 +1,4 @@
-/*! JHson.js v0.2.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v0.3.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
@@ -353,7 +353,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "0.2.0";
+    return "0.3.0";
   };
   (function(documentObject, windowObject, jsonObject) {
     _parameter_Document = documentObject;

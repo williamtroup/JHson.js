@@ -436,7 +436,7 @@
     /**
      * json().
      * 
-     * Returns all the chained-functions that will allow an HTML DOM element to be converted to JSON.
+     * Returns all the chained functions that will allow an HTML DOM element to be converted to JSON.
      * 
      * @public
      * 
@@ -534,7 +534,7 @@
             /**
              * get().
              * 
-             * Uses all the options selected via the chained-functions to get the JSON from the HTML DOM element.
+             * Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
              * 
              * @public
              * 
@@ -560,7 +560,7 @@
     /**
      * html().
      * 
-     * Returns all the chained-functions that will allow JSON to be written as HTML DOM elements.
+     * Returns all the chained functions that will allow JSON to be written as HTML DOM elements.
      * 
      * @public
      * 
@@ -602,7 +602,7 @@
              * 
              * @public
              * 
-             * @param       {Object}    templateData                        The template data to set inside each nodes HTML.
+             * @param       {Object}    templateData                        The template data to set inside each node's HTML.
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
@@ -642,7 +642,7 @@
             /**
              * write().
              * 
-             * Uses all the options selected via the chained-functions to convert the JSON into HTML DOM elements.
+             * Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
              * 
              * @public
              * 

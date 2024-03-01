@@ -8,7 +8,7 @@ Below is a list of all the public functions that can be called from the JHson.js
 ## JSON:
 
 ### **json()**:
-Returns all the chained-functions that will allow an HTML DOM element to be converted to JSON.
+Returns all the chained functions that will allow an HTML DOM element to be converted to JSON.
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -44,7 +44,7 @@ States if the JSON should be formatted in an easy-to-read layout.
 <br>
 
 #### **json() > get( *element* )**:
-Uses all the options selected via the chained-functions to get the JSON from the HTML DOM element.
+Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
 <br>
 ***Parameter: element***: '*Object*' - The DOM element to get the JSON for.
 <br>
@@ -56,7 +56,7 @@ Uses all the options selected via the chained-functions to get the JSON from the
 ## HTML:
 
 ### **html()**:
-Returns all the chained-functions that will allow JSON to be written as HTML DOM elements.
+Returns all the chained functions that will allow JSON to be written as HTML DOM elements.
 <br>
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
@@ -72,7 +72,7 @@ States the JSON that should be written as HTML DOM elements.
 #### **html() > templateData( *templateData* )**:
 States the template data that should be used inside each HTML DOM elements HTML.
 <br>
-***Parameter: templateData***: '*Object*' - The template data to set inside each nodes HTML.
+***Parameter: templateData***: '*Object*' - The template data to set inside each node's HTML.
 <br>
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
@@ -90,7 +90,7 @@ States if the original HTML in the element should be cleared.
 <br>
 
 #### **html() > write( *element* )**:
-Uses all the options selected via the chained-functions to convert the JSON into HTML DOM elements.
+Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
 <br>
 ***Parameter: element***: '*Object*' - The DOM element to add the new JSON HTML nodes to.
 <br>

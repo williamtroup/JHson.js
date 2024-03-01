@@ -155,8 +155,7 @@
         element.setAttribute(attributeName, attributeValue);
       } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
         var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
-        var cssStyleValue = jsonObject[jsonKey];
-        element.style[cssStyleName] = cssStyleValue;
+        element.style[cssStyleName] = jsonObject[jsonKey];
       } else if (jsonKey === _json.text) {
         element.innerHTML = jsonObject[jsonKey];
         if (templateDataKeysLength > 0) {
@@ -288,62 +287,62 @@
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
   this.json = function() {
-    var result = null;
+    var scope = null;
     (function() {
-      result = this;
+      scope = this;
       var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true};
-      this.includeAttributes = function(flag) {
+      scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, true);
         return this;
       };
-      this.includeCssStyles = function(flag) {
+      scope.includeCssStyles = function(flag) {
         __properties.includeCssStyles = getDefaultBoolean(flag, false);
         return this;
       };
-      this.includeText = function(flag) {
+      scope.includeText = function(flag) {
         __properties.includeText = getDefaultBoolean(flag, true);
         return this;
       };
-      this.includeChildren = function(flag) {
+      scope.includeChildren = function(flag) {
         __properties.includeChildren = getDefaultBoolean(flag, true);
         return this;
       };
-      this.friendlyFormat = function(flag) {
+      scope.friendlyFormat = function(flag) {
         __properties.friendlyFormat = getDefaultBoolean(flag, true);
         return this;
       };
-      this.get = function(element) {
+      scope.get = function(element) {
         return getJSON(element, __properties);
       };
     })();
-    return result;
+    return scope;
   };
   this.html = function() {
-    var result = null;
+    var scope = null;
     (function() {
-      result = this;
+      scope = this;
       var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true};
-      this.json = function(json) {
+      scope.json = function(json) {
         __properties.json = getDefaultString(json, _string.empty);
         return this;
       };
-      this.templateData = function(templateData) {
+      scope.templateData = function(templateData) {
         __properties.templateData = getDefaultObject(templateData, {});
         return this;
       };
-      this.removeAttributes = function(flag) {
+      scope.removeAttributes = function(flag) {
         __properties.removeAttributes = getDefaultBoolean(flag, true);
         return this;
       };
-      this.clearHTML = function(flag) {
+      scope.clearHTML = function(flag) {
         __properties.clearHTML = getDefaultBoolean(flag, true);
         return this;
       };
-      this.write = function(element) {
+      scope.write = function(element) {
         return writeHtml(element, __properties);
       };
     })();
-    return result;
+    return scope;
   };
   this.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;

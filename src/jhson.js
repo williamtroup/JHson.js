@@ -451,10 +451,10 @@
      * @returns     {Object}                                                The JSON properties object.
      */
     this.json = function() {
-        var result = null;
+        var scope = null;
 
         ( function() {
-            result = this;
+            scope = this;
 
             var __properties = {
                 includeAttributes: true,
@@ -475,7 +475,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeAttributes = function( flag ) {
+            scope.includeAttributes = function( flag ) {
                 __properties.includeAttributes = getDefaultBoolean( flag, true );
 
                 return this;
@@ -492,7 +492,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeCssStyles = function( flag ) {
+            scope.includeCssStyles = function( flag ) {
                 __properties.includeCssStyles = getDefaultBoolean( flag, false );
 
                 return this;
@@ -509,7 +509,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeText = function( flag ) {
+            scope.includeText = function( flag ) {
                 __properties.includeText = getDefaultBoolean( flag, true );
 
                 return this;
@@ -526,7 +526,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeChildren = function( flag ) {
+            scope.includeChildren = function( flag ) {
                 __properties.includeChildren = getDefaultBoolean( flag, true );
 
                 return this;
@@ -543,7 +543,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.friendlyFormat = function( flag ) {
+            scope.friendlyFormat = function( flag ) {
                 __properties.friendlyFormat = getDefaultBoolean( flag, true );
 
                 return this;
@@ -560,12 +560,12 @@
              * 
              * @returns     {string}                                        The JSON string.
              */
-            this.get = function( element ) {
+            scope.get = function( element ) {
                 return getJSON( element, __properties );
             };
         } )();
         
-        return result;
+        return scope;
     };
 
 
@@ -585,10 +585,10 @@
      * @returns     {Object}                                                The HTML properties object.
      */
     this.html = function() {
-        var result = null;
+        var scope = null;
 
         ( function() {
-            result = this;
+            scope = this;
             
             var __properties = {
                 json: _string.empty,
@@ -608,7 +608,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.json = function( json ) {
+            scope.json = function( json ) {
                 __properties.json = getDefaultString( json, _string.empty );
                 return this;
             };
@@ -624,7 +624,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.templateData = function( templateData ) {
+            scope.templateData = function( templateData ) {
                 __properties.templateData = getDefaultObject( templateData, {} );
                 return this;
             };
@@ -640,7 +640,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.removeAttributes = function( flag ) {
+            scope.removeAttributes = function( flag ) {
                 __properties.removeAttributes = getDefaultBoolean( flag, true );
                 return this;
             };
@@ -656,7 +656,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.clearHTML = function( flag ) {
+            scope.clearHTML = function( flag ) {
                 __properties.clearHTML = getDefaultBoolean( flag, true );
                 return this;
             };
@@ -672,12 +672,12 @@
              * 
              * @returns     {string}                                        The JHson.js class instance.
              */
-            this.write = function( element ) {
+            scope.write = function( element ) {
                 return writeHtml( element, __properties );
             };
         } )();
         
-        return result;
+        return scope;
     };
 
 

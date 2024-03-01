@@ -2,15 +2,15 @@
 JHson.js
 
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=JHson.js%2C%20a%20free%20JavaScript%json%20converter&url=https://github.com/williamtroup/JHson.js&hashtags=javascript,json,html,converter)
-[![npm](https://img.shields.io/badge/npmjs-v0.2.0-blue)](https://www.npmjs.com/package/jhson.js)
-[![nuget](https://img.shields.io/badge/nuget-v0.2.0-purple)](https://www.nuget.org/packages/JHson.js/)
+[![npm](https://img.shields.io/badge/npmjs-v0.3.0-blue)](https://www.npmjs.com/package/jhson.js)
+[![nuget](https://img.shields.io/badge/nuget-v0.3.0-purple)](https://www.nuget.org/packages/JHson.js/)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/williamtroup/JHson.js/blob/main/LICENSE.txt)
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
 </h1>
 
 > <p align="center">📃 A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.</p>
-> <p align="center">v0.2.0</p>
+> <p align="center">v0.3.0</p>
 <br />
 <br />
 
@@ -88,21 +88,19 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
     var header = document.getElementById( "header" );
 
     var json = $jhson.json()
-        .includeAttributes()
-        .includeCssStyles()
-        .includeText()
-        .includeChildren()
-        .friendlyFormat()
+        .includeAttributes( true )
+        .includeCssStyles( true )
+        .includeText( true )
+        .includeChildren( true )
+        .friendlyFormat( true )
         .get( header );
-
-    $jhson.write( header, json, { "{{template_data}}": "here" } );
 
     $jhson
         .html()
         .json( json )
         .templateData( { "{{template_data}}": "this template data" } )
-        .removeAttributes()
-        .clearHTML()
+        .removeAttributes( true )
+        .clearHTML( true )
         .write( header );
 </script>
 ```

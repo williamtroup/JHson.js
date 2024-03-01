@@ -1,14 +1,16 @@
-/*! JHson.js v0.2.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v0.3.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
-    var resultJson = {};
-    var elementJson = getElementObject(element, properties, {});
-    resultJson[elementJson.nodeName] = elementJson.nodeValues;
-    if (properties.friendlyFormat) {
-      result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
-    } else {
-      result = _parameter_JSON.stringify(resultJson);
+    if (isDefinedObject(element)) {
+      var resultJson = {};
+      var elementJson = getElementObject(element, properties, {});
+      resultJson[elementJson.nodeName] = elementJson.nodeValues;
+      if (properties.friendlyFormat) {
+        result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
+      } else {
+        result = _parameter_JSON.stringify(resultJson);
+      }
     }
     return result;
   }
@@ -110,32 +112,34 @@
     return copy;
   }
   function writeHtml(element, properties) {
-    var convertedJsonObject = getObjectFromString(properties.json);
-    var templateDataKeys = [];
-    if (isDefinedObject(properties.templateData)) {
-      var templateDataKey;
-      for (templateDataKey in properties.templateData) {
-        if (properties.templateData.hasOwnProperty(templateDataKey)) {
-          templateDataKeys.push(templateDataKey);
+    if (isDefinedObject(element) && isDefinedString(properties.json)) {
+      var convertedJsonObject = getObjectFromString(properties.json);
+      var templateDataKeys = [];
+      if (isDefinedObject(properties.templateData)) {
+        var templateDataKey;
+        for (templateDataKey in properties.templateData) {
+          if (properties.templateData.hasOwnProperty(templateDataKey)) {
+            templateDataKeys.push(templateDataKey);
+          }
         }
+        templateDataKeys = templateDataKeys.sort(function(a, b) {
+          return b.length - a.length;
+        });
       }
-      templateDataKeys = templateDataKeys.sort(function(a, b) {
-        return b.length - a.length;
-      });
-    }
-    if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
-      var key;
-      for (key in convertedJsonObject.result) {
-        if (key === element.nodeName.toLowerCase()) {
-          if (properties.removeAttributes) {
-            for (; element.attributes.length > 0;) {
-              element.removeAttribute(element.attributes[0].name);
+      if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
+        var key;
+        for (key in convertedJsonObject.result) {
+          if (key === element.nodeName.toLowerCase()) {
+            if (properties.removeAttributes) {
+              for (; element.attributes.length > 0;) {
+                element.removeAttribute(element.attributes[0].name);
+              }
             }
+            if (properties.clearHTML) {
+              element.innerHTML = _string.empty;
+            }
+            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties.templateData);
           }
-          if (properties.clearHTML) {
-            element.innerHTML = _string.empty;
-          }
-          writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties.templateData);
         }
       }
     }
@@ -151,8 +155,7 @@
         element.setAttribute(attributeName, attributeValue);
       } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
         var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
-        var cssStyleValue = jsonObject[jsonKey];
-        element.style[cssStyleName] = cssStyleValue;
+        element.style[cssStyleName] = jsonObject[jsonKey];
       } else if (jsonKey === _json.text) {
         element.innerHTML = jsonObject[jsonKey];
         if (templateDataKeysLength > 0) {
@@ -223,6 +226,9 @@
   function getDefaultNumber(value, defaultValue) {
     return isDefinedNumber(value) ? value : defaultValue;
   }
+  function getDefaultString(value, defaultValue) {
+    return isDefinedString(value) ? value : defaultValue;
+  }
   function getDefaultArray(value, defaultValue) {
     return isDefinedArray(value) ? value : defaultValue;
   }
@@ -281,62 +287,62 @@
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
   this.json = function() {
-    var result = null;
+    var scope = null;
     (function() {
-      result = this;
-      var __properties = {includeAttributes:false, includeCssStyles:false, includeText:false, includeChildren:false, friendlyFormat:false};
-      this.includeAttributes = function() {
-        __properties.includeAttributes = true;
+      scope = this;
+      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true};
+      scope.includeAttributes = function(flag) {
+        __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
       };
-      this.includeCssStyles = function() {
-        __properties.includeCssStyles = true;
+      scope.includeCssStyles = function(flag) {
+        __properties.includeCssStyles = getDefaultBoolean(flag, __properties.includeCssStyles);
         return this;
       };
-      this.includeText = function() {
-        __properties.includeText = true;
+      scope.includeText = function(flag) {
+        __properties.includeText = getDefaultBoolean(flag, __properties.includeText);
         return this;
       };
-      this.includeChildren = function() {
-        __properties.includeChildren = true;
+      scope.includeChildren = function(flag) {
+        __properties.includeChildren = getDefaultBoolean(flag, __properties.includeChildren);
         return this;
       };
-      this.friendlyFormat = function() {
-        __properties.friendlyFormat = true;
+      scope.friendlyFormat = function(flag) {
+        __properties.friendlyFormat = getDefaultBoolean(flag, __properties.friendlyFormat);
         return this;
       };
-      this.get = function(element) {
+      scope.get = function(element) {
         return getJSON(element, __properties);
       };
     })();
-    return result;
+    return scope;
   };
   this.html = function() {
-    var result = null;
+    var scope = null;
     (function() {
-      result = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:false, clearHTML:false};
-      this.json = function(json) {
-        __properties.json = json;
+      scope = this;
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true};
+      scope.json = function(json) {
+        __properties.json = getDefaultString(json, __properties.json);
         return this;
       };
-      this.templateData = function(templateData) {
-        __properties.templateData = getDefaultObject(templateData, {});
+      scope.templateData = function(templateData) {
+        __properties.templateData = getDefaultObject(templateData, __properties.templateData);
         return this;
       };
-      this.removeAttributes = function() {
-        __properties.removeAttributes = true;
+      scope.removeAttributes = function(flag) {
+        __properties.removeAttributes = getDefaultBoolean(flag, __properties.removeAttributes);
         return this;
       };
-      this.clearHTML = function() {
-        __properties.clearHTML = true;
+      scope.clearHTML = function(flag) {
+        __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
         return this;
       };
-      this.write = function(element) {
+      scope.write = function(element) {
         return writeHtml(element, __properties);
       };
     })();
-    return result;
+    return scope;
   };
   this.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;
@@ -353,7 +359,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "0.2.0";
+    return "0.3.0";
   };
   (function(documentObject, windowObject, jsonObject) {
     _parameter_Document = documentObject;

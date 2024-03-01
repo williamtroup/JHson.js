@@ -1,5 +1,19 @@
 # JHson.js - Change Log:
 
+## Version 0.3.0:
+
+#### **Public Functions:**
+- All boolean-based chained functions (such as "json()" > "includeAttributes()") now support flags (with proper defaults).
+- Restored all original defaults for the new chained functions.
+- Object types now have to be valid for all public functions.
+
+#### **Fixes & Improvements:**
+- Improved the HTML testing files.
+- Fixed README.md and README_NUGET.md errors.
+
+<br>
+
+
 ## Version 0.2.0:
 
 #### **New Features:**

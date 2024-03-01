@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.2.0
+ * @version     v0.3.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -52,16 +52,19 @@
      */
 
     function getJSON( element, properties ) {
-        var result = _string.empty,
-            resultJson = {},
-            elementJson = getElementObject( element, properties, {} );
+        var result = _string.empty;
 
-        resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
+        if ( isDefinedObject( element ) ) {
+            var resultJson = {},
+                elementJson = getElementObject( element, properties, {} );
 
-        if ( properties.friendlyFormat ) {
-            result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
-        } else {
-            result = _parameter_JSON.stringify( resultJson );
+            resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
+
+            if ( properties.friendlyFormat ) {
+                result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
+            } else {
+                result = _parameter_JSON.stringify( resultJson );
+            }
         }
         
         return result;
@@ -199,35 +202,37 @@
      */
 
     function writeHtml( element, properties ) {
-        var convertedJsonObject = getObjectFromString( properties.json ),
-            templateDataKeys = [];
+        if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
+            var convertedJsonObject = getObjectFromString( properties.json ),
+                templateDataKeys = [];
 
-        if ( isDefinedObject( properties.templateData ) ) {
-            for ( var templateDataKey in properties.templateData ) {
-                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
-                    templateDataKeys.push( templateDataKey );
+            if ( isDefinedObject( properties.templateData ) ) {
+                for ( var templateDataKey in properties.templateData ) {
+                    if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                        templateDataKeys.push( templateDataKey );
+                    }
                 }
+
+                templateDataKeys = templateDataKeys.sort( function( a, b ) {
+                    return b.length - a.length;
+                } );
             }
 
-            templateDataKeys = templateDataKeys.sort( function( a, b ) {
-                return b.length - a.length;
-            } );
-        }
-
-        if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
-            for ( var key in convertedJsonObject.result ) {
-                if ( key === element.nodeName.toLowerCase() ) {
-                    if ( properties.removeAttributes ) {
-                        while ( element.attributes.length > 0 ) {
-                            element.removeAttribute( element.attributes[ 0 ].name );
+            if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
+                for ( var key in convertedJsonObject.result ) {
+                    if ( key === element.nodeName.toLowerCase() ) {
+                        if ( properties.removeAttributes ) {
+                            while ( element.attributes.length > 0 ) {
+                                element.removeAttribute( element.attributes[ 0 ].name );
+                            }
                         }
-                    }
 
-                    if ( properties.clearHTML ) {
-                        element.innerHTML = _string.empty;
-                    }
+                        if ( properties.clearHTML ) {
+                            element.innerHTML = _string.empty;
+                        }
 
-                    writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
+                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
+                    }
                 }
             }
         }
@@ -246,10 +251,9 @@
                 element.setAttribute( attributeName, attributeValue );
 
             } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
-                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty ),
-                    cssStyleValue = jsonObject[ jsonKey ];
+                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
 
-                element.style[ cssStyleName ] = cssStyleValue;
+                element.style[ cssStyleName ] = jsonObject[jsonKey];
 
             } else if ( jsonKey === _json.text ) {
                 element.innerHTML = jsonObject[ jsonKey ];
@@ -369,6 +373,10 @@
         return isDefinedNumber( value ) ? value : defaultValue;
     }
 
+    function getDefaultString( value, defaultValue ) {
+        return isDefinedString( value ) ? value : defaultValue;
+    }
+
     function getDefaultArray( value, defaultValue ) {
         return isDefinedArray( value ) ? value : defaultValue;
     }
@@ -443,17 +451,17 @@
      * @returns     {Object}                                                The JSON properties object.
      */
     this.json = function() {
-        var result = null;
+        var scope = null;
 
         ( function() {
-            result = this;
+            scope = this;
 
             var __properties = {
-                includeAttributes: false,
+                includeAttributes: true,
                 includeCssStyles: false,
-                includeText: false,
-                includeChildren: false,
-                friendlyFormat: false,
+                includeText: true,
+                includeChildren: true,
+                friendlyFormat: true,
             };
 
             /**
@@ -463,10 +471,12 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeAttributes = function() {
-                __properties.includeAttributes = true;
+            scope.includeAttributes = function( flag ) {
+                __properties.includeAttributes = getDefaultBoolean( flag, __properties.includeAttributes );
 
                 return this;
             };
@@ -478,10 +488,12 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeCssStyles = function() {
-                __properties.includeCssStyles = true;
+            scope.includeCssStyles = function( flag ) {
+                __properties.includeCssStyles = getDefaultBoolean( flag, __properties.includeCssStyles );
 
                 return this;
             };
@@ -493,10 +505,12 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeText = function() {
-                __properties.includeText = true;
+            scope.includeText = function( flag ) {
+                __properties.includeText = getDefaultBoolean( flag, __properties.includeText );
 
                 return this;
             };
@@ -508,10 +522,12 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.includeChildren = function() {
-                __properties.includeChildren = true;
+            scope.includeChildren = function( flag ) {
+                __properties.includeChildren = getDefaultBoolean( flag, __properties.includeChildren );
 
                 return this;
             };
@@ -523,10 +539,12 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            this.friendlyFormat = function() {
-                __properties.friendlyFormat = true;
+            scope.friendlyFormat = function( flag ) {
+                __properties.friendlyFormat = getDefaultBoolean( flag, __properties.friendlyFormat );
 
                 return this;
             };
@@ -542,12 +560,12 @@
              * 
              * @returns     {string}                                        The JSON string.
              */
-            this.get = function( element ) {
+            scope.get = function( element ) {
                 return getJSON( element, __properties );
             };
         } )();
         
-        return result;
+        return scope;
     };
 
 
@@ -567,16 +585,16 @@
      * @returns     {Object}                                                The HTML properties object.
      */
     this.html = function() {
-        var result = null;
+        var scope = null;
 
         ( function() {
-            result = this;
+            scope = this;
             
             var __properties = {
                 json: _string.empty,
                 templateData: {},
-                removeAttributes: false,
-                clearHTML: false
+                removeAttributes: true,
+                clearHTML: true
             };
 
             /**
@@ -590,8 +608,9 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.json = function( json ) {
-                __properties.json = json;
+            scope.json = function( json ) {
+                __properties.json = getDefaultString( json, __properties.json );
+
                 return this;
             };
 
@@ -606,8 +625,9 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.templateData = function( templateData ) {
-                __properties.templateData = getDefaultObject( templateData, {} );
+            scope.templateData = function( templateData ) {
+                __properties.templateData = getDefaultObject( templateData, __properties.templateData );
+
                 return this;
             };
 
@@ -618,10 +638,13 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.removeAttributes = function() {
-                __properties.removeAttributes = true;
+            scope.removeAttributes = function( flag ) {
+                __properties.removeAttributes = getDefaultBoolean( flag, __properties.removeAttributes );
+
                 return this;
             };
 
@@ -632,10 +655,13 @@
              * 
              * @public
              * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            this.clearHTML = function() {
-                __properties.clearHTML = true;
+            scope.clearHTML = function( flag ) {
+                __properties.clearHTML = getDefaultBoolean( flag, __properties.clearHTML );
+
                 return this;
             };
 
@@ -650,12 +676,12 @@
              * 
              * @returns     {string}                                        The JHson.js class instance.
              */
-            this.write = function( element ) {
+            scope.write = function( element ) {
                 return writeHtml( element, __properties );
             };
         } )();
         
-        return result;
+        return scope;
     };
 
 
@@ -730,7 +756,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.2.0";
+        return "0.3.0";
     };
 
 

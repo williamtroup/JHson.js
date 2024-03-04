@@ -208,6 +208,10 @@
             var convertedJsonObject = getObjectFromString( properties.json ),
                 templateDataKeys = [];
 
+            if ( properties.clearCssFromHead ) {
+                clearCssStyleTagsFromHead();
+            }
+
             if ( isDefinedObject( properties.templateData ) ) {
                 for ( var templateDataKey in properties.templateData ) {
                     if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
@@ -312,6 +316,15 @@
         var style = createElement( head, "style" );
         style.type = "text/css";
         style.appendChild( _parameter_Document.createTextNode( cssLines.join( _string.newLine ) ) );
+    }
+
+    function clearCssStyleTagsFromHead() {
+        var styles = _parameter_Document.getElementsByTagName( "style" ),
+            stylesLength = styles.length;
+
+        for ( var styleIndex = 0; styleIndex < stylesLength; styleIndex++ ) {
+            styles[ styleIndex ].parentNode.removeChild( styles[ styleIndex ] );
+        }
     }
 
 
@@ -656,7 +669,8 @@
                 templateData: {},
                 removeAttributes: true,
                 clearHTML: true,
-                addCssToHead: false
+                addCssToHead: false,
+                clearCssFromHead: false
             };
 
             /**
@@ -740,6 +754,23 @@
              */
             scope.addCssToHead = function( flag ) {
                 __properties.addCssToHead = getDefaultBoolean( flag, __properties.addCssToHead );
+
+                return this;
+            };
+
+            /**
+             * clearCssFromHead().
+             * 
+             * States if all the CSS style tags should be cleared from the HTML documents HEAD DOM element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            scope.clearCssFromHead = function( flag ) {
+                __properties.clearCssFromHead = getDefaultBoolean( flag, __properties.clearCssFromHead );
 
                 return this;
             };

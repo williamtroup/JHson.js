@@ -115,6 +115,9 @@
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
       var convertedJsonObject = getObjectFromString(properties.json);
       var templateDataKeys = [];
+      if (properties.clearCssFromHead) {
+        clearCssStyleTagsFromHead();
+      }
       if (isDefinedObject(properties.templateData)) {
         var templateDataKey;
         for (templateDataKey in properties.templateData) {
@@ -203,6 +206,14 @@
     var style = createElement(head, "style");
     style.type = "text/css";
     style.appendChild(_parameter_Document.createTextNode(cssLines.join(_string.newLine)));
+  }
+  function clearCssStyleTagsFromHead() {
+    var styles = _parameter_Document.getElementsByTagName("style");
+    var stylesLength = styles.length;
+    var styleIndex = 0;
+    for (; styleIndex < stylesLength; styleIndex++) {
+      styles[styleIndex].parentNode.removeChild(styles[styleIndex]);
+    }
   }
   function createElement(container, type) {
     var nodeType = type.toLowerCase();
@@ -358,7 +369,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false};
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false};
       scope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -377,6 +388,10 @@
       };
       scope.addCssToHead = function(flag) {
         __properties.addCssToHead = getDefaultBoolean(flag, __properties.addCssToHead);
+        return this;
+      };
+      scope.clearCssFromHead = function(flag) {
+        __properties.clearCssFromHead = getDefaultBoolean(flag, __properties.clearCssFromHead);
         return this;
       };
       scope.write = function(element) {

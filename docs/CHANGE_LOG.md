@@ -5,6 +5,7 @@
 #### **Public Functions:**
 - Added "addCssToHead()" support for "html()", which will force all CSS style properties to be added as "style" tags to the head of the HTML document.
 - Added "indentSpaces()" support for "json()", which states the total number of indent spaces to use for the friendly format JSON returned from "get()".
+- Added "clearCssFromHead()" support for "html()", which will force all CSS style tags to be removed from the head of the HTML document.
 
 #### **Configuration Options:**
 - Removed the configuration option "jsonIndentationSpaces" (no longer needed).

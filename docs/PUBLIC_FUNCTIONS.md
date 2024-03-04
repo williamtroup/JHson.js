@@ -119,6 +119,14 @@ States if the CSS style properties should be written to a "style" tag in the HTM
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > clearCssFromHead( *flag* )**:
+States if all the CSS style tags should be cleared from the HTML documents HEAD DOM element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > write( *element* )**:
 Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
 <br>

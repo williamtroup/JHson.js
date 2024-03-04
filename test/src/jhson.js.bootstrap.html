@@ -70,6 +70,10 @@
     
                 <input type="checkbox" id="addCssToHead" name="addCssToHead">
                 <label for="addCssToHead">Add CSS To Head</label>
+                <br>
+    
+                <input type="checkbox" id="clearCssFromHead" name="clearCssFromHead">
+                <label for="clearCssFromHead">Clear CSS From Head</label>
             </div>
             <br>
 
@@ -94,7 +98,8 @@
             _REMOVE_ATTRIBUTES = document.getElementById( "removeAttributes" ),
             _CLEAR_HTML = document.getElementById( "clearHTML" ),
             _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" ),
-            _INDENT_SPACES = document.getElementById( "indentSpaces" );
+            _INDENT_SPACES = document.getElementById( "indentSpaces" ),
+            _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -126,6 +131,7 @@
             html.removeAttributes( _REMOVE_ATTRIBUTES.checked )
                 .clearHTML( _CLEAR_HTML.checked )
                 .addCssToHead( _WRITE_CSS_TO_HEAD.checked )
+                .clearCssFromHead( _CLEAR_CSS_FROM_HEAD.checked )
                 .write( _BODY );
         }
     </script>

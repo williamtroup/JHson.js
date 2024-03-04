@@ -1,7 +1,9 @@
 # JHson.js - Change Log:
 
 ## Version 0.6.0:
-- 
+
+#### **Fixes & Improvements:**
+- Updated README.md and README_NUGET.md to include the latest chained function calls.
 
 <br>
 

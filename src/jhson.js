@@ -81,7 +81,7 @@
             getElementAttributes( element, result );
         }
 
-        if ( properties.includeCssStyles ) {
+        if ( properties.includeCssProperties ) {
             getElementCssStyles( element, result, properties, parentCssStyles );
         }
 
@@ -544,7 +544,7 @@
 
             var __properties = {
                 includeAttributes: true,
-                includeCssStyles: false,
+                includeCssProperties: false,
                 includeText: true,
                 includeChildren: true,
                 friendlyFormat: true,
@@ -571,7 +571,7 @@
             };
 
             /**
-             * includeCssStyles().
+             * includeCssProperties().
              * 
              * States if the CSS style properties should be included.
              * 
@@ -581,8 +581,8 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeCssStyles = function( flag ) {
-                __properties.includeCssStyles = getDefaultBoolean( flag, __properties.includeCssStyles );
+            scope.includeCssProperties = function( flag ) {
+                __properties.includeCssProperties = getDefaultBoolean( flag, __properties.includeCssProperties );
 
                 return this;
             };

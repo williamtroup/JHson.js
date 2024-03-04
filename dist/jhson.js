@@ -21,7 +21,7 @@
     if (properties.includeAttributes) {
       getElementAttributes(element, result);
     }
-    if (properties.includeCssStyles) {
+    if (properties.includeCssProperties) {
       getElementCssStyles(element, result, properties, parentCssStyles);
     }
     if (properties.includeChildren && childrenLength > 0) {
@@ -353,13 +353,13 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[]};
+      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[]};
       scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
       };
-      scope.includeCssStyles = function(flag) {
-        __properties.includeCssStyles = getDefaultBoolean(flag, __properties.includeCssStyles);
+      scope.includeCssProperties = function(flag) {
+        __properties.includeCssProperties = getDefaultBoolean(flag, __properties.includeCssProperties);
         return this;
       };
       scope.includeText = function(flag) {

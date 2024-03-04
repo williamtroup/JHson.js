@@ -7,7 +7,7 @@
       var elementJson = getElementObject(element, properties, {});
       resultJson[elementJson.nodeName] = elementJson.nodeValues;
       if (properties.friendlyFormat) {
-        result = _parameter_JSON.stringify(resultJson, null, _configuration.jsonIndentationSpaces);
+        result = _parameter_JSON.stringify(resultJson, null, properties.indentSpaces);
       } else {
         result = _parameter_JSON.stringify(resultJson);
       }
@@ -307,7 +307,6 @@
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
     _configuration.nodeTypesToIgnore = getDefaultStringOrArray(_configuration.nodeTypesToIgnore, []);
     _configuration.cssPropertiesToIgnore = getDefaultStringOrArray(_configuration.cssPropertiesToIgnore, []);
-    _configuration.jsonIndentationSpaces = getDefaultNumber(_configuration.jsonIndentationSpaces, 2);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
   }
   var _this = this;
@@ -324,7 +323,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true};
+      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2};
       scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
@@ -343,6 +342,10 @@
       };
       scope.friendlyFormat = function(flag) {
         __properties.friendlyFormat = getDefaultBoolean(flag, __properties.friendlyFormat);
+        return this;
+      };
+      scope.indentSpaces = function(spaces) {
+        __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
         return this;
       };
       scope.get = function(element) {

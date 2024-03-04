@@ -63,7 +63,7 @@
             resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
             if ( properties.friendlyFormat ) {
-                result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
+                result = _parameter_JSON.stringify( resultJson, null, properties.indentSpaces );
             } else {
                 result = _parameter_JSON.stringify( resultJson );
             }
@@ -505,6 +505,7 @@
                 includeText: true,
                 includeChildren: true,
                 friendlyFormat: true,
+                indentSpaces: 2,
             };
 
             /**
@@ -588,6 +589,23 @@
              */
             scope.friendlyFormat = function( flag ) {
                 __properties.friendlyFormat = getDefaultBoolean( flag, __properties.friendlyFormat );
+
+                return this;
+            };
+
+            /**
+             * indentSpaces().
+             * 
+             * States the total indent spaces that should be used for the friendly format JSON.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The spaces value that should be used (defaults to 2).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.indentSpaces = function( spaces ) {
+                __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
 
                 return this;
             };
@@ -785,7 +803,6 @@
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
-        _configuration.jsonIndentationSpaces = getDefaultNumber( _configuration.jsonIndentationSpaces, 2 );
         _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",
             "strong",

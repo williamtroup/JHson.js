@@ -43,6 +43,11 @@
     
                 <input type="checkbox" id="friendlyFormat" name="friendlyFormat" checked="checked">
                 <label for="friendlyFormat">Friendly Format</label>
+                <br>
+
+                <label for="friendlyFormat">Indent Spaces: </label>
+                <br>
+                <input type="number" id="indentSpaces" value="2">
             </div>
             <br>
 
@@ -88,7 +93,8 @@
             _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" ),
             _REMOVE_ATTRIBUTES = document.getElementById( "removeAttributes" ),
             _CLEAR_HTML = document.getElementById( "clearHTML" ),
-            _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" );
+            _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" ),
+            _INDENT_SPACES = document.getElementById( "indentSpaces" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -106,6 +112,7 @@
                 .includeText( _INCLUDE_TEXT.checked )
                 .includeChildren( _INCLUDE_CHILDREN.checked )
                 .friendlyFormat( _FRIENDLY_FORMAT.checked )
+                .indentSpaces( parseInt( _INDENT_SPACES.value ) )
                 .get( _BODY );
         }
 

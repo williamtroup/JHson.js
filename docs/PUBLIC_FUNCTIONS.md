@@ -53,6 +53,14 @@ States if the JSON should be formatted in an easy-to-read layout.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > indentSpaces( *spaces* )**:
+States the total indent spaces that should be used for the friendly format JSON.
+<br>
+***Parameter: spaces***: '*number*' - The spaces value that should be used (defaults to 2).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > get( *element* )**:
 Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
 <br>
@@ -103,7 +111,6 @@ States if the original HTML in the element should be cleared.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
-
 #### **html() > addCssToHead( *flag* )**:
 States if the CSS style properties should be written to a "style" tag in the HTML documents HEAD DOM element.
 <br>
@@ -111,9 +118,6 @@ States if the CSS style properties should be written to a "style" tag in the HTM
 <br>
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
-
-
-
 
 #### **html() > write( *element* )**:
 Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.

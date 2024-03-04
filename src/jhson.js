@@ -310,12 +310,23 @@
     }
 
     function storeCssStyles( element, cssStyles, writingScope ) {
-        if ( !isDefinedString( element.id ) ) {
-            element.id = newGuid();
+        var identifier = null;
+
+        if ( isDefinedString( element.className ) ) {
+            var classNameParts = element.className.split( _string.space );
+
+            identifier = element.nodeName.toLowerCase() + "." + classNameParts[ 0 ] + " {";
+        } else {
+
+            if ( !isDefinedString( element.id ) ) {
+                element.id = newGuid();
+            }
+
+            identifier = "#" + element.id + " {";
         }
 
         var cssLines = [];
-        cssLines.push( "#" + element.id + " {" );
+        cssLines.push( identifier );
         cssLines = cssLines.concat( cssStyles );
         cssLines.push( "}" );
 

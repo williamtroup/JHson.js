@@ -82,7 +82,7 @@
         }
 
         if ( properties.includeCssStyles ) {
-            getElementCssStyles( element, result, parentCssStyles );
+            getElementCssStyles( element, result, properties, parentCssStyles );
         }
 
         if ( properties.includeChildren && childrenLength > 0 ) {
@@ -119,7 +119,7 @@
         }
     }
 
-    function getElementCssStyles( element, result, parentCssStyles ) {
+    function getElementCssStyles( element, result, properties, parentCssStyles ) {
         if ( _parameter_Window.getComputedStyle ) {
             var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
                 cssComputedStylesLength = cssComputedStyles.length;
@@ -127,7 +127,7 @@
             for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
                 var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
 
-                if ( _configuration.cssPropertiesToIgnore.indexOf( cssComputedStyleName ) === _value.notFound ) {
+                if ( properties.ignoreCssProperties.indexOf( cssComputedStyleName ) === _value.notFound ) {
                     var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName,
                         cssComputedValue = cssComputedStyles.getPropertyValue( cssComputedStyleName );
 
@@ -549,7 +549,8 @@
                 includeChildren: true,
                 friendlyFormat: true,
                 indentSpaces: 2,
-                ignoreNodeTypes: []
+                ignoreNodeTypes: [],
+                ignoreCssProperties: []
             };
 
             /**
@@ -667,6 +668,23 @@
              */
             scope.ignoreNodeTypes = function( types ) {
                 __properties.ignoreNodeTypes = getDefaultStringOrArray( types, __properties.ignoreNodeTypes );
+
+                return this;
+            };
+
+            /**
+             * ignoreCssProperties().
+             * 
+             * States the CSS properties that should not be included in the JSON.
+             * 
+             * @public
+             * 
+             * @param       {Object}    properties                          The CSS properties to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.ignoreCssProperties = function( properties ) {
+                __properties.ignoreCssProperties = getDefaultStringOrArray( properties, __properties.ignoreCssProperties );
 
                 return this;
             };
@@ -880,7 +898,6 @@
     function buildDefaultConfiguration( newConfiguration ) {
         _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
         _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",
             "strong",

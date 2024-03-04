@@ -53,6 +53,11 @@
                 <label for="ignoreNodeTypes">Ignore Node Types: </label>
                 <br>
                 <input type="text" id="ignoreNodeTypes" value="">
+                <br>
+
+                <label for="ignoreCssProperties">Ignore CSS Properties: </label>
+                <br>
+                <input type="text" id="ignoreCssProperties" value="">
             </div>
             <br>
 
@@ -105,7 +110,8 @@
             _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" ),
             _INDENT_SPACES = document.getElementById( "indentSpaces" ),
             _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" ),
-            _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" );
+            _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" ),
+            _IGNORE_CSS_PROPERTIES = document.getElementById( "ignoreCssProperties" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -125,6 +131,7 @@
                 .friendlyFormat( _FRIENDLY_FORMAT.checked )
                 .indentSpaces( parseInt( _INDENT_SPACES.value ) )
                 .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
+                .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
                 .get( _BODY );
         }
 

@@ -77,6 +77,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .friendlyFormat( true )
         .indentSpaces( 2 )
         .ignoreNodeTypes( "q" )
+        .ignoreCssProperties( "padding" )
         .get( header );
 
     $jhson

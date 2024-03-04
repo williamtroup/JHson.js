@@ -22,7 +22,7 @@
       getElementAttributes(element, result);
     }
     if (properties.includeCssStyles) {
-      getElementCssStyles(element, result, parentCssStyles);
+      getElementCssStyles(element, result, properties, parentCssStyles);
     }
     if (properties.includeChildren && childrenLength > 0) {
       childrenAdded = getElementChildren(element, result, childrenLength, properties, parentCssStyles);
@@ -48,14 +48,14 @@
       }
     }
   }
-  function getElementCssStyles(element, result, parentCssStyles) {
+  function getElementCssStyles(element, result, properties, parentCssStyles) {
     if (_parameter_Window.getComputedStyle) {
       var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle(element);
       var cssComputedStylesLength = cssComputedStyles.length;
       var cssComputedStyleIndex = 0;
       for (; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++) {
         var cssComputedStyleName = cssComputedStyles[cssComputedStyleIndex];
-        if (_configuration.cssPropertiesToIgnore.indexOf(cssComputedStyleName) === _value.notFound) {
+        if (properties.ignoreCssProperties.indexOf(cssComputedStyleName) === _value.notFound) {
           var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName;
           var cssComputedValue = cssComputedStyles.getPropertyValue(cssComputedStyleName);
           if (!parentCssStyles.hasOwnProperty(cssComputedStyleNameStorage) || parentCssStyles[cssComputedStyleNameStorage] !== cssComputedValue) {
@@ -337,7 +337,6 @@
   function buildDefaultConfiguration(newConfiguration) {
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
-    _configuration.cssPropertiesToIgnore = getDefaultStringOrArray(_configuration.cssPropertiesToIgnore, []);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
   }
   var _this = this;
@@ -354,7 +353,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[]};
+      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[]};
       scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
@@ -381,6 +380,10 @@
       };
       scope.ignoreNodeTypes = function(types) {
         __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
+        return this;
+      };
+      scope.ignoreCssProperties = function(properties) {
+        __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
         return this;
       };
       scope.get = function(element) {

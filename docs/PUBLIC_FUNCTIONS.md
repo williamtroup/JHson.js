@@ -21,7 +21,7 @@ States if the attributes should be included.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
-#### **json() > includeCssStyles( *flag* )**:
+#### **json() > includeCssProperties( *flag* )**:
 States if the CSS style properties should be included.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
@@ -57,6 +57,30 @@ States if the JSON should be formatted in an easy-to-read layout.
 States the total indent spaces that should be used for the friendly format JSON.
 <br>
 ***Parameter: spaces***: '*number*' - The spaces value that should be used (defaults to 2).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > ignoreNodeTypes( *types* )**:
+States the node types that should not be included in the JSON.
+<br>
+***Parameter: types***: '*Object*' - The node types to ignore (can be an array of strings, or a space separated string, and defaults to []).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > ignoreCssProperties( *properties* )**:
+States the CSS properties that should not be included in the JSON.
+<br>
+***Parameter: properties***: '*Object*' - The CSS properties to ignore (can be an array of strings, or a space separated string, and defaults to []).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > ignoreAttributes( *attributes* )**:
+States the attributes that should not be included in the JSON.
+<br>
+***Parameter: attributes***: '*Object*' - The attributes to ignore (can be an array of strings, or a space separated string, and defaults to []).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>

@@ -1,4 +1,4 @@
-/*! JHson.js v0.4.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v0.5.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
@@ -19,10 +19,10 @@
     var childrenLength = element.children.length;
     var childrenAdded = 0;
     if (properties.includeAttributes) {
-      getElementAttributes(element, result);
+      getElementAttributes(element, result, properties);
     }
-    if (properties.includeCssStyles) {
-      getElementCssStyles(element, result, parentCssStyles);
+    if (properties.includeCssProperties) {
+      getElementCssProperties(element, result, properties, parentCssStyles);
     }
     if (properties.includeChildren && childrenLength > 0) {
       childrenAdded = getElementChildren(element, result, childrenLength, properties, parentCssStyles);
@@ -35,7 +35,7 @@
     }
     return {nodeName:element.nodeName.toLowerCase(), nodeValues:result};
   }
-  function getElementAttributes(element, result) {
+  function getElementAttributes(element, result, properties) {
     var attributesLength = element.attributes.length;
     if (element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
       result[_json.text] = element.value;
@@ -43,19 +43,19 @@
     var attributeIndex = 0;
     for (; attributeIndex < attributesLength; attributeIndex++) {
       var attribute = element.attributes[attributeIndex];
-      if (isDefinedString(attribute.nodeName)) {
+      if (isDefinedString(attribute.nodeName) && properties.ignoreAttributes.indexOf(attribute.nodeName) === _value.notFound) {
         result[_json.attribute + attribute.nodeName] = attribute.nodeValue;
       }
     }
   }
-  function getElementCssStyles(element, result, parentCssStyles) {
+  function getElementCssProperties(element, result, properties, parentCssStyles) {
     if (_parameter_Window.getComputedStyle) {
       var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle(element);
       var cssComputedStylesLength = cssComputedStyles.length;
       var cssComputedStyleIndex = 0;
       for (; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++) {
         var cssComputedStyleName = cssComputedStyles[cssComputedStyleIndex];
-        if (_configuration.cssPropertiesToIgnore.indexOf(cssComputedStyleName) === _value.notFound) {
+        if (properties.ignoreCssProperties.indexOf(cssComputedStyleName) === _value.notFound) {
           var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName;
           var cssComputedValue = cssComputedStyles.getPropertyValue(cssComputedStyleName);
           if (!parentCssStyles.hasOwnProperty(cssComputedStyleNameStorage) || parentCssStyles[cssComputedStyleNameStorage] !== cssComputedValue) {
@@ -74,10 +74,10 @@
       var child = element.children[childrenIndex];
       var childElementData = getElementObject(child, properties, getParentCssStylesCopy(parentCssStyles));
       var addChild = false;
-      if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
+      if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName) > _value.notFound) {
         totalChildren++;
       } else {
-        if (_configuration.nodeTypesToIgnore.indexOf(childElementData.nodeName.toLowerCase()) === _value.notFound) {
+        if (properties.ignoreNodeTypes.indexOf(childElementData.nodeName) === _value.notFound) {
           addChild = true;
           totalChildren++;
         }
@@ -95,7 +95,7 @@
       if (childrenAdded > 0 && isDefined(result[_json.children]) && result[_json.children].length === 0) {
         result[_json.text] = element.innerHTML;
       } else {
-        if (element.innerText === element.innerHTML) {
+        if (element.innerText.trim() === element.innerHTML.trim()) {
           result[_json.text] = element.innerText;
         }
       }
@@ -112,6 +112,7 @@
     return copy;
   }
   function writeHtml(element, properties) {
+    var writingScope = {css:{}};
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
       var convertedJsonObject = getObjectFromString(properties.json);
       var templateDataKeys = [];
@@ -141,14 +142,17 @@
             if (properties.clearHTML) {
               element.innerHTML = _string.empty;
             }
-            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties);
+            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties, writingScope);
           }
         }
+      }
+      if (properties.addCssToHead) {
+        writeCssStyleTag(writingScope);
       }
     }
     return _this;
   }
-  function writeNode(element, jsonObject, templateDataKeys, properties) {
+  function writeNode(element, jsonObject, templateDataKeys, properties, writingScope) {
     var templateDataKeysLength = templateDataKeys.length;
     var cssStyles = [];
     var jsonKey;
@@ -184,25 +188,42 @@
           for (childJsonKey in childJson) {
             if (childJson.hasOwnProperty(childJsonKey)) {
               var childElement = createElement(element, childJsonKey.toLowerCase());
-              writeNode(childElement, childJson[childJsonKey], templateDataKeys, properties);
+              writeNode(childElement, childJson[childJsonKey], templateDataKeys, properties, writingScope);
             }
           }
         }
       }
     }
     if (cssStyles.length > 0) {
-      writeCssStyleTag(element, cssStyles);
+      storeCssStyles(element, cssStyles, writingScope);
     }
   }
-  function writeCssStyleTag(element, cssStyles) {
-    var head = _parameter_Document.getElementsByTagName("head")[0];
-    if (!isDefinedString(element.id)) {
-      element.id = newGuid();
+  function storeCssStyles(element, cssStyles, writingScope) {
+    var identifier = null;
+    if (isDefinedString(element.className)) {
+      var classNameParts = element.className.split(_string.space);
+      identifier = element.nodeName.toLowerCase() + "." + classNameParts[0] + " {";
+    } else {
+      if (!isDefinedString(element.id)) {
+        element.id = newGuid();
+      }
+      identifier = "#" + element.id + " {";
     }
     var cssLines = [];
-    cssLines.push("#" + element.id + " {");
+    cssLines.push(identifier);
     cssLines = cssLines.concat(cssStyles);
     cssLines.push("}");
+    writingScope.css[element.id] = cssLines;
+  }
+  function writeCssStyleTag(writingScope) {
+    var head = _parameter_Document.getElementsByTagName("head")[0];
+    var cssLines = [];
+    var elementId;
+    for (elementId in writingScope.css) {
+      if (writingScope.css.hasOwnProperty(elementId)) {
+        cssLines = cssLines.concat(writingScope.css[elementId]);
+      }
+    }
     var style = createElement(head, "style");
     style.type = "text/css";
     style.appendChild(_parameter_Document.createTextNode(cssLines.join(_string.newLine)));
@@ -316,8 +337,6 @@
   function buildDefaultConfiguration(newConfiguration) {
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
-    _configuration.nodeTypesToIgnore = getDefaultStringOrArray(_configuration.nodeTypesToIgnore, []);
-    _configuration.cssPropertiesToIgnore = getDefaultStringOrArray(_configuration.cssPropertiesToIgnore, []);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
   }
   var _this = this;
@@ -334,13 +353,13 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2};
+      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[]};
       scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
       };
-      scope.includeCssStyles = function(flag) {
-        __properties.includeCssStyles = getDefaultBoolean(flag, __properties.includeCssStyles);
+      scope.includeCssProperties = function(flag) {
+        __properties.includeCssProperties = getDefaultBoolean(flag, __properties.includeCssProperties);
         return this;
       };
       scope.includeText = function(flag) {
@@ -357,6 +376,18 @@
       };
       scope.indentSpaces = function(spaces) {
         __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
+        return this;
+      };
+      scope.ignoreNodeTypes = function(types) {
+        __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
+        return this;
+      };
+      scope.ignoreCssProperties = function(properties) {
+        __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
+        return this;
+      };
+      scope.ignoreAttributes = function(attributes) {
+        __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
         return this;
       };
       scope.get = function(element) {
@@ -415,7 +446,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "0.4.0";
+    return "0.5.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;

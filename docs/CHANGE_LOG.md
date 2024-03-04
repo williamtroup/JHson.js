@@ -1,5 +1,30 @@
 # JHson.js - Change Log:
 
+## Version 0.5.0:
+
+#### **Public Functions:**
+- BREAKING: Renamed "json() > includeCssStyles()" to "json() > includeCssProperties()".
+- When "addCssToHead()" is used for "html()", all the CSS is now placed in one "style" node in the HTML document head, instead of multiple ones!
+- When "addCssToHead()" is used for "html()", the CSS will now use the CSS class from the DOM element (it reverts to the DOM element ID if not available).
+- Added "ignoreNodeTypes()" support for "json()", which states the node types that should not be included in the JSON returned from "get()".
+- Added "ignoreCssProperties()" support for "json()", which states the CSS properties that should not be included in the JSON returned from "get()".
+- Added "ignoreAttributes()" support for "json()", which states the attributes that should not be included in the JSON returned from "get()".
+
+#### **Configuration Options:**
+- Removed the configuration option "nodeTypesToIgnore" (no longer needed).
+- Removed the configuration option "cssPropertiesToIgnore" (no longer needed).
+
+#### **Fixes & Improvements:**
+- Fixed a minor formatting issue in the "package.json" file.
+- Fixed a fault that caused the text to be ignored for some elements.
+- Fixed HTML testing files not referencing some of the recent changes.
+- Fixed issues with lowercase usage being done multiple times.
+- Updated README.md and README_NUGET.md to include the latest chained function calls.
+- Updated README.md and README_NUGET.md to include the new features added recently.
+
+<br>
+
+
 ## Version 0.4.0:
 
 #### **New Features:**

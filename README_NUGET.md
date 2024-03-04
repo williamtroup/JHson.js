@@ -1,8 +1,8 @@
-# JHson.js v0.4.0
+# JHson.js v0.5.0
 
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=JHson.js%2C%20a%20free%20JavaScript%json%20converter&url=https://github.com/williamtroup/JHson.js&hashtags=javascript,json,html,converter)
-[![npm](https://img.shields.io/badge/npmjs-v0.4.0-blue)](https://www.npmjs.com/package/jhson.js)
-[![nuget](https://img.shields.io/badge/nuget-v0.4.0-purple)](https://www.nuget.org/packages/JHson.js/)
+[![npm](https://img.shields.io/badge/npmjs-v0.5.0-blue)](https://www.npmjs.com/package/jhson.js)
+[![nuget](https://img.shields.io/badge/nuget-v0.5.0-purple)](https://www.nuget.org/packages/JHson.js/)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/williamtroup/JHson.js/blob/main/LICENSE.txt)
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
@@ -18,6 +18,7 @@
 - Write your JSON directly to any DOM element for rendering.
 - Copy the layout for an entire page without additional files!
 - Data templating for text.
+- Write CSS directly back to the head for each element!
 
 
 ## What browsers are supported?
@@ -70,10 +71,13 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 
     var json = $jhson.json()
         .includeAttributes( true )
-        .includeCssStyles( true )
+        .includeCssProperties( true )
         .includeText( true )
         .includeChildren( true )
         .friendlyFormat( true )
+        .indentSpaces( 2 )
+        .ignoreNodeTypes( "q" )
+        .ignoreCssProperties( "padding" )
         .get( header );
 
     $jhson
@@ -83,6 +87,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .removeAttributes( true )
         .clearHTML( true )
         .addCssToHead( false )
+        .clearCssFromHead( false )
         .write( header );
 </script>
 ```

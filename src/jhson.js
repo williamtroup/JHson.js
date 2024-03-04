@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.4.0
+ * @version     v0.5.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -78,11 +78,11 @@
             childrenAdded = 0;
 
         if ( properties.includeAttributes ) {
-            getElementAttributes( element, result );
+            getElementAttributes( element, result, properties );
         }
 
-        if ( properties.includeCssStyles ) {
-            getElementCssStyles( element, result, parentCssStyles );
+        if ( properties.includeCssProperties ) {
+            getElementCssProperties( element, result, properties, parentCssStyles );
         }
 
         if ( properties.includeChildren && childrenLength > 0 ) {
@@ -103,7 +103,7 @@
         };
     }
 
-    function getElementAttributes( element, result ) {
+    function getElementAttributes( element, result, properties ) {
         var attributesLength = element.attributes.length;
 
         if ( element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
@@ -113,13 +113,13 @@
         for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
             var attribute = element.attributes[ attributeIndex ];
 
-            if ( isDefinedString( attribute.nodeName ) ) {
+            if ( isDefinedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === _value.notFound ) {
                 result[ _json.attribute + attribute.nodeName ] = attribute.nodeValue;
             }
         }
     }
 
-    function getElementCssStyles( element, result, parentCssStyles ) {
+    function getElementCssProperties( element, result, properties, parentCssStyles ) {
         if ( _parameter_Window.getComputedStyle ) {
             var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
                 cssComputedStylesLength = cssComputedStyles.length;
@@ -127,7 +127,7 @@
             for ( var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++ ) {
                 var cssComputedStyleName = cssComputedStyles[ cssComputedStyleIndex ];
 
-                if ( _configuration.cssPropertiesToIgnore.indexOf( cssComputedStyleName ) === _value.notFound ) {
+                if ( properties.ignoreCssProperties.indexOf( cssComputedStyleName ) === _value.notFound ) {
                     var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName,
                         cssComputedValue = cssComputedStyles.getPropertyValue( cssComputedStyleName );
 
@@ -150,11 +150,11 @@
                 childElementData = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) ),
                 addChild = false;
 
-            if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName.toLowerCase() ) > _value.notFound ) {
+            if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName ) > _value.notFound ) {
                 totalChildren++;
             } else {
 
-                if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName.toLowerCase() ) === _value.notFound ) {
+                if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === _value.notFound ) {
                     addChild = true;
                     totalChildren++;
                 }
@@ -177,7 +177,7 @@
                 result[ _json.text ] = element.innerHTML;
             } else {
     
-                if ( element.innerText === element.innerHTML ) {
+                if ( element.innerText.trim() === element.innerHTML.trim() ) {
                     result[ _json.text ] = element.innerText;
                 }
             }
@@ -204,6 +204,10 @@
      */
 
     function writeHtml( element, properties ) {
+        var writingScope = {
+            css: {}
+        };
+
         if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
             var convertedJsonObject = getObjectFromString( properties.json ),
                 templateDataKeys = [];
@@ -237,16 +241,20 @@
                             element.innerHTML = _string.empty;
                         }
 
-                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties );
+                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties, writingScope );
                     }
                 }
+            }
+
+            if ( properties.addCssToHead ) {
+                writeCssStyleTag( writingScope );
             }
         }
 
         return _this;
     }
 
-    function writeNode( element, jsonObject, templateDataKeys, properties ) {
+    function writeNode( element, jsonObject, templateDataKeys, properties, writingScope ) {
         var templateDataKeysLength = templateDataKeys.length,
             cssStyles = [];
 
@@ -289,7 +297,7 @@
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
                             var childElement = createElement( element, childJsonKey.toLowerCase() );
 
-                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties );
+                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties, writingScope );
                         }
                     }
                 }
@@ -297,21 +305,43 @@
         }
 
         if ( cssStyles.length > 0 ) {
-            writeCssStyleTag( element, cssStyles );
+            storeCssStyles( element, cssStyles, writingScope );
         } 
     }
 
-    function writeCssStyleTag( element, cssStyles ) {
-        var head = _parameter_Document.getElementsByTagName( "head" )[ 0 ];
+    function storeCssStyles( element, cssStyles, writingScope ) {
+        var identifier = null;
 
-        if ( !isDefinedString( element.id ) ) {
-            element.id = newGuid();
+        if ( isDefinedString( element.className ) ) {
+            var classNameParts = element.className.split( _string.space );
+
+            identifier = element.nodeName.toLowerCase() + "." + classNameParts[ 0 ] + " {";
+        } else {
+
+            if ( !isDefinedString( element.id ) ) {
+                element.id = newGuid();
+            }
+
+            identifier = "#" + element.id + " {";
         }
 
         var cssLines = [];
-        cssLines.push( "#" + element.id + " {" );
+        cssLines.push( identifier );
         cssLines = cssLines.concat( cssStyles );
         cssLines.push( "}" );
+
+        writingScope.css[ element.id ] = cssLines;
+    }
+
+    function writeCssStyleTag( writingScope ) {
+        var head = _parameter_Document.getElementsByTagName( "head" )[ 0 ],
+            cssLines = [];
+
+        for ( var elementId in writingScope.css ) {
+            if ( writingScope.css.hasOwnProperty( elementId ) ) {
+                cssLines = cssLines.concat( writingScope.css[ elementId ] );
+            }
+        }
 
         var style = createElement( head, "style" );
         style.type = "text/css";
@@ -514,11 +544,14 @@
 
             var __properties = {
                 includeAttributes: true,
-                includeCssStyles: false,
+                includeCssProperties: false,
                 includeText: true,
                 includeChildren: true,
                 friendlyFormat: true,
                 indentSpaces: 2,
+                ignoreNodeTypes: [],
+                ignoreCssProperties: [],
+                ignoreAttributes: []
             };
 
             /**
@@ -539,7 +572,7 @@
             };
 
             /**
-             * includeCssStyles().
+             * includeCssProperties().
              * 
              * States if the CSS style properties should be included.
              * 
@@ -549,8 +582,8 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeCssStyles = function( flag ) {
-                __properties.includeCssStyles = getDefaultBoolean( flag, __properties.includeCssStyles );
+            scope.includeCssProperties = function( flag ) {
+                __properties.includeCssProperties = getDefaultBoolean( flag, __properties.includeCssProperties );
 
                 return this;
             };
@@ -619,6 +652,57 @@
              */
             scope.indentSpaces = function( spaces ) {
                 __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
+
+                return this;
+            };
+
+            /**
+             * ignoreNodeTypes().
+             * 
+             * States the node types that should not be included in the JSON.
+             * 
+             * @public
+             * 
+             * @param       {Object}    types                               The node types to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.ignoreNodeTypes = function( types ) {
+                __properties.ignoreNodeTypes = getDefaultStringOrArray( types, __properties.ignoreNodeTypes );
+
+                return this;
+            };
+
+            /**
+             * ignoreCssProperties().
+             * 
+             * States the CSS properties that should not be included in the JSON.
+             * 
+             * @public
+             * 
+             * @param       {Object}    properties                          The CSS properties to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.ignoreCssProperties = function( properties ) {
+                __properties.ignoreCssProperties = getDefaultStringOrArray( properties, __properties.ignoreCssProperties );
+
+                return this;
+            };
+
+            /**
+             * ignoreAttributes().
+             * 
+             * States the attributes that should not be included in the JSON.
+             * 
+             * @public
+             * 
+             * @param       {Object}    attributes                          The attributes to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.ignoreAttributes = function( attributes ) {
+                __properties.ignoreAttributes = getDefaultStringOrArray( attributes, __properties.ignoreAttributes );
 
                 return this;
             };
@@ -832,8 +916,6 @@
     function buildDefaultConfiguration( newConfiguration ) {
         _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
-        _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
         _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",
             "strong",
@@ -865,7 +947,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.4.0";
+        return "0.5.0";
     };
 
 

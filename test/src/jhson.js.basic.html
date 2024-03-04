@@ -16,27 +16,48 @@
 
         <div class="contents">
             <textarea id="json"></textarea>
-            <br>
-
-            <input type="checkbox" id="includeAttributes" name="includeAttributes" checked="checked">
-            <label for="includeAttributes">Include Attributes</label>
-            <br>
-
-            <input type="checkbox" id="includeCssProperties" name="includeCssProperties">
-            <label for="includeCssProperties">Include CSS Styles</label>
-            <br>
-
-            <input type="checkbox" id="includeText" name="includeText" checked="checked">
-            <label for="includeText">Include Text</label>
-            <br>
-
-            <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
-            <label for="includeChildren">Include Children</label>
         </div>
 
         <div class="contents">
-            <h2>JSON:</h2>
-            <button onclick="getJSONData();">Get</button>
+            <h2>JSON - GET:</h2>
+            <button class="btn btn-primary" onclick="getJSONData();">Get</button>
+            <br>
+
+            <div class="ms-3 mt-1">
+                <input type="checkbox" id="includeAttributes" name="includeAttributes" checked="checked">
+                <label for="includeAttributes">Include Attributes</label>
+                <br>
+    
+                <input type="checkbox" id="includeCssProperties" name="includeCssProperties">
+                <label for="includeCssProperties">Include CSS Properties</label>
+                <br>
+    
+                <input type="checkbox" id="includeText" name="includeText" checked="checked">
+                <label for="includeText">Include Text</label>
+                <br>
+    
+                <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
+                <label for="includeChildren">Include Children</label>
+                <br>
+    
+                <input type="checkbox" id="friendlyFormat" name="friendlyFormat" checked="checked">
+                <label for="friendlyFormat">Friendly Format</label>
+                <br>
+
+                <label for="indentSpaces">Indent Spaces: </label>
+                <br>
+                <input type="number" id="indentSpaces" value="2">
+                <br>
+
+                <label for="ignoreNodeTypes">Ignore Node Types: </label>
+                <br>
+                <input type="text" id="ignoreNodeTypes" value="">
+                <br>
+
+                <label for="ignoreCssProperties">Ignore CSS Properties: </label>
+                <br>
+                <input type="text" id="ignoreCssProperties" value="">
+            </div>
         </div>
     </body>
 
@@ -46,15 +67,26 @@
             _INCLUDE_ATTRIBUTES = document.getElementById( "includeAttributes" ),
             _INCLUDE_CSS_STYLES = document.getElementById( "includeCssProperties" ),
             _INCLUDE_TEXT = document.getElementById( "includeText" ),
-            _INCLUDE_CHILDREN = document.getElementById( "includeChildren" );
+            _INCLUDE_CHILDREN = document.getElementById( "includeChildren" ),
+            _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" ),
+            _INDENT_SPACES = document.getElementById( "indentSpaces" ),
+            _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" ),
+            _IGNORE_CSS_PROPERTIES = document.getElementById( "ignoreCssProperties" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
 
         function getJSONData() {
-            var json = $jhson.get( _BODY, _INCLUDE_ATTRIBUTES.checked, _INCLUDE_CSS_STYLES.checked, _INCLUDE_TEXT.checked, _INCLUDE_CHILDREN.checked );
-
-            _JSON_TEXTAREA.value = json;
+            _JSON_TEXTAREA.value = $jhson.json()
+                .includeAttributes( _INCLUDE_ATTRIBUTES.checked )
+                .includeCssProperties( _INCLUDE_CSS_STYLES.checked )
+                .includeText( _INCLUDE_TEXT.checked )
+                .includeChildren( _INCLUDE_CHILDREN.checked )
+                .friendlyFormat( _FRIENDLY_FORMAT.checked )
+                .indentSpaces( parseInt( _INDENT_SPACES.value ) )
+                .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
+                .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
+                .get( _BODY );
         }
     </script>
 </html>

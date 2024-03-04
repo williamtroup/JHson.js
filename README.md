@@ -108,6 +108,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .clearHTML( true )
         .addCssToHead( false )
         .clearCssFromHead( false )
+        .logTemplateDataWarnings( false )
         .write( header );
 </script>
 ```

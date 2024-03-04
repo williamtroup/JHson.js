@@ -74,10 +74,10 @@
       var child = element.children[childrenIndex];
       var childElementData = getElementObject(child, properties, getParentCssStylesCopy(parentCssStyles));
       var addChild = false;
-      if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
+      if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName) > _value.notFound) {
         totalChildren++;
       } else {
-        if (properties.ignoreNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) === _value.notFound) {
+        if (properties.ignoreNodeTypes.indexOf(childElementData.nodeName) === _value.notFound) {
           addChild = true;
           totalChildren++;
         }

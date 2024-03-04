@@ -18,6 +18,7 @@
 - Fixed a minor formatting issue in the "package.json" file.
 - Fixed a fault that caused the text to be ignored for some elements.
 - Fixed HTML testing files not referencing some of the recent changes.
+- Fixed issues with lowercase usages being done multiple times.
 - Updated README.md and README_NUGET.md to include the latest chained function calls.
 - Updated README.md and README_NUGET.md to include the new features added recently.
 

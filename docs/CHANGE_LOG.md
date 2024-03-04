@@ -2,6 +2,9 @@
 
 ## Version 0.5.0:
 
+#### **Public Functions:**
+- When "addCssToHead()" is used for "html()", all the CSS is now placed in one "style" tag in the HTML document head, instead of multiple ones!
+
 #### **Fixes & Improvements:**
 - Fixed a minor formatting issue in the "package.json" file.
 - Updated README.md and README_NUGET.md to include the latest chained function calls.

@@ -204,6 +204,10 @@
      */
 
     function writeHtml( element, properties ) {
+        var writingScope = {
+            css: {}
+        };
+
         if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
             var convertedJsonObject = getObjectFromString( properties.json ),
                 templateDataKeys = [];
@@ -237,16 +241,20 @@
                             element.innerHTML = _string.empty;
                         }
 
-                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties );
+                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties, writingScope );
                     }
                 }
+            }
+
+            if ( properties.addCssToHead ) {
+                writeCssStyleTag( writingScope );
             }
         }
 
         return _this;
     }
 
-    function writeNode( element, jsonObject, templateDataKeys, properties ) {
+    function writeNode( element, jsonObject, templateDataKeys, properties, writingScope ) {
         var templateDataKeysLength = templateDataKeys.length,
             cssStyles = [];
 
@@ -289,7 +297,7 @@
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
                             var childElement = createElement( element, childJsonKey.toLowerCase() );
 
-                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties );
+                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties, writingScope );
                         }
                     }
                 }
@@ -297,13 +305,11 @@
         }
 
         if ( cssStyles.length > 0 ) {
-            writeCssStyleTag( element, cssStyles );
+            storeCssStyles( element, cssStyles, writingScope );
         } 
     }
 
-    function writeCssStyleTag( element, cssStyles ) {
-        var head = _parameter_Document.getElementsByTagName( "head" )[ 0 ];
-
+    function storeCssStyles( element, cssStyles, writingScope ) {
         if ( !isDefinedString( element.id ) ) {
             element.id = newGuid();
         }
@@ -312,6 +318,19 @@
         cssLines.push( "#" + element.id + " {" );
         cssLines = cssLines.concat( cssStyles );
         cssLines.push( "}" );
+
+        writingScope.css[ element.id ] = cssLines;
+    }
+
+    function writeCssStyleTag( writingScope ) {
+        var head = _parameter_Document.getElementsByTagName( "head" )[ 0 ],
+            cssLines = [];
+
+        for ( var elementId in writingScope.css ) {
+            if ( writingScope.css.hasOwnProperty( elementId ) ) {
+                cssLines = cssLines.concat( writingScope.css[ elementId ] );
+            }
+        }
 
         var style = createElement( head, "style" );
         style.type = "text/css";

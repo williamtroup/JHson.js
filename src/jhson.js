@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.3.0
+ * @version     v0.4.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -18,6 +18,7 @@
         _parameter_Document = null,
         _parameter_Window = null,
         _parameter_JSON = null,
+        _parameter_Math = null,
 
         // Variables: Configuration
         _configuration = {},
@@ -28,7 +29,8 @@
         // Variables: Strings
         _string = {
             empty: "",
-            space: " "
+            space: " ",
+            newLine: "\n"
         },
 
         // Variables: JSON
@@ -61,7 +63,7 @@
             resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
             if ( properties.friendlyFormat ) {
-                result = _parameter_JSON.stringify( resultJson, null, _configuration.jsonIndentationSpaces );
+                result = _parameter_JSON.stringify( resultJson, null, properties.indentSpaces );
             } else {
                 result = _parameter_JSON.stringify( resultJson );
             }
@@ -206,6 +208,10 @@
             var convertedJsonObject = getObjectFromString( properties.json ),
                 templateDataKeys = [];
 
+            if ( properties.clearCssFromHead ) {
+                clearCssStyleTagsFromHead();
+            }
+
             if ( isDefinedObject( properties.templateData ) ) {
                 for ( var templateDataKey in properties.templateData ) {
                     if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
@@ -231,7 +237,7 @@
                             element.innerHTML = _string.empty;
                         }
 
-                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties.templateData );
+                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties );
                     }
                 }
             }
@@ -240,8 +246,9 @@
         return _this;
     }
 
-    function writeNode( element, jsonObject, templateDataKeys, templateData ) {
-        var templateDataKeysLength = templateDataKeys.length;
+    function writeNode( element, jsonObject, templateDataKeys, properties ) {
+        var templateDataKeysLength = templateDataKeys.length,
+            cssStyles = [];
 
         for ( var jsonKey in jsonObject ) {
             if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
@@ -253,7 +260,11 @@
             } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
                 var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
 
-                element.style[ cssStyleName ] = jsonObject[jsonKey];
+                if ( !properties.addCssToHead ) {
+                    element.style[ cssStyleName ] = jsonObject[ jsonKey ];
+                } else {
+                    cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
+                }
 
             } else if ( jsonKey === _json.text ) {
                 element.innerHTML = jsonObject[ jsonKey ];
@@ -262,8 +273,8 @@
                     for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  templateDataKeysLength; templateDataKeyIndex++ ) {
                         var templateDataKey = templateDataKeys[ templateDataKeyIndex ];
 
-                        if ( templateData.hasOwnProperty( templateDataKey ) ) {
-                            element.innerHTML = replaceAll( element.innerHTML, templateDataKey, templateData[ templateDataKey ] );
+                        if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                            element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
                         }
                     }
                 }
@@ -278,11 +289,41 @@
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
                             var childElement = createElement( element, childJsonKey.toLowerCase() );
 
-                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, templateData );
+                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties );
                         }
                     }
                 }
             }
+        }
+
+        if ( cssStyles.length > 0 ) {
+            writeCssStyleTag( element, cssStyles );
+        } 
+    }
+
+    function writeCssStyleTag( element, cssStyles ) {
+        var head = _parameter_Document.getElementsByTagName( "head" )[ 0 ];
+
+        if ( !isDefinedString( element.id ) ) {
+            element.id = newGuid();
+        }
+
+        var cssLines = [];
+        cssLines.push( "#" + element.id + " {" );
+        cssLines = cssLines.concat( cssStyles );
+        cssLines.push( "}" );
+
+        var style = createElement( head, "style" );
+        style.type = "text/css";
+        style.appendChild( _parameter_Document.createTextNode( cssLines.join( _string.newLine ) ) );
+    }
+
+    function clearCssStyleTagsFromHead() {
+        var styles = _parameter_Document.getElementsByTagName( "style" ),
+            stylesLength = styles.length;
+
+        for ( var styleIndex = 0; styleIndex < stylesLength; styleIndex++ ) {
+            styles[ styleIndex ].parentNode.removeChild( styles[ styleIndex ] );
         }
     }
 
@@ -349,6 +390,21 @@
      * String Handling
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
+
+    function newGuid() {
+        var result = [];
+
+        for ( var charIndex = 0; charIndex < 32; charIndex++ ) {
+            if ( charIndex === 8 || charIndex === 12 || charIndex === 16 || charIndex === 20 ) {
+                result.push( _string.dash );
+            }
+
+            var character = _parameter_Math.floor( _parameter_Math.random() * 16 ).toString( 16 );
+            result.push( character );
+        }
+
+        return result.join( _string.empty );
+    }
 
     function startsWithAnyCase( data, start ) {
         return data.substring( 0, start.length ).toLowerCase() === start.toLowerCase();
@@ -462,6 +518,7 @@
                 includeText: true,
                 includeChildren: true,
                 friendlyFormat: true,
+                indentSpaces: 2,
             };
 
             /**
@@ -550,6 +607,23 @@
             };
 
             /**
+             * indentSpaces().
+             * 
+             * States the total indent spaces that should be used for the friendly format JSON.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The spaces value that should be used (defaults to 2).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.indentSpaces = function( spaces ) {
+                __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
+
+                return this;
+            };
+
+            /**
              * get().
              * 
              * Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
@@ -594,7 +668,9 @@
                 json: _string.empty,
                 templateData: {},
                 removeAttributes: true,
-                clearHTML: true
+                clearHTML: true,
+                addCssToHead: false,
+                clearCssFromHead: false
             };
 
             /**
@@ -666,6 +742,40 @@
             };
 
             /**
+             * addCssToHead().
+             * 
+             * States if the CSS style properties should be written to a "style" tag in the HTML documents HEAD DOM element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            scope.addCssToHead = function( flag ) {
+                __properties.addCssToHead = getDefaultBoolean( flag, __properties.addCssToHead );
+
+                return this;
+            };
+
+            /**
+             * clearCssFromHead().
+             * 
+             * States if all the CSS style tags should be cleared from the HTML documents HEAD DOM element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            scope.clearCssFromHead = function( flag ) {
+                __properties.clearCssFromHead = getDefaultBoolean( flag, __properties.clearCssFromHead );
+
+                return this;
+            };
+
+            /**
              * write().
              * 
              * Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
@@ -724,7 +834,6 @@
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
         _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
-        _configuration.jsonIndentationSpaces = getDefaultNumber( _configuration.jsonIndentationSpaces, 2 );
         _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",
             "strong",
@@ -756,7 +865,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.3.0";
+        return "0.4.0";
     };
 
 
@@ -766,10 +875,11 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    ( function ( documentObject, windowObject, jsonObject ) {
+    ( function ( documentObject, windowObject, jsonObject, mathObject ) {
         _parameter_Document = documentObject;
         _parameter_Window = windowObject;
         _parameter_JSON = jsonObject;
+        _parameter_Math = mathObject;
 
         buildDefaultConfiguration();
 
@@ -777,5 +887,5 @@
             _parameter_Window.$jhson = this;
         }
 
-    } ) ( document, window, JSON );
+    } ) ( document, window, JSON, Math );
 } )();

@@ -1,5 +1,21 @@
 # JHson.js - Change Log:
 
+## Version 0.4.0:
+
+#### **New Features:**
+- CSS styles can now be written to the head of the HTML document instead of each DOM element!
+
+#### **Public Functions:**
+- Added "addCssToHead()" support for "html()", which will force all CSS style properties to be added as "style" tags to the head of the HTML document.
+- Added "indentSpaces()" support for "json()", which states the total number of indent spaces to use for the friendly format JSON returned from "get()".
+- Added "clearCssFromHead()" support for "html()", which will force all CSS style tags to be removed from the head of the HTML document.
+
+#### **Configuration Options:**
+- Removed the configuration option "jsonIndentationSpaces" (no longer needed).
+
+<br>
+
+
 ## Version 0.3.0:
 
 #### **Public Functions:**

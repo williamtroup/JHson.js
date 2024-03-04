@@ -151,6 +151,14 @@ States if all the CSS style tags should be cleared from the HTML documents HEAD 
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > logTemplateDataWarnings( *flag* )**:
+States if the template data variables not found in any data are logged as warnings.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > write( *element* )**:
 Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
 <br>

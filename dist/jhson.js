@@ -112,10 +112,9 @@
     return copy;
   }
   function writeHtml(element, properties) {
-    var writingScope = {css:{}};
+    var writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
       var convertedJsonObject = getObjectFromString(properties.json);
-      var templateDataKeys = [];
       if (properties.clearCssFromHead) {
         clearCssStyleTagsFromHead();
       }
@@ -123,12 +122,13 @@
         var templateDataKey;
         for (templateDataKey in properties.templateData) {
           if (properties.templateData.hasOwnProperty(templateDataKey)) {
-            templateDataKeys.push(templateDataKey);
+            writingScope.templateDataKeys.push(templateDataKey);
           }
         }
-        templateDataKeys = templateDataKeys.sort(function(a, b) {
+        writingScope.templateDataKeys = writingScope.templateDataKeys.sort(function(a, b) {
           return b.length - a.length;
         });
+        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
       }
       if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
         var key;
@@ -142,18 +142,20 @@
             if (properties.clearHTML) {
               element.innerHTML = _string.empty;
             }
-            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties, writingScope);
+            writeNode(element, convertedJsonObject.result[key], properties, writingScope);
           }
         }
       }
       if (properties.addCssToHead) {
         writeCssStyleTag(writingScope);
       }
+      if (properties.logTemplateDataWarnings) {
+        checkedForUnusedTemplateData(writingScope);
+      }
     }
     return _this;
   }
-  function writeNode(element, jsonObject, templateDataKeys, properties, writingScope) {
-    var templateDataKeysLength = templateDataKeys.length;
+  function writeNode(element, jsonObject, properties, writingScope) {
     var cssStyles = [];
     var jsonKey;
     for (jsonKey in jsonObject) {
@@ -170,12 +172,15 @@
         }
       } else if (jsonKey === _json.text) {
         element.innerHTML = jsonObject[jsonKey];
-        if (templateDataKeysLength > 0) {
+        if (writingScope.templateDataKeysLength > 0) {
           var templateDataKeyIndex = 0;
-          for (; templateDataKeyIndex < templateDataKeysLength; templateDataKeyIndex++) {
-            var templateDataKey = templateDataKeys[templateDataKeyIndex];
-            if (properties.templateData.hasOwnProperty(templateDataKey)) {
+          for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+            var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
+            if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
               element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
+              if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+                writingScope.templateDataKeysProcessed.push(templateDataKey);
+              }
             }
           }
         }
@@ -188,7 +193,7 @@
           for (childJsonKey in childJson) {
             if (childJson.hasOwnProperty(childJsonKey)) {
               var childElement = createElement(element, childJsonKey.toLowerCase());
-              writeNode(childElement, childJson[childJsonKey], templateDataKeys, properties, writingScope);
+              writeNode(childElement, childJson[childJsonKey], properties, writingScope);
             }
           }
         }
@@ -234,6 +239,18 @@
     var styleIndex = 0;
     for (; styleIndex < stylesLength; styleIndex++) {
       styles[styleIndex].parentNode.removeChild(styles[styleIndex]);
+    }
+  }
+  function checkedForUnusedTemplateData(writingScope) {
+    var templateDataKeysProcessedLength = writingScope.templateDataKeysProcessed.length;
+    if (writingScope.templateDataKeysLength > templateDataKeysProcessedLength) {
+      var templateDataKeyIndex = 0;
+      for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+        var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
+        if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+          console.warn("Template variable " + templateDataKey + " not found.");
+        }
+      }
     }
   }
   function createElement(container, type) {
@@ -400,7 +417,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false};
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false};
       scope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -423,6 +440,10 @@
       };
       scope.clearCssFromHead = function(flag) {
         __properties.clearCssFromHead = getDefaultBoolean(flag, __properties.clearCssFromHead);
+        return this;
+      };
+      scope.logTemplateDataWarnings = function(flag) {
+        __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
         return this;
       };
       scope.write = function(element) {

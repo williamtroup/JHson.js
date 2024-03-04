@@ -205,12 +205,14 @@
 
     function writeHtml( element, properties ) {
         var writingScope = {
-            css: {}
+            css: {},
+            templateDataKeys: [],
+            templateDataKeysLength: 0,
+            templateDataKeysProcessed: []
         };
 
         if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
-            var convertedJsonObject = getObjectFromString( properties.json ),
-                templateDataKeys = [];
+            var convertedJsonObject = getObjectFromString( properties.json );
 
             if ( properties.clearCssFromHead ) {
                 clearCssStyleTagsFromHead();
@@ -219,13 +221,15 @@
             if ( isDefinedObject( properties.templateData ) ) {
                 for ( var templateDataKey in properties.templateData ) {
                     if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
-                        templateDataKeys.push( templateDataKey );
+                        writingScope.templateDataKeys.push( templateDataKey );
                     }
                 }
 
-                templateDataKeys = templateDataKeys.sort( function( a, b ) {
+                writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
                     return b.length - a.length;
                 } );
+
+                writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
             }
 
             if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
@@ -241,7 +245,7 @@
                             element.innerHTML = _string.empty;
                         }
 
-                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties, writingScope );
+                        writeNode( element, convertedJsonObject.result[ key ], properties, writingScope );
                     }
                 }
             }
@@ -249,14 +253,17 @@
             if ( properties.addCssToHead ) {
                 writeCssStyleTag( writingScope );
             }
+
+            if ( properties.logTemplateDataWarnings ) {
+                checkedForUnusedTemplateData( writingScope );
+            }
         }
 
         return _this;
     }
 
-    function writeNode( element, jsonObject, templateDataKeys, properties, writingScope ) {
-        var templateDataKeysLength = templateDataKeys.length,
-            cssStyles = [];
+    function writeNode( element, jsonObject, properties, writingScope ) {
+        var cssStyles = [];
 
         for ( var jsonKey in jsonObject ) {
             if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
@@ -277,12 +284,16 @@
             } else if ( jsonKey === _json.text ) {
                 element.innerHTML = jsonObject[ jsonKey ];
 
-                if ( templateDataKeysLength > 0 ) {
-                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  templateDataKeysLength; templateDataKeyIndex++ ) {
-                        var templateDataKey = templateDataKeys[ templateDataKeyIndex ];
+                if ( writingScope.templateDataKeysLength > 0 ) {
+                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                        var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
-                        if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                        if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
                             element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
+
+                            if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                                writingScope.templateDataKeysProcessed.push( templateDataKey );
+                            }
                         }
                     }
                 }
@@ -297,7 +308,7 @@
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
                             var childElement = createElement( element, childJsonKey.toLowerCase() );
 
-                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties, writingScope );
+                            writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
                         }
                     }
                 }
@@ -354,6 +365,20 @@
 
         for ( var styleIndex = 0; styleIndex < stylesLength; styleIndex++ ) {
             styles[ styleIndex ].parentNode.removeChild( styles[ styleIndex ] );
+        }
+    }
+
+    function checkedForUnusedTemplateData( writingScope ) {
+        var templateDataKeysProcessedLength = writingScope.templateDataKeysProcessed.length;
+
+        if ( writingScope.templateDataKeysLength > templateDataKeysProcessedLength ) {
+            for ( var templateDataKeyIndex = 0; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
+
+                if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                    console.warn( "Template variable " + templateDataKey + " not found." );
+                }
+            }
         }
     }
 
@@ -754,7 +779,8 @@
                 removeAttributes: true,
                 clearHTML: true,
                 addCssToHead: false,
-                clearCssFromHead: false
+                clearCssFromHead: false,
+                logTemplateDataWarnings: false
             };
 
             /**
@@ -855,6 +881,23 @@
              */
             scope.clearCssFromHead = function( flag ) {
                 __properties.clearCssFromHead = getDefaultBoolean( flag, __properties.clearCssFromHead );
+
+                return this;
+            };
+
+            /**
+             * logTemplateDataWarnings().
+             * 
+             * States if the template data variables not found in any data are logged as warnings.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            scope.logTemplateDataWarnings = function( flag ) {
+                __properties.logTemplateDataWarnings = getDefaultBoolean( flag, __properties.logTemplateDataWarnings );
 
                 return this;
             };

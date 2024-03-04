@@ -2,6 +2,9 @@
 
 ## Version 0.6.0:
 
+#### **Public Functions:**
+- Added "logTemplateDataWarnings()" support for "html()", which states if the template variables not found should be logged as warnings when "write()" is called.
+
 #### **Fixes & Improvements:**
 - Updated README.md and README_NUGET.md to include the latest chained function calls.
 

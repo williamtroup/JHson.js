@@ -77,6 +77,14 @@ States the CSS properties that should not be included in the JSON.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > ignoreAttributes( *attributes* )**:
+States the attributes that should not be included in the JSON.
+<br>
+***Parameter: attributes***: '*Object*' - The attributes to ignore (can be an array of strings, or a space separated string, and defaults to []).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > get( *element* )**:
 Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
 <br>

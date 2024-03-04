@@ -19,10 +19,10 @@
     var childrenLength = element.children.length;
     var childrenAdded = 0;
     if (properties.includeAttributes) {
-      getElementAttributes(element, result);
+      getElementAttributes(element, result, properties);
     }
     if (properties.includeCssProperties) {
-      getElementCssStyles(element, result, properties, parentCssStyles);
+      getElementCssProperties(element, result, properties, parentCssStyles);
     }
     if (properties.includeChildren && childrenLength > 0) {
       childrenAdded = getElementChildren(element, result, childrenLength, properties, parentCssStyles);
@@ -35,7 +35,7 @@
     }
     return {nodeName:element.nodeName.toLowerCase(), nodeValues:result};
   }
-  function getElementAttributes(element, result) {
+  function getElementAttributes(element, result, properties) {
     var attributesLength = element.attributes.length;
     if (element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
       result[_json.text] = element.value;
@@ -43,12 +43,12 @@
     var attributeIndex = 0;
     for (; attributeIndex < attributesLength; attributeIndex++) {
       var attribute = element.attributes[attributeIndex];
-      if (isDefinedString(attribute.nodeName)) {
+      if (isDefinedString(attribute.nodeName) && properties.ignoreAttributes.indexOf(attribute.nodeName) === _value.notFound) {
         result[_json.attribute + attribute.nodeName] = attribute.nodeValue;
       }
     }
   }
-  function getElementCssStyles(element, result, properties, parentCssStyles) {
+  function getElementCssProperties(element, result, properties, parentCssStyles) {
     if (_parameter_Window.getComputedStyle) {
       var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle(element);
       var cssComputedStylesLength = cssComputedStyles.length;
@@ -353,7 +353,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[]};
+      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[]};
       scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
@@ -384,6 +384,10 @@
       };
       scope.ignoreCssProperties = function(properties) {
         __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
+        return this;
+      };
+      scope.ignoreAttributes = function(attributes) {
+        __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
         return this;
       };
       scope.get = function(element) {

@@ -78,11 +78,11 @@
             childrenAdded = 0;
 
         if ( properties.includeAttributes ) {
-            getElementAttributes( element, result );
+            getElementAttributes( element, result, properties );
         }
 
         if ( properties.includeCssProperties ) {
-            getElementCssStyles( element, result, properties, parentCssStyles );
+            getElementCssProperties( element, result, properties, parentCssStyles );
         }
 
         if ( properties.includeChildren && childrenLength > 0 ) {
@@ -103,7 +103,7 @@
         };
     }
 
-    function getElementAttributes( element, result ) {
+    function getElementAttributes( element, result, properties ) {
         var attributesLength = element.attributes.length;
 
         if ( element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
@@ -113,13 +113,13 @@
         for ( var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++ ) {
             var attribute = element.attributes[ attributeIndex ];
 
-            if ( isDefinedString( attribute.nodeName ) ) {
+            if ( isDefinedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === _value.notFound ) {
                 result[ _json.attribute + attribute.nodeName ] = attribute.nodeValue;
             }
         }
     }
 
-    function getElementCssStyles( element, result, properties, parentCssStyles ) {
+    function getElementCssProperties( element, result, properties, parentCssStyles ) {
         if ( _parameter_Window.getComputedStyle ) {
             var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle( element ),
                 cssComputedStylesLength = cssComputedStyles.length;
@@ -550,7 +550,8 @@
                 friendlyFormat: true,
                 indentSpaces: 2,
                 ignoreNodeTypes: [],
-                ignoreCssProperties: []
+                ignoreCssProperties: [],
+                ignoreAttributes: []
             };
 
             /**
@@ -685,6 +686,23 @@
              */
             scope.ignoreCssProperties = function( properties ) {
                 __properties.ignoreCssProperties = getDefaultStringOrArray( properties, __properties.ignoreCssProperties );
+
+                return this;
+            };
+
+            /**
+             * ignoreAttributes().
+             * 
+             * States the attributes that should not be included in the JSON.
+             * 
+             * @public
+             * 
+             * @param       {Object}    attributes                          The attributes to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.ignoreAttributes = function( attributes ) {
+                __properties.ignoreAttributes = getDefaultStringOrArray( attributes, __properties.ignoreAttributes );
 
                 return this;
             };

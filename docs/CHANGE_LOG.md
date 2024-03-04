@@ -8,6 +8,7 @@
 - When "addCssToHead()" is used for "html()", the CSS will now use the CSS class from the DOM element (it reverts back to the DOM element ID if not available).
 - Added "ignoreNodeTypes()" support for "json()", which states the node types that should not be included in the JSON returned from "get()".
 - Added "ignoreCssProperties()" support for "json()", which states the CSS properties that should not be included in the JSON returned from "get()".
+- Added "ignoreAttributes()" support for "json()", which states the attributes that should not be included in the JSON returned from "get()".
 
 #### **Configuration Options:**
 - Removed the configuration option "nodeTypesToIgnore" (no longer needed).

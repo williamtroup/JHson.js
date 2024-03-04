@@ -77,7 +77,7 @@
       if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) > _value.notFound) {
         totalChildren++;
       } else {
-        if (_configuration.nodeTypesToIgnore.indexOf(childElementData.nodeName.toLowerCase()) === _value.notFound) {
+        if (properties.ignoreNodeTypes.indexOf(childElementData.nodeName.toLowerCase()) === _value.notFound) {
           addChild = true;
           totalChildren++;
         }
@@ -337,7 +337,6 @@
   function buildDefaultConfiguration(newConfiguration) {
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
-    _configuration.nodeTypesToIgnore = getDefaultStringOrArray(_configuration.nodeTypesToIgnore, []);
     _configuration.cssPropertiesToIgnore = getDefaultStringOrArray(_configuration.cssPropertiesToIgnore, []);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
   }
@@ -355,7 +354,7 @@
     var scope = null;
     (function() {
       scope = this;
-      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2};
+      var __properties = {includeAttributes:true, includeCssStyles:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[]};
       scope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
@@ -378,6 +377,10 @@
       };
       scope.indentSpaces = function(spaces) {
         __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
+        return this;
+      };
+      scope.ignoreNodeTypes = function(types) {
+        __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
         return this;
       };
       scope.get = function(element) {

@@ -95,6 +95,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .includeChildren( true )
         .friendlyFormat( true )
         .indentSpaces( 2 )
+        .ignoreNodeTypes( "q" )
         .get( header );
 
     $jhson

@@ -48,6 +48,11 @@
                 <label for="indentSpaces">Indent Spaces: </label>
                 <br>
                 <input type="number" id="indentSpaces" value="2">
+                <br>
+
+                <label for="ignoreNodeTypes">Ignore Node Types: </label>
+                <br>
+                <input type="text" id="ignoreNodeTypes" value="">
             </div>
             <br>
 
@@ -99,7 +104,8 @@
             _CLEAR_HTML = document.getElementById( "clearHTML" ),
             _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" ),
             _INDENT_SPACES = document.getElementById( "indentSpaces" ),
-            _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" );
+            _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" ),
+            _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -118,6 +124,7 @@
                 .includeChildren( _INCLUDE_CHILDREN.checked )
                 .friendlyFormat( _FRIENDLY_FORMAT.checked )
                 .indentSpaces( parseInt( _INDENT_SPACES.value ) )
+                .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
                 .get( _BODY );
         }
 

@@ -5,6 +5,10 @@
 #### **Public Functions:**
 - When "addCssToHead()" is used for "html()", all the CSS is now placed in one "style" node in the HTML document head, instead of multiple ones!
 - When "addCssToHead()" is used for "html()", the CSS will now use the CSS class from the DOM element (it reverts back to the DOM element ID if not available).
+- Added "ignoreNodeTypes()" support for "json()", which states the node types that should not be included in the JSON returned from "get()".
+
+#### **Configuration Options:**
+- Removed the configuration option "nodeTypesToIgnore" (no longer needed).
 
 #### **Fixes & Improvements:**
 - Fixed a minor formatting issue in the "package.json" file.

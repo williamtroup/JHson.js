@@ -154,7 +154,7 @@
                 totalChildren++;
             } else {
 
-                if ( _configuration.nodeTypesToIgnore.indexOf( childElementData.nodeName.toLowerCase() ) === _value.notFound ) {
+                if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName.toLowerCase() ) === _value.notFound ) {
                     addChild = true;
                     totalChildren++;
                 }
@@ -549,6 +549,7 @@
                 includeChildren: true,
                 friendlyFormat: true,
                 indentSpaces: 2,
+                ignoreNodeTypes: []
             };
 
             /**
@@ -649,6 +650,23 @@
              */
             scope.indentSpaces = function( spaces ) {
                 __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
+
+                return this;
+            };
+
+            /**
+             * ignoreNodeTypes().
+             * 
+             * States the node types that should not be included in the JSON.
+             * 
+             * @public
+             * 
+             * @param       {Object}    types                               The node types to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            scope.ignoreNodeTypes = function( types ) {
+                __properties.ignoreNodeTypes = getDefaultStringOrArray( types, __properties.ignoreNodeTypes );
 
                 return this;
             };
@@ -862,7 +880,6 @@
     function buildDefaultConfiguration( newConfiguration ) {
         _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.nodeTypesToIgnore = getDefaultStringOrArray( _configuration.nodeTypesToIgnore, [] );
         _configuration.cssPropertiesToIgnore = getDefaultStringOrArray( _configuration.cssPropertiesToIgnore, [] );
         _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",

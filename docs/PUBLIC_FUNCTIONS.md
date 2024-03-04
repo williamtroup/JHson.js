@@ -61,6 +61,14 @@ States the total indent spaces that should be used for the friendly format JSON.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > ignoreNodeTypes( *types* )**:
+States the node types that should not be included in the JSON.
+<br>
+***Parameter: types***: '*Object*' - The node types to ignore (can be an array of strings, or a space separated string, and defaults to []).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > get( *element* )**:
 Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
 <br>

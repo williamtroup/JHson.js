@@ -1,34 +1,34 @@
 {
-    "name": "jhson.js",
-    "title": "JHson.js",
-    "description": "A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.",
-    "version": "0.5.0",
-    "main": "dist/jhson.js",
-    "homepage": "https://www.william-troup.com/jhson-js/",
-    "author": {
-      "name": "Bunoon"
-    },
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/williamtroup/JHson.js"
-    },
-    "keywords": [
-      "javascript",
-      "css",
-      "html5",
-      "jhson.js",
-      "json",
-      "html",
-      "convert",
-      "conversion",
-      "converter",
-      "template",
-      "render",
-      "text",
-      "formatting"
-    ],
-    "bugs": {
-      "url": "https://github.com/williamtroup/JHson.js/issues"
-    },
-    "license": "MIT"
-  }
+  "name": "jhson.js",
+  "title": "JHson.js",
+  "description": "A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.",
+  "version": "0.5.0",
+  "main": "dist/jhson.js",
+  "homepage": "https://www.william-troup.com/jhson-js/",
+  "author": {
+    "name": "Bunoon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/williamtroup/JHson.js"
+  },
+  "keywords": [
+    "javascript",
+    "css",
+    "html5",
+    "jhson.js",
+    "json",
+    "html",
+    "convert",
+    "conversion",
+    "converter",
+    "template",
+    "render",
+    "text",
+    "formatting"
+  ],
+  "bugs": {
+    "url": "https://github.com/williamtroup/JHson.js/issues"
+  },
+  "license": "MIT"
+}

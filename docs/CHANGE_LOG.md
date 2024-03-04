@@ -1,7 +1,9 @@
 # JHson.js - Change Log:
 
 ## Version 0.5.0:
-- 
+
+#### **Fixes & Improvements:**
+- Fixed a minor formatting issue in the "package.json" file.
 
 <br>
 

@@ -360,7 +360,7 @@
     }
 
     function clearCssStyleTagsFromHead() {
-        var styles = _parameter_Document.getElementsByTagName( "style" ),
+        var styles = [].slice.call( _parameter_Document.getElementsByTagName( "styles" ) ),
             stylesLength = styles.length;
 
         for ( var styleIndex = 0; styleIndex < stylesLength; styleIndex++ ) {

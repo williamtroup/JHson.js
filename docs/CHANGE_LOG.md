@@ -6,6 +6,7 @@
 - Added "logTemplateDataWarnings()" support for "html()", which states if the template variables not found should be logged as warnings when "write()" is called.
 
 #### **Fixes & Improvements:**
+- Fixed "clearCssFromHead()" throwing an error when clearing the style tags from the the DOM documents head.
 - Updated README.md and README_NUGET.md to include the latest chained function calls.
 
 <br>

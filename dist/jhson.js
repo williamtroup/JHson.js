@@ -234,7 +234,7 @@
     style.appendChild(_parameter_Document.createTextNode(cssLines.join(_string.newLine)));
   }
   function clearCssStyleTagsFromHead() {
-    var styles = _parameter_Document.getElementsByTagName("style");
+    var styles = [].slice.call(_parameter_Document.getElementsByTagName("styles"));
     var stylesLength = styles.length;
     var styleIndex = 0;
     for (; styleIndex < stylesLength; styleIndex++) {

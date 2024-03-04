@@ -95,7 +95,7 @@
       if (childrenAdded > 0 && isDefined(result[_json.children]) && result[_json.children].length === 0) {
         result[_json.text] = element.innerHTML;
       } else {
-        if (element.innerText === element.innerHTML) {
+        if (element.innerText.trim() === element.innerHTML.trim()) {
           result[_json.text] = element.innerText;
         }
       }

@@ -177,7 +177,7 @@
                 result[ _json.text ] = element.innerHTML;
             } else {
     
-                if ( element.innerText === element.innerHTML ) {
+                if ( element.innerText.trim() === element.innerHTML.trim() ) {
                     result[ _json.text ] = element.innerText;
                 }
             }

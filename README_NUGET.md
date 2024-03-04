@@ -18,6 +18,7 @@
 - Write your JSON directly to any DOM element for rendering.
 - Copy the layout for an entire page without additional files!
 - Data templating for text.
+- Write CSS directly back to the head for each element!
 
 
 ## What browsers are supported?

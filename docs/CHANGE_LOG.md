@@ -5,6 +5,7 @@
 #### **Fixes & Improvements:**
 - Fixed a minor formatting issue in the "package.json" file.
 - Updated README.md and README_NUGET.md to include the latest chained function calls.
+- Updated README.md and README_NUGET.md to include the new features added recently.
 
 <br>
 

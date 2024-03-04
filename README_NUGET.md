@@ -74,6 +74,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .includeText( true )
         .includeChildren( true )
         .friendlyFormat( true )
+        .indentSpaces( 2 )
         .get( header );
 
     $jhson
@@ -83,6 +84,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .removeAttributes( true )
         .clearHTML( true )
         .addCssToHead( false )
+        .clearCssFromHead( false )
         .write( header );
 </script>
 ```

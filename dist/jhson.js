@@ -343,7 +343,7 @@
         }
       } catch (e2) {
         if (!_configuration.safeMode) {
-          console.error("Errors in object: " + e1.message + ", " + e2.message);
+          console.error(_configuration.objectErrorText.replace("{{error_1}}", e1.message).replace("{{error_2}}", e2.message));
           parsed = false;
         }
         result = null;
@@ -359,6 +359,7 @@
   }
   function buildDefaultConfigurationStrings() {
     _configuration.variableWarningText = getDefaultString(_configuration.variableWarningText, "Template variable {{variable_name}} not found.");
+    _configuration.objectErrorText = getDefaultString(_configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
   }
   var _this = this;
   var _parameter_Document = null;

@@ -20,6 +20,7 @@ Below are all the configuration options that can be passed to the "setConfigurat
 | Type: | Name: | Description: |
 | --- | --- | --- |
 | *string* | variableWarningText | The warning text that should be shown in the console when a template variable is not used (defaults to "Template variable {{variable_name}} not found."). |
+| *string* | objectErrorText | The error text that should be shown when an object error is detected (defaults to "Errors in object: {{error_1}}, {{error_2}}"). |
 
 <br/>
 

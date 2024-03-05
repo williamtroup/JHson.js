@@ -7,6 +7,7 @@
 
 #### **Configuration Options:**
 - Added new configuration option "variableWarningText", which states the warning text that should be shown in the console when a template variable is not used (defaults to "Template variable {{variable_name}} not found.").
+- Added new configuration option "objectErrorText", which states the error text that should be shown when an object error is detected (defaults to "Errors in object: {{error_1}}, {{error_2}}").
 
 #### **Fixes & Improvements:**
 - Fixed "clearCssFromHead()" throwing an error when clearing the style tags from the the DOM documents head.

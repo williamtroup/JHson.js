@@ -5,6 +5,9 @@
 #### **Public Functions:**
 - Added "logTemplateDataWarnings()" support for "html()", which states if the template variables not found should be logged as warnings when "write()" is called.
 
+#### **Configuration Options:**
+- Added new configuration option "variableWarningText", which states the warning text that should be shown in the console when a template variable is not used (defaults to "Template variable {{variable_name}} not found.").
+
 #### **Fixes & Improvements:**
 - Fixed "clearCssFromHead()" throwing an error when clearing the style tags from the the DOM documents head.
 - Updated README.md and README_NUGET.md to include the latest chained function calls.

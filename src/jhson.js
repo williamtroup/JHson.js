@@ -376,7 +376,7 @@
                 var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
                 if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
-                    console.warn( "Template variable " + templateDataKey + " not found." );
+                    console.warn( _configuration.variableWarningText.replace( "{{variable_name}}", templateDataKey ) );
                 }
             }
         }
@@ -971,6 +971,12 @@
             "sub",
             "sup"
         ] );
+
+        buildDefaultConfigurationStrings();
+    }
+
+    function buildDefaultConfigurationStrings() {
+        _configuration.variableWarningText = getDefaultString( _configuration.variableWarningText, "Template variable {{variable_name}} not found." );
     }
 
 

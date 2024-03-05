@@ -248,7 +248,7 @@
       for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
         var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
         if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
-          console.warn("Template variable " + templateDataKey + " not found.");
+          console.warn(_configuration.variableWarningText.replace("{{variable_name}}", templateDataKey));
         }
       }
     }
@@ -355,6 +355,10 @@
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
+    buildDefaultConfigurationStrings();
+  }
+  function buildDefaultConfigurationStrings() {
+    _configuration.variableWarningText = getDefaultString(_configuration.variableWarningText, "Template variable {{variable_name}} not found.");
   }
   var _this = this;
   var _parameter_Document = null;

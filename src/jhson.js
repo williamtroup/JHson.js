@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.5.0
+ * @version     v0.6.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -205,12 +205,14 @@
 
     function writeHtml( element, properties ) {
         var writingScope = {
-            css: {}
+            css: {},
+            templateDataKeys: [],
+            templateDataKeysLength: 0,
+            templateDataKeysProcessed: []
         };
 
         if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
-            var convertedJsonObject = getObjectFromString( properties.json ),
-                templateDataKeys = [];
+            var convertedJsonObject = getObjectFromString( properties.json );
 
             if ( properties.clearCssFromHead ) {
                 clearCssStyleTagsFromHead();
@@ -219,13 +221,15 @@
             if ( isDefinedObject( properties.templateData ) ) {
                 for ( var templateDataKey in properties.templateData ) {
                     if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
-                        templateDataKeys.push( templateDataKey );
+                        writingScope.templateDataKeys.push( templateDataKey );
                     }
                 }
 
-                templateDataKeys = templateDataKeys.sort( function( a, b ) {
+                writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
                     return b.length - a.length;
                 } );
+
+                writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
             }
 
             if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
@@ -241,7 +245,7 @@
                             element.innerHTML = _string.empty;
                         }
 
-                        writeNode( element, convertedJsonObject.result[ key ], templateDataKeys, properties, writingScope );
+                        writeNode( element, convertedJsonObject.result[ key ], properties, writingScope );
                     }
                 }
             }
@@ -249,14 +253,17 @@
             if ( properties.addCssToHead ) {
                 writeCssStyleTag( writingScope );
             }
+
+            if ( properties.logTemplateDataWarnings ) {
+                checkedForUnusedTemplateData( writingScope );
+            }
         }
 
         return _this;
     }
 
-    function writeNode( element, jsonObject, templateDataKeys, properties, writingScope ) {
-        var templateDataKeysLength = templateDataKeys.length,
-            cssStyles = [];
+    function writeNode( element, jsonObject, properties, writingScope ) {
+        var cssStyles = [];
 
         for ( var jsonKey in jsonObject ) {
             if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
@@ -277,12 +284,16 @@
             } else if ( jsonKey === _json.text ) {
                 element.innerHTML = jsonObject[ jsonKey ];
 
-                if ( templateDataKeysLength > 0 ) {
-                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  templateDataKeysLength; templateDataKeyIndex++ ) {
-                        var templateDataKey = templateDataKeys[ templateDataKeyIndex ];
+                if ( writingScope.templateDataKeysLength > 0 ) {
+                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                        var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
-                        if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                        if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
                             element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
+
+                            if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                                writingScope.templateDataKeysProcessed.push( templateDataKey );
+                            }
                         }
                     }
                 }
@@ -297,7 +308,7 @@
                         if ( childJson.hasOwnProperty( childJsonKey ) ) {
                             var childElement = createElement( element, childJsonKey.toLowerCase() );
 
-                            writeNode( childElement, childJson[ childJsonKey ], templateDataKeys, properties, writingScope );
+                            writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
                         }
                     }
                 }
@@ -349,11 +360,25 @@
     }
 
     function clearCssStyleTagsFromHead() {
-        var styles = _parameter_Document.getElementsByTagName( "style" ),
+        var styles = [].slice.call( _parameter_Document.getElementsByTagName( "styles" ) ),
             stylesLength = styles.length;
 
         for ( var styleIndex = 0; styleIndex < stylesLength; styleIndex++ ) {
             styles[ styleIndex ].parentNode.removeChild( styles[ styleIndex ] );
+        }
+    }
+
+    function checkedForUnusedTemplateData( writingScope ) {
+        var templateDataKeysProcessedLength = writingScope.templateDataKeysProcessed.length;
+
+        if ( writingScope.templateDataKeysLength > templateDataKeysProcessedLength ) {
+            for ( var templateDataKeyIndex = 0; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
+
+                if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                    console.warn( _configuration.variableWarningText.replace( "{{variable_name}}", templateDataKey ) );
+                }
+            }
         }
     }
 
@@ -506,7 +531,7 @@
                 
             } catch ( e2 ) {
                 if ( !_configuration.safeMode ) {
-                    console.error( "Errors in object: " + e1.message + ", " + e2.message );
+                    console.error( _configuration.objectErrorText.replace( "{{error_1}}",  e1.message ).replace( "{{error_2}}",  e2.message ) );
                     parsed = false;
                 }
                 
@@ -537,10 +562,10 @@
      * @returns     {Object}                                                The JSON properties object.
      */
     this.json = function() {
-        var scope = null;
+        var jsonScope = null;
 
         ( function() {
-            scope = this;
+            jsonScope = this;
 
             var __properties = {
                 includeAttributes: true,
@@ -565,7 +590,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeAttributes = function( flag ) {
+            jsonScope.includeAttributes = function( flag ) {
                 __properties.includeAttributes = getDefaultBoolean( flag, __properties.includeAttributes );
 
                 return this;
@@ -582,7 +607,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeCssProperties = function( flag ) {
+            jsonScope.includeCssProperties = function( flag ) {
                 __properties.includeCssProperties = getDefaultBoolean( flag, __properties.includeCssProperties );
 
                 return this;
@@ -599,7 +624,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeText = function( flag ) {
+            jsonScope.includeText = function( flag ) {
                 __properties.includeText = getDefaultBoolean( flag, __properties.includeText );
 
                 return this;
@@ -616,7 +641,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeChildren = function( flag ) {
+            jsonScope.includeChildren = function( flag ) {
                 __properties.includeChildren = getDefaultBoolean( flag, __properties.includeChildren );
 
                 return this;
@@ -633,7 +658,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.friendlyFormat = function( flag ) {
+            jsonScope.friendlyFormat = function( flag ) {
                 __properties.friendlyFormat = getDefaultBoolean( flag, __properties.friendlyFormat );
 
                 return this;
@@ -650,7 +675,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.indentSpaces = function( spaces ) {
+            jsonScope.indentSpaces = function( spaces ) {
                 __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
 
                 return this;
@@ -667,7 +692,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.ignoreNodeTypes = function( types ) {
+            jsonScope.ignoreNodeTypes = function( types ) {
                 __properties.ignoreNodeTypes = getDefaultStringOrArray( types, __properties.ignoreNodeTypes );
 
                 return this;
@@ -684,7 +709,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.ignoreCssProperties = function( properties ) {
+            jsonScope.ignoreCssProperties = function( properties ) {
                 __properties.ignoreCssProperties = getDefaultStringOrArray( properties, __properties.ignoreCssProperties );
 
                 return this;
@@ -701,7 +726,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.ignoreAttributes = function( attributes ) {
+            jsonScope.ignoreAttributes = function( attributes ) {
                 __properties.ignoreAttributes = getDefaultStringOrArray( attributes, __properties.ignoreAttributes );
 
                 return this;
@@ -718,12 +743,12 @@
              * 
              * @returns     {string}                                        The JSON string.
              */
-            scope.get = function( element ) {
+            jsonScope.get = function( element ) {
                 return getJSON( element, __properties );
             };
         } )();
         
-        return scope;
+        return jsonScope;
     };
 
 
@@ -743,10 +768,10 @@
      * @returns     {Object}                                                The HTML properties object.
      */
     this.html = function() {
-        var scope = null;
+        var htmlScope = null;
 
         ( function() {
-            scope = this;
+            htmlScope = this;
             
             var __properties = {
                 json: _string.empty,
@@ -754,7 +779,8 @@
                 removeAttributes: true,
                 clearHTML: true,
                 addCssToHead: false,
-                clearCssFromHead: false
+                clearCssFromHead: false,
+                logTemplateDataWarnings: false
             };
 
             /**
@@ -768,7 +794,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.json = function( json ) {
+            htmlScope.json = function( json ) {
                 __properties.json = getDefaultString( json, __properties.json );
 
                 return this;
@@ -785,7 +811,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.templateData = function( templateData ) {
+            htmlScope.templateData = function( templateData ) {
                 __properties.templateData = getDefaultObject( templateData, __properties.templateData );
 
                 return this;
@@ -802,7 +828,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.removeAttributes = function( flag ) {
+            htmlScope.removeAttributes = function( flag ) {
                 __properties.removeAttributes = getDefaultBoolean( flag, __properties.removeAttributes );
 
                 return this;
@@ -819,7 +845,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.clearHTML = function( flag ) {
+            htmlScope.clearHTML = function( flag ) {
                 __properties.clearHTML = getDefaultBoolean( flag, __properties.clearHTML );
 
                 return this;
@@ -836,7 +862,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.addCssToHead = function( flag ) {
+            htmlScope.addCssToHead = function( flag ) {
                 __properties.addCssToHead = getDefaultBoolean( flag, __properties.addCssToHead );
 
                 return this;
@@ -853,8 +879,25 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.clearCssFromHead = function( flag ) {
+            htmlScope.clearCssFromHead = function( flag ) {
                 __properties.clearCssFromHead = getDefaultBoolean( flag, __properties.clearCssFromHead );
+
+                return this;
+            };
+
+            /**
+             * logTemplateDataWarnings().
+             * 
+             * States if the template data variables not found in any data are logged as warnings.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.logTemplateDataWarnings = function( flag ) {
+                __properties.logTemplateDataWarnings = getDefaultBoolean( flag, __properties.logTemplateDataWarnings );
 
                 return this;
             };
@@ -870,12 +913,12 @@
              * 
              * @returns     {string}                                        The JHson.js class instance.
              */
-            scope.write = function( element ) {
+            htmlScope.write = function( element ) {
                 return writeHtml( element, __properties );
             };
         } )();
         
-        return scope;
+        return htmlScope;
     };
 
 
@@ -928,6 +971,13 @@
             "sub",
             "sup"
         ] );
+
+        buildDefaultConfigurationStrings();
+    }
+
+    function buildDefaultConfigurationStrings() {
+        _configuration.variableWarningText = getDefaultString( _configuration.variableWarningText, "Template variable {{variable_name}} not found." );
+        _configuration.objectErrorText = getDefaultString( _configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
     }
 
 
@@ -947,7 +997,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.5.0";
+        return "0.6.0";
     };
 
 

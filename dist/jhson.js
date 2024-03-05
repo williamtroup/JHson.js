@@ -1,4 +1,4 @@
-/*! JHson.js v0.5.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v0.6.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
@@ -112,10 +112,9 @@
     return copy;
   }
   function writeHtml(element, properties) {
-    var writingScope = {css:{}};
+    var writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
       var convertedJsonObject = getObjectFromString(properties.json);
-      var templateDataKeys = [];
       if (properties.clearCssFromHead) {
         clearCssStyleTagsFromHead();
       }
@@ -123,12 +122,13 @@
         var templateDataKey;
         for (templateDataKey in properties.templateData) {
           if (properties.templateData.hasOwnProperty(templateDataKey)) {
-            templateDataKeys.push(templateDataKey);
+            writingScope.templateDataKeys.push(templateDataKey);
           }
         }
-        templateDataKeys = templateDataKeys.sort(function(a, b) {
+        writingScope.templateDataKeys = writingScope.templateDataKeys.sort(function(a, b) {
           return b.length - a.length;
         });
+        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
       }
       if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
         var key;
@@ -142,18 +142,20 @@
             if (properties.clearHTML) {
               element.innerHTML = _string.empty;
             }
-            writeNode(element, convertedJsonObject.result[key], templateDataKeys, properties, writingScope);
+            writeNode(element, convertedJsonObject.result[key], properties, writingScope);
           }
         }
       }
       if (properties.addCssToHead) {
         writeCssStyleTag(writingScope);
       }
+      if (properties.logTemplateDataWarnings) {
+        checkedForUnusedTemplateData(writingScope);
+      }
     }
     return _this;
   }
-  function writeNode(element, jsonObject, templateDataKeys, properties, writingScope) {
-    var templateDataKeysLength = templateDataKeys.length;
+  function writeNode(element, jsonObject, properties, writingScope) {
     var cssStyles = [];
     var jsonKey;
     for (jsonKey in jsonObject) {
@@ -170,12 +172,15 @@
         }
       } else if (jsonKey === _json.text) {
         element.innerHTML = jsonObject[jsonKey];
-        if (templateDataKeysLength > 0) {
+        if (writingScope.templateDataKeysLength > 0) {
           var templateDataKeyIndex = 0;
-          for (; templateDataKeyIndex < templateDataKeysLength; templateDataKeyIndex++) {
-            var templateDataKey = templateDataKeys[templateDataKeyIndex];
-            if (properties.templateData.hasOwnProperty(templateDataKey)) {
+          for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+            var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
+            if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
               element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
+              if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+                writingScope.templateDataKeysProcessed.push(templateDataKey);
+              }
             }
           }
         }
@@ -188,7 +193,7 @@
           for (childJsonKey in childJson) {
             if (childJson.hasOwnProperty(childJsonKey)) {
               var childElement = createElement(element, childJsonKey.toLowerCase());
-              writeNode(childElement, childJson[childJsonKey], templateDataKeys, properties, writingScope);
+              writeNode(childElement, childJson[childJsonKey], properties, writingScope);
             }
           }
         }
@@ -229,11 +234,23 @@
     style.appendChild(_parameter_Document.createTextNode(cssLines.join(_string.newLine)));
   }
   function clearCssStyleTagsFromHead() {
-    var styles = _parameter_Document.getElementsByTagName("style");
+    var styles = [].slice.call(_parameter_Document.getElementsByTagName("styles"));
     var stylesLength = styles.length;
     var styleIndex = 0;
     for (; styleIndex < stylesLength; styleIndex++) {
       styles[styleIndex].parentNode.removeChild(styles[styleIndex]);
+    }
+  }
+  function checkedForUnusedTemplateData(writingScope) {
+    var templateDataKeysProcessedLength = writingScope.templateDataKeysProcessed.length;
+    if (writingScope.templateDataKeysLength > templateDataKeysProcessedLength) {
+      var templateDataKeyIndex = 0;
+      for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+        var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
+        if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+          console.warn(_configuration.variableWarningText.replace("{{variable_name}}", templateDataKey));
+        }
+      }
     }
   }
   function createElement(container, type) {
@@ -326,7 +343,7 @@
         }
       } catch (e2) {
         if (!_configuration.safeMode) {
-          console.error("Errors in object: " + e1.message + ", " + e2.message);
+          console.error(_configuration.objectErrorText.replace("{{error_1}}", e1.message).replace("{{error_2}}", e2.message));
           parsed = false;
         }
         result = null;
@@ -338,6 +355,11 @@
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
+    buildDefaultConfigurationStrings();
+  }
+  function buildDefaultConfigurationStrings() {
+    _configuration.variableWarningText = getDefaultString(_configuration.variableWarningText, "Template variable {{variable_name}} not found.");
+    _configuration.objectErrorText = getDefaultString(_configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
   }
   var _this = this;
   var _parameter_Document = null;
@@ -350,86 +372,90 @@
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
   this.json = function() {
-    var scope = null;
+    var jsonScope = null;
     (function() {
-      scope = this;
+      jsonScope = this;
       var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[]};
-      scope.includeAttributes = function(flag) {
+      jsonScope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
       };
-      scope.includeCssProperties = function(flag) {
+      jsonScope.includeCssProperties = function(flag) {
         __properties.includeCssProperties = getDefaultBoolean(flag, __properties.includeCssProperties);
         return this;
       };
-      scope.includeText = function(flag) {
+      jsonScope.includeText = function(flag) {
         __properties.includeText = getDefaultBoolean(flag, __properties.includeText);
         return this;
       };
-      scope.includeChildren = function(flag) {
+      jsonScope.includeChildren = function(flag) {
         __properties.includeChildren = getDefaultBoolean(flag, __properties.includeChildren);
         return this;
       };
-      scope.friendlyFormat = function(flag) {
+      jsonScope.friendlyFormat = function(flag) {
         __properties.friendlyFormat = getDefaultBoolean(flag, __properties.friendlyFormat);
         return this;
       };
-      scope.indentSpaces = function(spaces) {
+      jsonScope.indentSpaces = function(spaces) {
         __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
         return this;
       };
-      scope.ignoreNodeTypes = function(types) {
+      jsonScope.ignoreNodeTypes = function(types) {
         __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
         return this;
       };
-      scope.ignoreCssProperties = function(properties) {
+      jsonScope.ignoreCssProperties = function(properties) {
         __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
         return this;
       };
-      scope.ignoreAttributes = function(attributes) {
+      jsonScope.ignoreAttributes = function(attributes) {
         __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
         return this;
       };
-      scope.get = function(element) {
+      jsonScope.get = function(element) {
         return getJSON(element, __properties);
       };
     })();
-    return scope;
+    return jsonScope;
   };
   this.html = function() {
-    var scope = null;
+    var htmlScope = null;
     (function() {
-      scope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false};
-      scope.json = function(json) {
+      htmlScope = this;
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false};
+      htmlScope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
       };
-      scope.templateData = function(templateData) {
+      htmlScope.templateData = function(templateData) {
         __properties.templateData = getDefaultObject(templateData, __properties.templateData);
         return this;
       };
-      scope.removeAttributes = function(flag) {
+      htmlScope.removeAttributes = function(flag) {
         __properties.removeAttributes = getDefaultBoolean(flag, __properties.removeAttributes);
         return this;
       };
-      scope.clearHTML = function(flag) {
+      htmlScope.clearHTML = function(flag) {
         __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
         return this;
       };
-      scope.addCssToHead = function(flag) {
+      htmlScope.addCssToHead = function(flag) {
         __properties.addCssToHead = getDefaultBoolean(flag, __properties.addCssToHead);
         return this;
       };
-      scope.clearCssFromHead = function(flag) {
+      htmlScope.clearCssFromHead = function(flag) {
         __properties.clearCssFromHead = getDefaultBoolean(flag, __properties.clearCssFromHead);
         return this;
       };
-      scope.write = function(element) {
+      htmlScope.logTemplateDataWarnings = function(flag) {
+        __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
+        return this;
+      };
+      htmlScope.write = function(element) {
         return writeHtml(element, __properties);
       };
     })();
-    return scope;
+    return htmlScope;
   };
   this.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;
@@ -446,7 +472,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "0.5.0";
+    return "0.6.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;

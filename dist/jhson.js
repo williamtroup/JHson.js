@@ -372,90 +372,90 @@
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
   this.json = function() {
-    var scope = null;
+    var jsonScope = null;
     (function() {
-      scope = this;
+      jsonScope = this;
       var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[]};
-      scope.includeAttributes = function(flag) {
+      jsonScope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
       };
-      scope.includeCssProperties = function(flag) {
+      jsonScope.includeCssProperties = function(flag) {
         __properties.includeCssProperties = getDefaultBoolean(flag, __properties.includeCssProperties);
         return this;
       };
-      scope.includeText = function(flag) {
+      jsonScope.includeText = function(flag) {
         __properties.includeText = getDefaultBoolean(flag, __properties.includeText);
         return this;
       };
-      scope.includeChildren = function(flag) {
+      jsonScope.includeChildren = function(flag) {
         __properties.includeChildren = getDefaultBoolean(flag, __properties.includeChildren);
         return this;
       };
-      scope.friendlyFormat = function(flag) {
+      jsonScope.friendlyFormat = function(flag) {
         __properties.friendlyFormat = getDefaultBoolean(flag, __properties.friendlyFormat);
         return this;
       };
-      scope.indentSpaces = function(spaces) {
+      jsonScope.indentSpaces = function(spaces) {
         __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
         return this;
       };
-      scope.ignoreNodeTypes = function(types) {
+      jsonScope.ignoreNodeTypes = function(types) {
         __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
         return this;
       };
-      scope.ignoreCssProperties = function(properties) {
+      jsonScope.ignoreCssProperties = function(properties) {
         __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
         return this;
       };
-      scope.ignoreAttributes = function(attributes) {
+      jsonScope.ignoreAttributes = function(attributes) {
         __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
         return this;
       };
-      scope.get = function(element) {
+      jsonScope.get = function(element) {
         return getJSON(element, __properties);
       };
     })();
-    return scope;
+    return jsonScope;
   };
   this.html = function() {
-    var scope = null;
+    var htmlScope = null;
     (function() {
-      scope = this;
+      htmlScope = this;
       var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false};
-      scope.json = function(json) {
+      htmlScope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
       };
-      scope.templateData = function(templateData) {
+      htmlScope.templateData = function(templateData) {
         __properties.templateData = getDefaultObject(templateData, __properties.templateData);
         return this;
       };
-      scope.removeAttributes = function(flag) {
+      htmlScope.removeAttributes = function(flag) {
         __properties.removeAttributes = getDefaultBoolean(flag, __properties.removeAttributes);
         return this;
       };
-      scope.clearHTML = function(flag) {
+      htmlScope.clearHTML = function(flag) {
         __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
         return this;
       };
-      scope.addCssToHead = function(flag) {
+      htmlScope.addCssToHead = function(flag) {
         __properties.addCssToHead = getDefaultBoolean(flag, __properties.addCssToHead);
         return this;
       };
-      scope.clearCssFromHead = function(flag) {
+      htmlScope.clearCssFromHead = function(flag) {
         __properties.clearCssFromHead = getDefaultBoolean(flag, __properties.clearCssFromHead);
         return this;
       };
-      scope.logTemplateDataWarnings = function(flag) {
+      htmlScope.logTemplateDataWarnings = function(flag) {
         __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
         return this;
       };
-      scope.write = function(element) {
+      htmlScope.write = function(element) {
         return writeHtml(element, __properties);
       };
     })();
-    return scope;
+    return htmlScope;
   };
   this.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;

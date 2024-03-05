@@ -562,10 +562,10 @@
      * @returns     {Object}                                                The JSON properties object.
      */
     this.json = function() {
-        var scope = null;
+        var jsonScope = null;
 
         ( function() {
-            scope = this;
+            jsonScope = this;
 
             var __properties = {
                 includeAttributes: true,
@@ -590,7 +590,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeAttributes = function( flag ) {
+            jsonScope.includeAttributes = function( flag ) {
                 __properties.includeAttributes = getDefaultBoolean( flag, __properties.includeAttributes );
 
                 return this;
@@ -607,7 +607,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeCssProperties = function( flag ) {
+            jsonScope.includeCssProperties = function( flag ) {
                 __properties.includeCssProperties = getDefaultBoolean( flag, __properties.includeCssProperties );
 
                 return this;
@@ -624,7 +624,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeText = function( flag ) {
+            jsonScope.includeText = function( flag ) {
                 __properties.includeText = getDefaultBoolean( flag, __properties.includeText );
 
                 return this;
@@ -641,7 +641,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.includeChildren = function( flag ) {
+            jsonScope.includeChildren = function( flag ) {
                 __properties.includeChildren = getDefaultBoolean( flag, __properties.includeChildren );
 
                 return this;
@@ -658,7 +658,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.friendlyFormat = function( flag ) {
+            jsonScope.friendlyFormat = function( flag ) {
                 __properties.friendlyFormat = getDefaultBoolean( flag, __properties.friendlyFormat );
 
                 return this;
@@ -675,7 +675,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.indentSpaces = function( spaces ) {
+            jsonScope.indentSpaces = function( spaces ) {
                 __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
 
                 return this;
@@ -692,7 +692,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.ignoreNodeTypes = function( types ) {
+            jsonScope.ignoreNodeTypes = function( types ) {
                 __properties.ignoreNodeTypes = getDefaultStringOrArray( types, __properties.ignoreNodeTypes );
 
                 return this;
@@ -709,7 +709,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.ignoreCssProperties = function( properties ) {
+            jsonScope.ignoreCssProperties = function( properties ) {
                 __properties.ignoreCssProperties = getDefaultStringOrArray( properties, __properties.ignoreCssProperties );
 
                 return this;
@@ -726,7 +726,7 @@
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            scope.ignoreAttributes = function( attributes ) {
+            jsonScope.ignoreAttributes = function( attributes ) {
                 __properties.ignoreAttributes = getDefaultStringOrArray( attributes, __properties.ignoreAttributes );
 
                 return this;
@@ -743,12 +743,12 @@
              * 
              * @returns     {string}                                        The JSON string.
              */
-            scope.get = function( element ) {
+            jsonScope.get = function( element ) {
                 return getJSON( element, __properties );
             };
         } )();
         
-        return scope;
+        return jsonScope;
     };
 
 
@@ -768,10 +768,10 @@
      * @returns     {Object}                                                The HTML properties object.
      */
     this.html = function() {
-        var scope = null;
+        var htmlScope = null;
 
         ( function() {
-            scope = this;
+            htmlScope = this;
             
             var __properties = {
                 json: _string.empty,
@@ -794,7 +794,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.json = function( json ) {
+            htmlScope.json = function( json ) {
                 __properties.json = getDefaultString( json, __properties.json );
 
                 return this;
@@ -811,7 +811,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.templateData = function( templateData ) {
+            htmlScope.templateData = function( templateData ) {
                 __properties.templateData = getDefaultObject( templateData, __properties.templateData );
 
                 return this;
@@ -828,7 +828,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.removeAttributes = function( flag ) {
+            htmlScope.removeAttributes = function( flag ) {
                 __properties.removeAttributes = getDefaultBoolean( flag, __properties.removeAttributes );
 
                 return this;
@@ -845,7 +845,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.clearHTML = function( flag ) {
+            htmlScope.clearHTML = function( flag ) {
                 __properties.clearHTML = getDefaultBoolean( flag, __properties.clearHTML );
 
                 return this;
@@ -862,7 +862,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.addCssToHead = function( flag ) {
+            htmlScope.addCssToHead = function( flag ) {
                 __properties.addCssToHead = getDefaultBoolean( flag, __properties.addCssToHead );
 
                 return this;
@@ -879,7 +879,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.clearCssFromHead = function( flag ) {
+            htmlScope.clearCssFromHead = function( flag ) {
                 __properties.clearCssFromHead = getDefaultBoolean( flag, __properties.clearCssFromHead );
 
                 return this;
@@ -896,7 +896,7 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            scope.logTemplateDataWarnings = function( flag ) {
+            htmlScope.logTemplateDataWarnings = function( flag ) {
                 __properties.logTemplateDataWarnings = getDefaultBoolean( flag, __properties.logTemplateDataWarnings );
 
                 return this;
@@ -913,12 +913,12 @@
              * 
              * @returns     {string}                                        The JHson.js class instance.
              */
-            scope.write = function( element ) {
+            htmlScope.write = function( element ) {
                 return writeHtml( element, __properties );
             };
         } )();
         
-        return scope;
+        return htmlScope;
     };
 
 

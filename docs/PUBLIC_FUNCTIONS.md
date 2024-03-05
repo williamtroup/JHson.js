@@ -64,7 +64,7 @@ States the total indent spaces that should be used for the friendly format JSON.
 #### **json() > ignoreNodeTypes( *types* )**:
 States the node types that should not be included in the JSON.
 <br>
-***Parameter: types***: '*Object*' - The node types to ignore (can be an array of strings, or a space separated string, and defaults to []).
+***Parameter: types***: '*Object*' - The node types to ignore (can be an array of strings, or a space-separated string, and defaults to []).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -72,7 +72,7 @@ States the node types that should not be included in the JSON.
 #### **json() > ignoreCssProperties( *properties* )**:
 States the CSS properties that should not be included in the JSON.
 <br>
-***Parameter: properties***: '*Object*' - The CSS properties to ignore (can be an array of strings, or a space separated string, and defaults to []).
+***Parameter: properties***: '*Object*' - The CSS properties to ignore (can be an array of strings, or a space-separated string, and defaults to []).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -80,7 +80,7 @@ States the CSS properties that should not be included in the JSON.
 #### **json() > ignoreAttributes( *attributes* )**:
 States the attributes that should not be included in the JSON.
 <br>
-***Parameter: attributes***: '*Object*' - The attributes to ignore (can be an array of strings, or a space separated string, and defaults to []).
+***Parameter: attributes***: '*Object*' - The attributes to ignore (can be an array of strings, or a space-separated string, and defaults to []).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>

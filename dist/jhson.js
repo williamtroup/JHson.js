@@ -125,12 +125,12 @@
         var key;
         for (key in convertedJsonObject.result) {
           if (key === element.nodeName.toLowerCase()) {
-            if (properties.removeAttributes) {
+            if (properties.removeOriginalAttributes) {
               for (; element.attributes.length > 0;) {
                 element.removeAttribute(element.attributes[0].name);
               }
             }
-            if (properties.clearHTML) {
+            if (properties.clearOriginalHTML) {
               element.innerHTML = _string.empty;
             }
             writeNode(element, convertedJsonObject.result[key], properties, writingScope);
@@ -436,7 +436,7 @@
     var htmlScope = null;
     (function() {
       htmlScope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
+      var __properties = {json:_string.empty, templateData:{}, removeOriginalAttributes:true, clearOriginalHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
       htmlScope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -445,12 +445,12 @@
         __properties.templateData = getDefaultObject(templateData, __properties.templateData);
         return this;
       };
-      htmlScope.removeAttributes = function(flag) {
-        __properties.removeAttributes = getDefaultBoolean(flag, __properties.removeAttributes);
+      htmlScope.removeOriginalAttributes = function(flag) {
+        __properties.removeOriginalAttributes = getDefaultBoolean(flag, __properties.removeOriginalAttributes);
         return this;
       };
-      htmlScope.clearHTML = function(flag) {
-        __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
+      htmlScope.clearOriginalHTML = function(flag) {
+        __properties.clearOriginalHTML = getDefaultBoolean(flag, __properties.clearOriginalHTML);
         return this;
       };
       htmlScope.addCssToHead = function(flag) {

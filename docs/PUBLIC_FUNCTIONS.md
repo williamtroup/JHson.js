@@ -119,7 +119,7 @@ States the template data that should be used inside each HTML DOM elements HTML.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
-#### **html() > removeAttributes( *flag* )**:
+#### **html() > removeOriginalAttributes( *flag* )**:
 States if the original attributes on the element should be removed.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
@@ -127,7 +127,7 @@ States if the original attributes on the element should be removed.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
-#### **html() > clearHTML( *flag* )**:
+#### **html() > clearOriginalHTML( *flag* )**:
 States if the original HTML in the element should be cleared.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).

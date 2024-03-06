@@ -225,13 +225,13 @@
             if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
                 for ( var key in convertedJsonObject.result ) {
                     if ( key === element.nodeName.toLowerCase() ) {
-                        if ( properties.removeAttributes ) {
+                        if ( properties.removeOriginalAttributes ) {
                             while ( element.attributes.length > 0 ) {
                                 element.removeAttribute( element.attributes[ 0 ].name );
                             }
                         }
 
-                        if ( properties.clearHTML ) {
+                        if ( properties.clearOriginalHTML ) {
                             element.innerHTML = _string.empty;
                         }
 
@@ -792,8 +792,8 @@
             var __properties = {
                 json: _string.empty,
                 templateData: {},
-                removeAttributes: true,
-                clearHTML: true,
+                removeOriginalAttributes: true,
+                clearOriginalHTML: true,
                 addCssToHead: false,
                 clearCssFromHead: false,
                 logTemplateDataWarnings: false,
@@ -838,7 +838,7 @@
             };
 
             /**
-             * removeAttributes().
+             * removeOriginalAttributes().
              * 
              * States if the original attributes on the element should be removed.
              * 
@@ -848,14 +848,14 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            htmlScope.removeAttributes = function( flag ) {
-                __properties.removeAttributes = getDefaultBoolean( flag, __properties.removeAttributes );
+            htmlScope.removeOriginalAttributes = function( flag ) {
+                __properties.removeOriginalAttributes = getDefaultBoolean( flag, __properties.removeOriginalAttributes );
 
                 return this;
             };
 
             /**
-             * clearHTML().
+             * clearOriginalHTML().
              * 
              * States if the original HTML in the element should be cleared.
              * 
@@ -865,8 +865,8 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            htmlScope.clearHTML = function( flag ) {
-                __properties.clearHTML = getDefaultBoolean( flag, __properties.clearHTML );
+            htmlScope.clearOriginalHTML = function( flag ) {
+                __properties.clearOriginalHTML = getDefaultBoolean( flag, __properties.clearOriginalHTML );
 
                 return this;
             };

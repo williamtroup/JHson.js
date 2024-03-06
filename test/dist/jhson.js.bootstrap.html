@@ -75,12 +75,12 @@
                 <label for="setTemplateData">Set Template Data</label>
                 <br>
     
-                <input type="checkbox" id="removeAttributes" name="removeAttributes" checked="checked">
-                <label for="removeAttributes">Remove Attributes</label>
+                <input type="checkbox" id="removeOriginalAttributes" name="removeOriginalAttributes" checked="checked">
+                <label for="removeOriginalAttributes">Remove Original Attributes</label>
                 <br>
     
-                <input type="checkbox" id="clearHTML" name="clearHTML" checked="checked">
-                <label for="clearHTML">Clear HTML</label>
+                <input type="checkbox" id="clearOriginalHTML" name="clearOriginalHTML" checked="checked">
+                <label for="clearOriginalHTML">Clear Original HTML</label>
                 <br>
     
                 <input type="checkbox" id="addCssToHead" name="addCssToHead">
@@ -93,6 +93,22 @@
     
                 <input type="checkbox" id="logTemplateDataWarnings" name="logTemplateDataWarnings">
                 <label for="logTemplateDataWarnings">Log Template Data Warnings</label>
+                <br>
+    
+                <input type="checkbox" id="addAttributes" name="addAttributes" checked="checked">
+                <label for="addAttributes">Add Attributes</label>
+                <br>
+    
+                <input type="checkbox" id="addCssProperties" name="addCssProperties" checked="checked">
+                <label for="addCssProperties">Add CSS Properties</label>
+                <br>
+    
+                <input type="checkbox" id="addText" name="addText" checked="checked">
+                <label for="addText">Add Text</label>
+                <br>
+    
+                <input type="checkbox" id="addChildren" name="addChildren" checked="checked">
+                <label for="addChildren">Add Children</label>
             </div>
             <br>
 
@@ -120,11 +136,15 @@
             _IGNORE_ATTRIBUTES = document.getElementById( "ignoreAttributes" );
 
         var _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" ),
-            _REMOVE_ATTRIBUTES = document.getElementById( "removeAttributes" ),
-            _CLEAR_HTML = document.getElementById( "clearHTML" ),
+            _REMOVE_ATTRIBUTES = document.getElementById( "removeOriginalAttributes" ),
+            _CLEAR_HTML = document.getElementById( "clearOriginalHTML" ),
             _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" ),
             _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" ),
-            _LOG_TEMPLATE_DATA_WARNINGS = document.getElementById( "logTemplateDataWarnings" );
+            _LOG_TEMPLATE_DATA_WARNINGS = document.getElementById( "logTemplateDataWarnings" ),
+            _ADD_ATTRIBUTES = document.getElementById( "addAttributes" ),
+            _ADD_CSS_PROPERTIES = document.getElementById( "addCssProperties" ),
+            _ADD_TEXT = document.getElementById( "addText" ),
+            _ADD_CHILDREN = document.getElementById( "addChildren" );
 
         document.title += " v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
@@ -156,11 +176,15 @@
                 html = html.templateData( { "{{template_data}}": "this template data", "{{template_data_not_available}}": "more template data" } );
             }
 
-            html.removeAttributes( _REMOVE_ATTRIBUTES.checked )
-                .clearHTML( _CLEAR_HTML.checked )
+            html.removeOriginalAttributes( _REMOVE_ATTRIBUTES.checked )
+                .clearOriginalHTML( _CLEAR_HTML.checked )
                 .addCssToHead( _WRITE_CSS_TO_HEAD.checked )
                 .clearCssFromHead( _CLEAR_CSS_FROM_HEAD.checked )
                 .logTemplateDataWarnings( _LOG_TEMPLATE_DATA_WARNINGS.checked )
+                .addAttributes( _ADD_ATTRIBUTES.checked )
+                .addCssProperties( _ADD_CSS_PROPERTIES.checked )
+                .addText( _ADD_TEXT.checked )
+                .addChildren( _ADD_CHILDREN.checked )
                 .write( _BODY );
         }
     </script>

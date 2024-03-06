@@ -119,7 +119,7 @@ States the template data that should be used inside each HTML DOM elements HTML.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
-#### **html() > removeAttributes( *flag* )**:
+#### **html() > removeOriginalAttributes( *flag* )**:
 States if the original attributes on the element should be removed.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
@@ -127,7 +127,7 @@ States if the original attributes on the element should be removed.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
-#### **html() > clearHTML( *flag* )**:
+#### **html() > clearOriginalHTML( *flag* )**:
 States if the original HTML in the element should be cleared.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
@@ -155,6 +155,38 @@ States if all the CSS style tags should be cleared from the HTML documents HEAD 
 States if the template data variables not found in any data are logged as warnings.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addAttributes( *flag* )**:
+States if the attributes should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addCssProperties( *flag* )**:
+States if the CSS properties should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addText( *flag* )**:
+States if the text should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addChildren( *flag* )**:
+States if the children should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
 ***Returns***: '*Object*' - The HTML properties object.
 <br>

@@ -1,4 +1,4 @@
-/*! JHson.js v0.6.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v0.7.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
@@ -119,27 +119,18 @@
         clearCssStyleTagsFromHead();
       }
       if (isDefinedObject(properties.templateData)) {
-        var templateDataKey;
-        for (templateDataKey in properties.templateData) {
-          if (properties.templateData.hasOwnProperty(templateDataKey)) {
-            writingScope.templateDataKeys.push(templateDataKey);
-          }
-        }
-        writingScope.templateDataKeys = writingScope.templateDataKeys.sort(function(a, b) {
-          return b.length - a.length;
-        });
-        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+        setupWritingScopeTemplateDataKeys(properties, writingScope);
       }
       if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
         var key;
         for (key in convertedJsonObject.result) {
           if (key === element.nodeName.toLowerCase()) {
-            if (properties.removeAttributes) {
+            if (properties.removeOriginalAttributes) {
               for (; element.attributes.length > 0;) {
                 element.removeAttribute(element.attributes[0].name);
               }
             }
-            if (properties.clearHTML) {
+            if (properties.clearOriginalHTML) {
               element.innerHTML = _string.empty;
             }
             writeNode(element, convertedJsonObject.result[key], properties, writingScope);
@@ -155,45 +146,53 @@
     }
     return _this;
   }
+  function setupWritingScopeTemplateDataKeys(properties, writingScope) {
+    var templateDataKey;
+    for (templateDataKey in properties.templateData) {
+      if (properties.templateData.hasOwnProperty(templateDataKey)) {
+        writingScope.templateDataKeys.push(templateDataKey);
+      }
+    }
+    writingScope.templateDataKeys = writingScope.templateDataKeys.sort(function(a, b) {
+      return b.length - a.length;
+    });
+    writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+  }
   function writeNode(element, jsonObject, properties, writingScope) {
     var cssStyles = [];
     var jsonKey;
     for (jsonKey in jsonObject) {
       if (startsWithAnyCase(jsonKey, _json.attribute)) {
-        var attributeName = jsonKey.replace(_json.attribute, _string.empty);
-        var attributeValue = jsonObject[jsonKey];
-        element.setAttribute(attributeName, attributeValue);
-      } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
-        var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
-        if (!properties.addCssToHead) {
-          element.style[cssStyleName] = jsonObject[jsonKey];
-        } else {
-          cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
+        if (properties.addAttributes) {
+          var attributeName = jsonKey.replace(_json.attribute, _string.empty);
+          var attributeValue = jsonObject[jsonKey];
+          element.setAttribute(attributeName, attributeValue);
         }
-      } else if (jsonKey === _json.text) {
-        element.innerHTML = jsonObject[jsonKey];
-        if (writingScope.templateDataKeysLength > 0) {
-          var templateDataKeyIndex = 0;
-          for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
-            var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
-            if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
-              element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
-              if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
-                writingScope.templateDataKeysProcessed.push(templateDataKey);
-              }
-            }
+      } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
+        if (properties.addCssProperties) {
+          var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
+          if (!properties.addCssToHead) {
+            element.style[cssStyleName] = jsonObject[jsonKey];
+          } else {
+            cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
           }
         }
+      } else if (jsonKey === _json.text) {
+        if (properties.addText) {
+          writeElementTextAndTemplateData(element, jsonObject[jsonKey], properties, writingScope);
+        }
       } else if (jsonKey === _json.children) {
-        var childrenLength = jsonObject[jsonKey].length;
-        var childrenIndex = 0;
-        for (; childrenIndex < childrenLength; childrenIndex++) {
-          var childJson = jsonObject[jsonKey][childrenIndex];
-          var childJsonKey;
-          for (childJsonKey in childJson) {
-            if (childJson.hasOwnProperty(childJsonKey)) {
-              var childElement = createElement(element, childJsonKey.toLowerCase());
-              writeNode(childElement, childJson[childJsonKey], properties, writingScope);
+        if (properties.addChildren) {
+          var childrenLength = jsonObject[jsonKey].length;
+          var childrenIndex = 0;
+          for (; childrenIndex < childrenLength; childrenIndex++) {
+            var childJson = jsonObject[jsonKey][childrenIndex];
+            var childJsonKey;
+            for (childJsonKey in childJson) {
+              if (childJson.hasOwnProperty(childJsonKey)) {
+                var childElement = createElement(element, childJsonKey.toLowerCase());
+                writeNode(childElement, childJson[childJsonKey], properties, writingScope);
+              }
             }
           }
         }
@@ -201,6 +200,21 @@
     }
     if (cssStyles.length > 0) {
       storeCssStyles(element, cssStyles, writingScope);
+    }
+  }
+  function writeElementTextAndTemplateData(element, value, properties, writingScope) {
+    element.innerHTML = value;
+    if (writingScope.templateDataKeysLength > 0) {
+      var templateDataKeyIndex = 0;
+      for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+        var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
+        if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
+          element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
+          if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+            writingScope.templateDataKeysProcessed.push(templateDataKey);
+          }
+        }
+      }
     }
   }
   function storeCssStyles(element, cssStyles, writingScope) {
@@ -422,7 +436,7 @@
     var htmlScope = null;
     (function() {
       htmlScope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false};
+      var __properties = {json:_string.empty, templateData:{}, removeOriginalAttributes:true, clearOriginalHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
       htmlScope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -431,12 +445,12 @@
         __properties.templateData = getDefaultObject(templateData, __properties.templateData);
         return this;
       };
-      htmlScope.removeAttributes = function(flag) {
-        __properties.removeAttributes = getDefaultBoolean(flag, __properties.removeAttributes);
+      htmlScope.removeOriginalAttributes = function(flag) {
+        __properties.removeOriginalAttributes = getDefaultBoolean(flag, __properties.removeOriginalAttributes);
         return this;
       };
-      htmlScope.clearHTML = function(flag) {
-        __properties.clearHTML = getDefaultBoolean(flag, __properties.clearHTML);
+      htmlScope.clearOriginalHTML = function(flag) {
+        __properties.clearOriginalHTML = getDefaultBoolean(flag, __properties.clearOriginalHTML);
         return this;
       };
       htmlScope.addCssToHead = function(flag) {
@@ -449,6 +463,22 @@
       };
       htmlScope.logTemplateDataWarnings = function(flag) {
         __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
+        return this;
+      };
+      htmlScope.addAttributes = function(flag) {
+        __properties.addAttributes = getDefaultBoolean(flag, __properties.addAttributes);
+        return this;
+      };
+      htmlScope.addCssProperties = function(flag) {
+        __properties.addCssProperties = getDefaultBoolean(flag, __properties.addCssProperties);
+        return this;
+      };
+      htmlScope.addText = function(flag) {
+        __properties.addText = getDefaultBoolean(flag, __properties.addText);
+        return this;
+      };
+      htmlScope.addChildren = function(flag) {
+        __properties.addChildren = getDefaultBoolean(flag, __properties.addChildren);
         return this;
       };
       htmlScope.write = function(element) {
@@ -472,7 +502,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "0.6.0";
+    return "0.7.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;

@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.6.0
+ * @version     v0.7.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -219,29 +219,19 @@
             }
 
             if ( isDefinedObject( properties.templateData ) ) {
-                for ( var templateDataKey in properties.templateData ) {
-                    if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
-                        writingScope.templateDataKeys.push( templateDataKey );
-                    }
-                }
-
-                writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
-                    return b.length - a.length;
-                } );
-
-                writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+                setupWritingScopeTemplateDataKeys( properties, writingScope );
             }
 
             if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
                 for ( var key in convertedJsonObject.result ) {
                     if ( key === element.nodeName.toLowerCase() ) {
-                        if ( properties.removeAttributes ) {
+                        if ( properties.removeOriginalAttributes ) {
                             while ( element.attributes.length > 0 ) {
                                 element.removeAttribute( element.attributes[ 0 ].name );
                             }
                         }
 
-                        if ( properties.clearHTML ) {
+                        if ( properties.clearOriginalHTML ) {
                             element.innerHTML = _string.empty;
                         }
 
@@ -262,53 +252,61 @@
         return _this;
     }
 
+    function setupWritingScopeTemplateDataKeys( properties, writingScope ) {
+        for ( var templateDataKey in properties.templateData ) {
+            if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                writingScope.templateDataKeys.push( templateDataKey );
+            }
+        }
+
+        writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
+            return b.length - a.length;
+        } );
+
+        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+    }
+
     function writeNode( element, jsonObject, properties, writingScope ) {
         var cssStyles = [];
 
         for ( var jsonKey in jsonObject ) {
             if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
-                var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
-                    attributeValue = jsonObject[ jsonKey ];
+                if ( properties.addAttributes ) {
+                    var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
+                        attributeValue = jsonObject[ jsonKey ];
 
-                element.setAttribute( attributeName, attributeValue );
-
-            } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
-                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
-
-                if ( !properties.addCssToHead ) {
-                    element.style[ cssStyleName ] = jsonObject[ jsonKey ];
-                } else {
-                    cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
+                    element.setAttribute( attributeName, attributeValue );
                 }
 
-            } else if ( jsonKey === _json.text ) {
-                element.innerHTML = jsonObject[ jsonKey ];
+            } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
+                if ( properties.addCssProperties ) {
+                    var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
 
-                if ( writingScope.templateDataKeysLength > 0 ) {
-                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
-                        var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
-
-                        if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
-                            element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
-
-                            if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
-                                writingScope.templateDataKeysProcessed.push( templateDataKey );
-                            }
-                        }
+                    if ( !properties.addCssToHead ) {
+                        element.style[ cssStyleName ] = jsonObject[ jsonKey ];
+                    } else {
+                        cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
                     }
                 }
 
+            } else if ( jsonKey === _json.text ) {
+                if ( properties.addText ) {
+                    writeElementTextAndTemplateData( element, jsonObject[ jsonKey ], properties, writingScope );
+                }
+
             } else if ( jsonKey === _json.children ) {
-                var childrenLength = jsonObject[ jsonKey ].length;
+                if ( properties.addChildren ) {
+                    var childrenLength = jsonObject[ jsonKey ].length;
 
-                for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
-                    var childJson = jsonObject[ jsonKey ][ childrenIndex ];
-
-                    for ( var childJsonKey in childJson ) {
-                        if ( childJson.hasOwnProperty( childJsonKey ) ) {
-                            var childElement = createElement( element, childJsonKey.toLowerCase() );
-
-                            writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                    for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+                        var childJson = jsonObject[ jsonKey ][ childrenIndex ];
+    
+                        for ( var childJsonKey in childJson ) {
+                            if ( childJson.hasOwnProperty( childJsonKey ) ) {
+                                var childElement = createElement( element, childJsonKey.toLowerCase() );
+    
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                            }
                         }
                     }
                 }
@@ -318,6 +316,24 @@
         if ( cssStyles.length > 0 ) {
             storeCssStyles( element, cssStyles, writingScope );
         } 
+    }
+
+    function writeElementTextAndTemplateData( element, value, properties, writingScope ) {
+        element.innerHTML = value;
+
+        if ( writingScope.templateDataKeysLength > 0 ) {
+            for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
+
+                if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
+                    element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
+
+                    if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                        writingScope.templateDataKeysProcessed.push( templateDataKey );
+                    }
+                }
+            }
+        }
     }
 
     function storeCssStyles( element, cssStyles, writingScope ) {
@@ -776,11 +792,15 @@
             var __properties = {
                 json: _string.empty,
                 templateData: {},
-                removeAttributes: true,
-                clearHTML: true,
+                removeOriginalAttributes: true,
+                clearOriginalHTML: true,
                 addCssToHead: false,
                 clearCssFromHead: false,
-                logTemplateDataWarnings: false
+                logTemplateDataWarnings: false,
+                addAttributes: true,
+                addCssProperties: true,
+                addText: true,
+                addChildren: true
             };
 
             /**
@@ -818,7 +838,7 @@
             };
 
             /**
-             * removeAttributes().
+             * removeOriginalAttributes().
              * 
              * States if the original attributes on the element should be removed.
              * 
@@ -828,14 +848,14 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            htmlScope.removeAttributes = function( flag ) {
-                __properties.removeAttributes = getDefaultBoolean( flag, __properties.removeAttributes );
+            htmlScope.removeOriginalAttributes = function( flag ) {
+                __properties.removeOriginalAttributes = getDefaultBoolean( flag, __properties.removeOriginalAttributes );
 
                 return this;
             };
 
             /**
-             * clearHTML().
+             * clearOriginalHTML().
              * 
              * States if the original HTML in the element should be cleared.
              * 
@@ -845,8 +865,8 @@
              * 
              * @returns     {Object}                                        The HTML properties object.
              */
-            htmlScope.clearHTML = function( flag ) {
-                __properties.clearHTML = getDefaultBoolean( flag, __properties.clearHTML );
+            htmlScope.clearOriginalHTML = function( flag ) {
+                __properties.clearOriginalHTML = getDefaultBoolean( flag, __properties.clearOriginalHTML );
 
                 return this;
             };
@@ -898,6 +918,74 @@
              */
             htmlScope.logTemplateDataWarnings = function( flag ) {
                 __properties.logTemplateDataWarnings = getDefaultBoolean( flag, __properties.logTemplateDataWarnings );
+
+                return this;
+            };
+
+            /**
+             * addAttributes().
+             * 
+             * States if the attributes should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addAttributes = function( flag ) {
+                __properties.addAttributes = getDefaultBoolean( flag, __properties.addAttributes );
+
+                return this;
+            };
+
+            /**
+             * addCssProperties().
+             * 
+             * States if the CSS properties should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addCssProperties = function( flag ) {
+                __properties.addCssProperties = getDefaultBoolean( flag, __properties.addCssProperties );
+
+                return this;
+            };
+
+            /**
+             * addText().
+             * 
+             * States if the text should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addText = function( flag ) {
+                __properties.addText = getDefaultBoolean( flag, __properties.addText );
+
+                return this;
+            };
+
+            /**
+             * addChildren().
+             * 
+             * States if the children should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addChildren = function( flag ) {
+                __properties.addChildren = getDefaultBoolean( flag, __properties.addChildren );
 
                 return this;
             };
@@ -997,7 +1085,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.6.0";
+        return "0.7.0";
     };
 
 

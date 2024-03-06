@@ -1,5 +1,21 @@
 # JHson.js - Change Log:
 
+## Version 0.7.0:
+
+#### **Public Functions:**
+- BREAKING: Renamed "html() > removeAttributes()" to "html() > removeOriginalAttributes()".
+- BREAKING: Renamed "html() > clearHTML()" to "html() > clearOriginalHTML()".
+- Added "addAttributes()" support for "html()", which states if the attributes should be written for each element when "write()" is called.
+- Added "addCssProperties()" support for "html()", which states if the CSS properties should be written for each element when "write()" is called.
+- Added "addText()" support for "html()", which states if the text should be written for each element when "write()" is called.
+- Added "addChildren()" support for "html()", which states if the children should be written for each element when "write()" is called.
+
+#### **Fixes & Improvements:**
+- Internal refactoring to make areas a bit easier to read.
+
+<br>
+
+
 ## Version 0.6.0:
 
 #### **Public Functions:**

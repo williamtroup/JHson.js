@@ -109,6 +109,10 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .addCssToHead( false )
         .clearCssFromHead( false )
         .logTemplateDataWarnings( false )
+        .addAttributes( true )
+        .addCssProperties( true )
+        .addText( true )
+        .addChildren( true )
         .write( header );
 </script>
 ```

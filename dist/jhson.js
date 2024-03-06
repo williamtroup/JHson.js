@@ -163,28 +163,36 @@
     var jsonKey;
     for (jsonKey in jsonObject) {
       if (startsWithAnyCase(jsonKey, _json.attribute)) {
-        var attributeName = jsonKey.replace(_json.attribute, _string.empty);
-        var attributeValue = jsonObject[jsonKey];
-        element.setAttribute(attributeName, attributeValue);
+        if (properties.addAttributes) {
+          var attributeName = jsonKey.replace(_json.attribute, _string.empty);
+          var attributeValue = jsonObject[jsonKey];
+          element.setAttribute(attributeName, attributeValue);
+        }
       } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
-        var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
-        if (!properties.addCssToHead) {
-          element.style[cssStyleName] = jsonObject[jsonKey];
-        } else {
-          cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
+        if (properties.addCssProperties) {
+          var cssStyleName = jsonKey.replace(_json.cssStyle, _string.empty);
+          if (!properties.addCssToHead) {
+            element.style[cssStyleName] = jsonObject[jsonKey];
+          } else {
+            cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
+          }
         }
       } else if (jsonKey === _json.text) {
-        writeElementTextAndTemplateData(element, jsonObject[jsonKey], properties, writingScope);
+        if (properties.addText) {
+          writeElementTextAndTemplateData(element, jsonObject[jsonKey], properties, writingScope);
+        }
       } else if (jsonKey === _json.children) {
-        var childrenLength = jsonObject[jsonKey].length;
-        var childrenIndex = 0;
-        for (; childrenIndex < childrenLength; childrenIndex++) {
-          var childJson = jsonObject[jsonKey][childrenIndex];
-          var childJsonKey;
-          for (childJsonKey in childJson) {
-            if (childJson.hasOwnProperty(childJsonKey)) {
-              var childElement = createElement(element, childJsonKey.toLowerCase());
-              writeNode(childElement, childJson[childJsonKey], properties, writingScope);
+        if (properties.addChildren) {
+          var childrenLength = jsonObject[jsonKey].length;
+          var childrenIndex = 0;
+          for (; childrenIndex < childrenLength; childrenIndex++) {
+            var childJson = jsonObject[jsonKey][childrenIndex];
+            var childJsonKey;
+            for (childJsonKey in childJson) {
+              if (childJson.hasOwnProperty(childJsonKey)) {
+                var childElement = createElement(element, childJsonKey.toLowerCase());
+                writeNode(childElement, childJson[childJsonKey], properties, writingScope);
+              }
             }
           }
         }
@@ -428,7 +436,7 @@
     var htmlScope = null;
     (function() {
       htmlScope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false};
+      var __properties = {json:_string.empty, templateData:{}, removeAttributes:true, clearHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
       htmlScope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
         return this;
@@ -455,6 +463,22 @@
       };
       htmlScope.logTemplateDataWarnings = function(flag) {
         __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
+        return this;
+      };
+      htmlScope.addAttributes = function(flag) {
+        __properties.addAttributes = getDefaultBoolean(flag, __properties.addAttributes);
+        return this;
+      };
+      htmlScope.addCssProperties = function(flag) {
+        __properties.addCssProperties = getDefaultBoolean(flag, __properties.addCssProperties);
+        return this;
+      };
+      htmlScope.addText = function(flag) {
+        __properties.addText = getDefaultBoolean(flag, __properties.addText);
+        return this;
+      };
+      htmlScope.addChildren = function(flag) {
+        __properties.addChildren = getDefaultBoolean(flag, __properties.addChildren);
         return this;
       };
       htmlScope.write = function(element) {

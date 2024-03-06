@@ -159,6 +159,38 @@ States if the template data variables not found in any data are logged as warnin
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > addAttributes( *flag* )**:
+States if the attributes should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addCssProperties( *flag* )**:
+States if the CSS properties should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addText( *flag* )**:
+States if the text should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addChildren( *flag* )**:
+States if the children should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > write( *element* )**:
 Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
 <br>

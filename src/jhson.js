@@ -271,34 +271,42 @@
 
         for ( var jsonKey in jsonObject ) {
             if ( startsWithAnyCase( jsonKey, _json.attribute ) ) {
-                var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
-                    attributeValue = jsonObject[ jsonKey ];
+                if ( properties.addAttributes ) {
+                    var attributeName = jsonKey.replace( _json.attribute, _string.empty ),
+                        attributeValue = jsonObject[ jsonKey ];
 
-                element.setAttribute( attributeName, attributeValue );
+                    element.setAttribute( attributeName, attributeValue );
+                }
 
             } else if ( startsWithAnyCase( jsonKey, _json.cssStyle ) ) {
-                var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
+                if ( properties.addCssProperties ) {
+                    var cssStyleName = jsonKey.replace( _json.cssStyle, _string.empty );
 
-                if ( !properties.addCssToHead ) {
-                    element.style[ cssStyleName ] = jsonObject[ jsonKey ];
-                } else {
-                    cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
+                    if ( !properties.addCssToHead ) {
+                        element.style[ cssStyleName ] = jsonObject[ jsonKey ];
+                    } else {
+                        cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
+                    }
                 }
 
             } else if ( jsonKey === _json.text ) {
-                writeElementTextAndTemplateData( element, jsonObject[ jsonKey ], properties, writingScope );
+                if ( properties.addText ) {
+                    writeElementTextAndTemplateData( element, jsonObject[ jsonKey ], properties, writingScope );
+                }
 
             } else if ( jsonKey === _json.children ) {
-                var childrenLength = jsonObject[ jsonKey ].length;
+                if ( properties.addChildren ) {
+                    var childrenLength = jsonObject[ jsonKey ].length;
 
-                for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
-                    var childJson = jsonObject[ jsonKey ][ childrenIndex ];
-
-                    for ( var childJsonKey in childJson ) {
-                        if ( childJson.hasOwnProperty( childJsonKey ) ) {
-                            var childElement = createElement( element, childJsonKey.toLowerCase() );
-
-                            writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                    for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+                        var childJson = jsonObject[ jsonKey ][ childrenIndex ];
+    
+                        for ( var childJsonKey in childJson ) {
+                            if ( childJson.hasOwnProperty( childJsonKey ) ) {
+                                var childElement = createElement( element, childJsonKey.toLowerCase() );
+    
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                            }
                         }
                     }
                 }
@@ -788,7 +796,11 @@
                 clearHTML: true,
                 addCssToHead: false,
                 clearCssFromHead: false,
-                logTemplateDataWarnings: false
+                logTemplateDataWarnings: false,
+                addAttributes: true,
+                addCssProperties: true,
+                addText: true,
+                addChildren: true
             };
 
             /**
@@ -906,6 +918,74 @@
              */
             htmlScope.logTemplateDataWarnings = function( flag ) {
                 __properties.logTemplateDataWarnings = getDefaultBoolean( flag, __properties.logTemplateDataWarnings );
+
+                return this;
+            };
+
+            /**
+             * addAttributes().
+             * 
+             * States if the attributes should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addAttributes = function( flag ) {
+                __properties.addAttributes = getDefaultBoolean( flag, __properties.addAttributes );
+
+                return this;
+            };
+
+            /**
+             * addCssProperties().
+             * 
+             * States if the CSS properties should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addCssProperties = function( flag ) {
+                __properties.addCssProperties = getDefaultBoolean( flag, __properties.addCssProperties );
+
+                return this;
+            };
+
+            /**
+             * addText().
+             * 
+             * States if the text should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addText = function( flag ) {
+                __properties.addText = getDefaultBoolean( flag, __properties.addText );
+
+                return this;
+            };
+
+            /**
+             * addChildren().
+             * 
+             * States if the children should be written for each element.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The HTML properties object.
+             */
+            htmlScope.addChildren = function( flag ) {
+                __properties.addChildren = getDefaultBoolean( flag, __properties.addChildren );
 
                 return this;
             };

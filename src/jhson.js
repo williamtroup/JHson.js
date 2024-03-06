@@ -219,17 +219,7 @@
             }
 
             if ( isDefinedObject( properties.templateData ) ) {
-                for ( var templateDataKey in properties.templateData ) {
-                    if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
-                        writingScope.templateDataKeys.push( templateDataKey );
-                    }
-                }
-
-                writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
-                    return b.length - a.length;
-                } );
-
-                writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+                setupWritingScopeTemplateDataKeys( properties, writingScope );
             }
 
             if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
@@ -262,6 +252,20 @@
         return _this;
     }
 
+    function setupWritingScopeTemplateDataKeys( properties, writingScope ) {
+        for ( var templateDataKey in properties.templateData ) {
+            if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                writingScope.templateDataKeys.push( templateDataKey );
+            }
+        }
+
+        writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
+            return b.length - a.length;
+        } );
+
+        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+    }
+
     function writeNode( element, jsonObject, properties, writingScope ) {
         var cssStyles = [];
 
@@ -282,21 +286,7 @@
                 }
 
             } else if ( jsonKey === _json.text ) {
-                element.innerHTML = jsonObject[ jsonKey ];
-
-                if ( writingScope.templateDataKeysLength > 0 ) {
-                    for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
-                        var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
-
-                        if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
-                            element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
-
-                            if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
-                                writingScope.templateDataKeysProcessed.push( templateDataKey );
-                            }
-                        }
-                    }
-                }
+                writeElementTextAndTemplateData( element, jsonObject[ jsonKey ], properties, writingScope );
 
             } else if ( jsonKey === _json.children ) {
                 var childrenLength = jsonObject[ jsonKey ].length;
@@ -318,6 +308,24 @@
         if ( cssStyles.length > 0 ) {
             storeCssStyles( element, cssStyles, writingScope );
         } 
+    }
+
+    function writeElementTextAndTemplateData( element, value, properties, writingScope ) {
+        element.innerHTML = value;
+
+        if ( writingScope.templateDataKeysLength > 0 ) {
+            for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
+
+                if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
+                    element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
+
+                    if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                        writingScope.templateDataKeysProcessed.push( templateDataKey );
+                    }
+                }
+            }
+        }
     }
 
     function storeCssStyles( element, cssStyles, writingScope ) {

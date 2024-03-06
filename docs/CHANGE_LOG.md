@@ -1,7 +1,9 @@
 # JHson.js - Change Log:
 
 ## Version 0.7.0:
-- 
+
+#### **Fixes & Improvements:**
+- Internal refactoring to make areas a bit easier to read.
 
 <br>
 

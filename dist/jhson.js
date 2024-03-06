@@ -119,16 +119,7 @@
         clearCssStyleTagsFromHead();
       }
       if (isDefinedObject(properties.templateData)) {
-        var templateDataKey;
-        for (templateDataKey in properties.templateData) {
-          if (properties.templateData.hasOwnProperty(templateDataKey)) {
-            writingScope.templateDataKeys.push(templateDataKey);
-          }
-        }
-        writingScope.templateDataKeys = writingScope.templateDataKeys.sort(function(a, b) {
-          return b.length - a.length;
-        });
-        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+        setupWritingScopeTemplateDataKeys(properties, writingScope);
       }
       if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
         var key;
@@ -155,6 +146,18 @@
     }
     return _this;
   }
+  function setupWritingScopeTemplateDataKeys(properties, writingScope) {
+    var templateDataKey;
+    for (templateDataKey in properties.templateData) {
+      if (properties.templateData.hasOwnProperty(templateDataKey)) {
+        writingScope.templateDataKeys.push(templateDataKey);
+      }
+    }
+    writingScope.templateDataKeys = writingScope.templateDataKeys.sort(function(a, b) {
+      return b.length - a.length;
+    });
+    writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+  }
   function writeNode(element, jsonObject, properties, writingScope) {
     var cssStyles = [];
     var jsonKey;
@@ -171,19 +174,7 @@
           cssStyles.push(cssStyleName + ":" + jsonObject[jsonKey] + ";");
         }
       } else if (jsonKey === _json.text) {
-        element.innerHTML = jsonObject[jsonKey];
-        if (writingScope.templateDataKeysLength > 0) {
-          var templateDataKeyIndex = 0;
-          for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
-            var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
-            if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
-              element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
-              if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
-                writingScope.templateDataKeysProcessed.push(templateDataKey);
-              }
-            }
-          }
-        }
+        writeElementTextAndTemplateData(element, jsonObject[jsonKey], properties, writingScope);
       } else if (jsonKey === _json.children) {
         var childrenLength = jsonObject[jsonKey].length;
         var childrenIndex = 0;
@@ -201,6 +192,21 @@
     }
     if (cssStyles.length > 0) {
       storeCssStyles(element, cssStyles, writingScope);
+    }
+  }
+  function writeElementTextAndTemplateData(element, value, properties, writingScope) {
+    element.innerHTML = value;
+    if (writingScope.templateDataKeysLength > 0) {
+      var templateDataKeyIndex = 0;
+      for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+        var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
+        if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
+          element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
+          if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+            writingScope.templateDataKeysProcessed.push(templateDataKey);
+          }
+        }
+      }
     }
   }
   function storeCssStyles(element, cssStyles, writingScope) {

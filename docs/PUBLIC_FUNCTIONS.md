@@ -92,6 +92,14 @@ Uses all the options selected via the chained functions to get the JSON from the
 <br>
 ***Returns***: '*string*' - The JSON string.
 <br>
+
+#### **json() > getVariables( *json* )**:
+Uses all the options selected via the chained functions to get the template variables from a JSON string.
+<br>
+***Parameter: json***: '*string*' - The JSON to get the template variables from.
+<br>
+***Returns***: '*string[]*' - The template variables.
+<br>
 <br>
 
 
@@ -197,6 +205,14 @@ Uses all the options selected via the chained functions to convert the JSON into
 ***Parameter: element***: '*Object*' - The DOM element to add the new JSON HTML nodes to.
 <br>
 ***Returns***: '*Object*' - The JHson.js class instance.
+<br>
+
+#### **html() > getVariables( *element* )**:
+Uses all the options selected via the chained functions to get the template variables from a HTML DOM element.
+<br>
+***Parameter: element***: '*Object*' - The DOM element to get the template variables from.
+<br>
+***Returns***: '*string[]*' - The template variables.
 <br>
 <br>
 

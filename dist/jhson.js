@@ -267,6 +267,25 @@
       }
     }
   }
+  function getTemplateVariables(data) {
+    var result = [];
+    if (isDefinedString(data)) {
+      var startIndex = 0;
+      var endIndex = 0;
+      for (; startIndex > _value.notFound;) {
+        startIndex = data.indexOf("{{", endIndex);
+        if (startIndex > _value.notFound) {
+          endIndex = data.indexOf("}}", startIndex);
+          if (endIndex > _value.notFound) {
+            var variable = data.substring(startIndex, endIndex + 2);
+            result.push(variable);
+            endIndex = endIndex + 2;
+          }
+        }
+      }
+    }
+    return result;
+  }
   function createElement(container, type) {
     var nodeType = type.toLowerCase();
     var isText = nodeType === "text";
@@ -429,6 +448,9 @@
       jsonScope.get = function(element) {
         return getJSON(element, __properties);
       };
+      jsonScope.getVariables = function(json) {
+        return getTemplateVariables(json);
+      };
     })();
     return jsonScope;
   };
@@ -483,6 +505,13 @@
       };
       htmlScope.write = function(element) {
         return writeHtml(element, __properties);
+      };
+      htmlScope.getVariables = function(element) {
+        var result = [];
+        if (isDefinedObject(element)) {
+          result = getTemplateVariables(element.innerHTML);
+        }
+        return result;
       };
     })();
     return htmlScope;

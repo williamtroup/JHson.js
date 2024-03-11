@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.7.0
+ * @version     v0.8.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -401,6 +401,40 @@
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * JSON - Templates
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function getTemplateVariables( data ) {
+        var result = [];
+
+        if ( isDefinedString( data ) ) {
+            var startIndex = 0,
+                endIndex = 0;
+
+            while ( startIndex > _value.notFound ) {
+                startIndex = data.indexOf( "{{", endIndex );
+
+                if ( startIndex > _value.notFound ) {
+                    endIndex = data.indexOf( "}}", startIndex );
+
+                    if ( endIndex > _value.notFound ) {
+                        var variable = data.substring( startIndex, endIndex + 2 );
+
+                        result.push( variable );
+
+                        endIndex += 2;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * Element Handling
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
@@ -762,6 +796,21 @@
             jsonScope.get = function( element ) {
                 return getJSON( element, __properties );
             };
+
+            /**
+             * getVariables().
+             * 
+             * Uses all the options selected via the chained functions to get the template variables from a JSON string.
+             * 
+             * @public
+             * 
+             * @param       {string}    json                                The JSON to get the template variables from.
+             * 
+             * @returns     {string[]}                                      The template variables.
+             */
+            jsonScope.getVariables = function( json ) {
+                return getTemplateVariables( json );
+            };
         } )();
         
         return jsonScope;
@@ -1004,6 +1053,27 @@
             htmlScope.write = function( element ) {
                 return writeHtml( element, __properties );
             };
+
+            /**
+             * getVariables().
+             * 
+             * Uses all the options selected via the chained functions to get the template variables from a HTML DOM element.
+             * 
+             * @public
+             * 
+             * @param       {Object}    element                             The DOM element to get the template variables from.
+             * 
+             * @returns     {string[]}                                      The template variables.
+             */
+            htmlScope.getVariables = function( element ) {
+                var result = [];
+
+                if ( isDefinedObject( element ) ) {
+                    result = getTemplateVariables( element.innerHTML );
+                }
+                
+                return result;
+            };
         } )();
         
         return htmlScope;
@@ -1085,7 +1155,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.7.0";
+        return "0.8.0";
     };
 
 

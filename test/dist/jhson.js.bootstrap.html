@@ -12,7 +12,7 @@
     <body data-random-attribute="attribute-value">
         <div class="header">
             <h1 id="header">JHson.js - Bootstrap</h1>
-            <p>This is a basic example of how to use <b>JHson.js</b> ... alongside Bootstrap and {{template_data}}.</p>
+            <p id="description">This is a basic example of how to use <b>JHson.js</b> ... alongside Bootstrap and {{template_data}}.</p>
         </div>
 
         <div class="contents">
@@ -66,6 +66,12 @@
             </div>
             <br>
 
+            <h2>JSON - TEMPLATES:</h2>
+            <button class="btn btn-primary" onclick="getJSONVariables();">Get Variables (JSON)</button>
+            <button class="btn btn-primary" onclick="getHTMLVariables();">Get Variables (HTML)</button>
+            <br>
+            <br>
+            
             <h2>JSON - Write:</h2>
             <button class="btn btn-primary" onclick="writeJSONData();">Write</button>
             <br>
@@ -167,6 +173,14 @@
                 .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
                 .ignoreAttributes( _IGNORE_ATTRIBUTES.value )
                 .get( _BODY );
+        }
+
+        function getJSONVariables() {
+            console.log( JSON.stringify( $jhson.json().getVariables( "{{variable_start}}<div>{{variable_1}}</div><div>{{variable_2}}</div>{{variable_end}}" ) ) )
+        }
+
+        function getHTMLVariables() {
+            console.log( JSON.stringify( $jhson.html().getVariables( document.getElementById( 'description' ) ) ) )
         }
 
         function writeJSONData() {

@@ -1,5 +1,14 @@
 # JHson.js - Change Log:
 
+## Version 0.8.0:
+
+#### **Public Functions:**
+- Added "getVariables()" support for "html()", which is used to get all the template variables from an HTML DOM element.
+- Added "getVariables()" support for "json()", which is used to get all the template variables from a JSON string.
+
+<br>
+
+
 ## Version 0.7.0:
 
 #### **Public Functions:**

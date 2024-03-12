@@ -1,5 +1,17 @@
 # JHson.js - Change Log:
 
+## Version 0.9.0:
+
+#### **Public Functions:**
+- Added "generateUniqueMissingIds()" support for "json()", which states if the JSON should contain unique IDs for elements that don't contain them.
+
+#### **Fixes & Improvements:**
+- Fixed a fault that allowed the text to be obtained for a textarea DOM element when the option "includeText()" is set to false.
+- Improved the support for returning the correct scope when calling chained functions.
+
+<br>
+
+
 ## Version 0.8.0:
 
 #### **Public Functions:**

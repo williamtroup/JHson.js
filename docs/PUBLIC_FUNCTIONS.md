@@ -85,6 +85,14 @@ States the attributes that should not be included in the JSON.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > generateUniqueMissingIds( *flag* )**:
+States if the JSON should include unique IDs for DOM elements that don't have them set already.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > get( *element* )**:
 Uses all the options selected via the chained functions to get the JSON from the HTML DOM element.
 <br>

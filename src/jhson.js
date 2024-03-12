@@ -4,7 +4,7 @@
  * A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v0.8.0
+ * @version     v0.9.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -104,9 +104,10 @@
     }
 
     function getElementAttributes( element, result, properties ) {
-        var attributesLength = element.attributes.length;
+        var attributesLength = element.attributes.length,
+            attributesAvailable = [];
 
-        if ( element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
+        if ( properties.includeText && element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
             result[ _json.text ] = element.value;
         }
 
@@ -115,7 +116,12 @@
 
             if ( isDefinedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === _value.notFound ) {
                 result[ _json.attribute + attribute.nodeName ] = attribute.nodeValue;
+                attributesAvailable.push( attribute.nodeName );
             }
+        }
+
+        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === _value.notFound && properties.ignoreAttributes.indexOf( "id" ) === _value.notFound) {
+            result[ _json.attribute + "id" ] = newGuid();
         }
     }
 
@@ -626,7 +632,8 @@
                 indentSpaces: 2,
                 ignoreNodeTypes: [],
                 ignoreCssProperties: [],
-                ignoreAttributes: []
+                ignoreAttributes: [],
+                generateUniqueMissingIds: false
             };
 
             /**
@@ -643,7 +650,7 @@
             jsonScope.includeAttributes = function( flag ) {
                 __properties.includeAttributes = getDefaultBoolean( flag, __properties.includeAttributes );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -660,7 +667,7 @@
             jsonScope.includeCssProperties = function( flag ) {
                 __properties.includeCssProperties = getDefaultBoolean( flag, __properties.includeCssProperties );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -677,7 +684,7 @@
             jsonScope.includeText = function( flag ) {
                 __properties.includeText = getDefaultBoolean( flag, __properties.includeText );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -694,7 +701,7 @@
             jsonScope.includeChildren = function( flag ) {
                 __properties.includeChildren = getDefaultBoolean( flag, __properties.includeChildren );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -711,7 +718,7 @@
             jsonScope.friendlyFormat = function( flag ) {
                 __properties.friendlyFormat = getDefaultBoolean( flag, __properties.friendlyFormat );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -728,7 +735,7 @@
             jsonScope.indentSpaces = function( spaces ) {
                 __properties.indentSpaces = getDefaultNumber( spaces, __properties.indentSpaces );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -745,7 +752,7 @@
             jsonScope.ignoreNodeTypes = function( types ) {
                 __properties.ignoreNodeTypes = getDefaultStringOrArray( types, __properties.ignoreNodeTypes );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -762,7 +769,7 @@
             jsonScope.ignoreCssProperties = function( properties ) {
                 __properties.ignoreCssProperties = getDefaultStringOrArray( properties, __properties.ignoreCssProperties );
 
-                return this;
+                return jsonScope;
             };
 
             /**
@@ -779,7 +786,24 @@
             jsonScope.ignoreAttributes = function( attributes ) {
                 __properties.ignoreAttributes = getDefaultStringOrArray( attributes, __properties.ignoreAttributes );
 
-                return this;
+                return jsonScope;
+            };
+
+            /**
+             * generateUniqueMissingIds().
+             * 
+             * States if the JSON should include unique IDs for DOM elements that don't have them set already.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            jsonScope.generateUniqueMissingIds = function( flag ) {
+                __properties.generateUniqueMissingIds = getDefaultBoolean( flag, __properties.generateUniqueMissingIds );
+
+                return jsonScope;
             };
 
             /**
@@ -866,7 +890,7 @@
             htmlScope.json = function( json ) {
                 __properties.json = getDefaultString( json, __properties.json );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -883,7 +907,7 @@
             htmlScope.templateData = function( templateData ) {
                 __properties.templateData = getDefaultObject( templateData, __properties.templateData );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -900,7 +924,7 @@
             htmlScope.removeOriginalAttributes = function( flag ) {
                 __properties.removeOriginalAttributes = getDefaultBoolean( flag, __properties.removeOriginalAttributes );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -917,7 +941,7 @@
             htmlScope.clearOriginalHTML = function( flag ) {
                 __properties.clearOriginalHTML = getDefaultBoolean( flag, __properties.clearOriginalHTML );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -934,7 +958,7 @@
             htmlScope.addCssToHead = function( flag ) {
                 __properties.addCssToHead = getDefaultBoolean( flag, __properties.addCssToHead );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -951,7 +975,7 @@
             htmlScope.clearCssFromHead = function( flag ) {
                 __properties.clearCssFromHead = getDefaultBoolean( flag, __properties.clearCssFromHead );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -968,7 +992,7 @@
             htmlScope.logTemplateDataWarnings = function( flag ) {
                 __properties.logTemplateDataWarnings = getDefaultBoolean( flag, __properties.logTemplateDataWarnings );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -985,7 +1009,7 @@
             htmlScope.addAttributes = function( flag ) {
                 __properties.addAttributes = getDefaultBoolean( flag, __properties.addAttributes );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -1002,7 +1026,7 @@
             htmlScope.addCssProperties = function( flag ) {
                 __properties.addCssProperties = getDefaultBoolean( flag, __properties.addCssProperties );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -1019,7 +1043,7 @@
             htmlScope.addText = function( flag ) {
                 __properties.addText = getDefaultBoolean( flag, __properties.addText );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -1036,7 +1060,7 @@
             htmlScope.addChildren = function( flag ) {
                 __properties.addChildren = getDefaultBoolean( flag, __properties.addChildren );
 
-                return this;
+                return htmlScope;
             };
 
             /**
@@ -1155,7 +1179,7 @@
      * @returns     {string}                                                The version number.
      */
     this.getVersion = function() {
-        return "0.8.0";
+        return "0.9.0";
     };
 
 

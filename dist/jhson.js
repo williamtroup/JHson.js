@@ -1,4 +1,4 @@
-/*! JHson.js v0.8.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v0.9.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function getJSON(element, properties) {
     var result = _string.empty;
@@ -37,7 +37,8 @@
   }
   function getElementAttributes(element, result, properties) {
     var attributesLength = element.attributes.length;
-    if (element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
+    var attributesAvailable = [];
+    if (properties.includeText && element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
       result[_json.text] = element.value;
     }
     var attributeIndex = 0;
@@ -45,7 +46,11 @@
       var attribute = element.attributes[attributeIndex];
       if (isDefinedString(attribute.nodeName) && properties.ignoreAttributes.indexOf(attribute.nodeName) === _value.notFound) {
         result[_json.attribute + attribute.nodeName] = attribute.nodeValue;
+        attributesAvailable.push(attribute.nodeName);
       }
+    }
+    if (properties.generateUniqueMissingIds && attributesAvailable.indexOf("id") === _value.notFound && properties.ignoreAttributes.indexOf("id") === _value.notFound) {
+      result[_json.attribute + "id"] = newGuid();
     }
   }
   function getElementCssProperties(element, result, properties, parentCssStyles) {
@@ -408,42 +413,46 @@
     var jsonScope = null;
     (function() {
       jsonScope = this;
-      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[]};
+      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[], generateUniqueMissingIds:false};
       jsonScope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
-        return this;
+        return jsonScope;
       };
       jsonScope.includeCssProperties = function(flag) {
         __properties.includeCssProperties = getDefaultBoolean(flag, __properties.includeCssProperties);
-        return this;
+        return jsonScope;
       };
       jsonScope.includeText = function(flag) {
         __properties.includeText = getDefaultBoolean(flag, __properties.includeText);
-        return this;
+        return jsonScope;
       };
       jsonScope.includeChildren = function(flag) {
         __properties.includeChildren = getDefaultBoolean(flag, __properties.includeChildren);
-        return this;
+        return jsonScope;
       };
       jsonScope.friendlyFormat = function(flag) {
         __properties.friendlyFormat = getDefaultBoolean(flag, __properties.friendlyFormat);
-        return this;
+        return jsonScope;
       };
       jsonScope.indentSpaces = function(spaces) {
         __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
-        return this;
+        return jsonScope;
       };
       jsonScope.ignoreNodeTypes = function(types) {
         __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
-        return this;
+        return jsonScope;
       };
       jsonScope.ignoreCssProperties = function(properties) {
         __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
-        return this;
+        return jsonScope;
       };
       jsonScope.ignoreAttributes = function(attributes) {
         __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
-        return this;
+        return jsonScope;
+      };
+      jsonScope.generateUniqueMissingIds = function(flag) {
+        __properties.generateUniqueMissingIds = getDefaultBoolean(flag, __properties.generateUniqueMissingIds);
+        return jsonScope;
       };
       jsonScope.get = function(element) {
         return getJSON(element, __properties);
@@ -461,47 +470,47 @@
       var __properties = {json:_string.empty, templateData:{}, removeOriginalAttributes:true, clearOriginalHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
       htmlScope.json = function(json) {
         __properties.json = getDefaultString(json, __properties.json);
-        return this;
+        return htmlScope;
       };
       htmlScope.templateData = function(templateData) {
         __properties.templateData = getDefaultObject(templateData, __properties.templateData);
-        return this;
+        return htmlScope;
       };
       htmlScope.removeOriginalAttributes = function(flag) {
         __properties.removeOriginalAttributes = getDefaultBoolean(flag, __properties.removeOriginalAttributes);
-        return this;
+        return htmlScope;
       };
       htmlScope.clearOriginalHTML = function(flag) {
         __properties.clearOriginalHTML = getDefaultBoolean(flag, __properties.clearOriginalHTML);
-        return this;
+        return htmlScope;
       };
       htmlScope.addCssToHead = function(flag) {
         __properties.addCssToHead = getDefaultBoolean(flag, __properties.addCssToHead);
-        return this;
+        return htmlScope;
       };
       htmlScope.clearCssFromHead = function(flag) {
         __properties.clearCssFromHead = getDefaultBoolean(flag, __properties.clearCssFromHead);
-        return this;
+        return htmlScope;
       };
       htmlScope.logTemplateDataWarnings = function(flag) {
         __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
-        return this;
+        return htmlScope;
       };
       htmlScope.addAttributes = function(flag) {
         __properties.addAttributes = getDefaultBoolean(flag, __properties.addAttributes);
-        return this;
+        return htmlScope;
       };
       htmlScope.addCssProperties = function(flag) {
         __properties.addCssProperties = getDefaultBoolean(flag, __properties.addCssProperties);
-        return this;
+        return htmlScope;
       };
       htmlScope.addText = function(flag) {
         __properties.addText = getDefaultBoolean(flag, __properties.addText);
-        return this;
+        return htmlScope;
       };
       htmlScope.addChildren = function(flag) {
         __properties.addChildren = getDefaultBoolean(flag, __properties.addChildren);
-        return this;
+        return htmlScope;
       };
       htmlScope.write = function(element) {
         return writeHtml(element, __properties);
@@ -531,7 +540,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "0.8.0";
+    return "0.9.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;

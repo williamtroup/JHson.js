@@ -45,6 +45,10 @@
                 <label for="friendlyFormat">Friendly Format</label>
                 <br>
 
+                <input type="checkbox" id="generateUniqueMissingIds" name="generateUniqueMissingIds">
+                <label for="generateUniqueMissingIds">Generate Unique Missing Ids</label>
+                <br>
+
                 <label for="indentSpaces">Indent Spaces: </label>
                 <br>
                 <input type="number" id="indentSpaces" value="2">
@@ -139,7 +143,8 @@
             _INDENT_SPACES = document.getElementById( "indentSpaces" ),
             _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" ),
             _IGNORE_CSS_PROPERTIES = document.getElementById( "ignoreCssProperties" ),
-            _IGNORE_ATTRIBUTES = document.getElementById( "ignoreAttributes" );
+            _IGNORE_ATTRIBUTES = document.getElementById( "ignoreAttributes" ),
+            _GENERATE_UNIQUE_MISSING_IDS = document.getElementById( "generateUniqueMissingIds" );
 
         var _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" ),
             _REMOVE_ATTRIBUTES = document.getElementById( "removeOriginalAttributes" ),
@@ -172,6 +177,7 @@
                 .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
                 .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
                 .ignoreAttributes( _IGNORE_ATTRIBUTES.value )
+                .generateUniqueMissingIds( _GENERATE_UNIQUE_MISSING_IDS.checked )
                 .get( _BODY );
         }
 

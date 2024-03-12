@@ -98,6 +98,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .ignoreNodeTypes( "q" )
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
+        .generateUniqueMissingIds( false )
         .get( header );
 
     $jhson

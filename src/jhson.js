@@ -104,9 +104,10 @@
     }
 
     function getElementAttributes( element, result, properties ) {
-        var attributesLength = element.attributes.length;
+        var attributesLength = element.attributes.length,
+            attributesAvailable = [];
 
-        if ( element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
+        if ( properties.includeText && element.nodeName.toLowerCase() === "textarea" && isDefined( element.value ) ) {
             result[ _json.text ] = element.value;
         }
 
@@ -115,7 +116,12 @@
 
             if ( isDefinedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === _value.notFound ) {
                 result[ _json.attribute + attribute.nodeName ] = attribute.nodeValue;
+                attributesAvailable.push( attribute.nodeName );
             }
+        }
+
+        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === _value.notFound && properties.ignoreAttributes.indexOf( "id" ) === _value.notFound) {
+            result[ _json.attribute + "id" ] = newGuid();
         }
     }
 
@@ -626,7 +632,8 @@
                 indentSpaces: 2,
                 ignoreNodeTypes: [],
                 ignoreCssProperties: [],
-                ignoreAttributes: []
+                ignoreAttributes: [],
+                generateUniqueMissingIds: false
             };
 
             /**
@@ -778,6 +785,23 @@
              */
             jsonScope.ignoreAttributes = function( attributes ) {
                 __properties.ignoreAttributes = getDefaultStringOrArray( attributes, __properties.ignoreAttributes );
+
+                return this;
+            };
+
+            /**
+             * generateUniqueMissingIds().
+             * 
+             * States if the JSON should include unique IDs for DOM elements that don't have them set already.
+             * 
+             * @public
+             * 
+             * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+             * 
+             * @returns     {Object}                                        The JSON properties object.
+             */
+            jsonScope.generateUniqueMissingIds = function( flag ) {
+                __properties.generateUniqueMissingIds = getDefaultBoolean( flag, __properties.generateUniqueMissingIds );
 
                 return this;
             };

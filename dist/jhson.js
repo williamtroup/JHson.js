@@ -37,7 +37,8 @@
   }
   function getElementAttributes(element, result, properties) {
     var attributesLength = element.attributes.length;
-    if (element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
+    var attributesAvailable = [];
+    if (properties.includeText && element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
       result[_json.text] = element.value;
     }
     var attributeIndex = 0;
@@ -45,7 +46,11 @@
       var attribute = element.attributes[attributeIndex];
       if (isDefinedString(attribute.nodeName) && properties.ignoreAttributes.indexOf(attribute.nodeName) === _value.notFound) {
         result[_json.attribute + attribute.nodeName] = attribute.nodeValue;
+        attributesAvailable.push(attribute.nodeName);
       }
+    }
+    if (properties.generateUniqueMissingIds && attributesAvailable.indexOf("id") === _value.notFound && properties.ignoreAttributes.indexOf("id") === _value.notFound) {
+      result[_json.attribute + "id"] = newGuid();
     }
   }
   function getElementCssProperties(element, result, properties, parentCssStyles) {
@@ -408,7 +413,7 @@
     var jsonScope = null;
     (function() {
       jsonScope = this;
-      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[]};
+      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[], generateUniqueMissingIds:false};
       jsonScope.includeAttributes = function(flag) {
         __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
         return this;
@@ -443,6 +448,10 @@
       };
       jsonScope.ignoreAttributes = function(attributes) {
         __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
+        return this;
+      };
+      jsonScope.generateUniqueMissingIds = function(flag) {
+        __properties.generateUniqueMissingIds = getDefaultBoolean(flag, __properties.generateUniqueMissingIds);
         return this;
       };
       jsonScope.get = function(element) {

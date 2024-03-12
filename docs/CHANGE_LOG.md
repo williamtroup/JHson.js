@@ -7,6 +7,7 @@
 
 #### **Fixes & Improvements:**
 - Fixed a fault that allowed the text to be obtained for a textarea DOM element when the option "includeText()" is set to false.
+- Improved the support for returning the correct scope when calling chained functions.
 
 <br>
 

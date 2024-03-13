@@ -8,7 +8,7 @@ Below is a list of all the custom triggers supported in the "data-jhson-options"
 ## For Rendering:
 
 ### options.onBeforeRenderComplete( *element* ):
-Fires before the rendering an element.
+Fires before the rendering of an element.
 <br>
 ***Parameter:*** element: '*object*' - The DOM element that is going to be rendered.
 

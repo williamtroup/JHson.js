@@ -6,17 +6,17 @@
 - Added binding support! You can now add the attribute "data-jhson-options" to any DOM element to bind JSON, which will be written as HTML.
 
 #### **Binding Options:**
-- Added binding options support, which are based on all the options available to "html()".
+- Added binding options support, which is based on all the options available to "html()".
 
 #### **Binding Options - Custom Triggers:**
-- Added binding option custom trigger "onBeforeRenderComplete", which fires before the rendering an element.
+- Added binding option custom trigger "onBeforeRenderComplete", which fires before the rendering of an element.
 - Added binding option custom trigger "onRenderComplete", which fires when the rendering of an element is complete.
 
 #### **Public Functions:**
 - Added a new public function called "renderAll()", which will find all the DOM elements with the attribute assigned and render their JSON as HTML.
 
 #### **Fixes & Improvements:**
-- Fixed a major fault that caused the scope of the chained functions to fail when specific methods are called.
+- Fixed a major fault that caused the scope of the chained functions to fail when specific methods were called.
 - Updated the main project description.
 
 <br>

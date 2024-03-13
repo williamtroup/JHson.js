@@ -4,7 +4,7 @@
         <id>JHson.js</id>
         <version>1.0.0</version>
         <title>JHson.js</title>
-        <description>A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.</description>
+        <description>A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.</description>
         <authors>William Troup</authors>
         <projectUrl>https://www.william-troup.com/jhson-js/</projectUrl>
         <repository type="git" url="https://github.com/williamtroup/JHson.js" branch="main" />

@@ -7,7 +7,7 @@
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
 
-> 📃 A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.
+> 📃 A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
 
 
 ## What features does JHson.js have?

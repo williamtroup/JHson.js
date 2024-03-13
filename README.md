@@ -9,7 +9,7 @@ JHson.js
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
 </h1>
 
-> <p align="center">📃 A JavaScript library for converting HTML to JSON, and JSON to HTML, with templating, attributes, and CSS support.</p>
+> <p align="center">📃 A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.</p>
 > <p align="center">v1.0.0</p>
 <br />
 <br />

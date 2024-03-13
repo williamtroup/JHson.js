@@ -17,6 +17,7 @@
 
 #### **Fixes & Improvements:**
 - Fixed a major fault that caused the scope of the chained functions to fail when specific methods are called.
+- Updated the main project description.
 
 <br>
 

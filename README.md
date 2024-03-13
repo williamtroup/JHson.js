@@ -24,6 +24,7 @@ JHson.js
 - Copy the layout for an entire page without additional files!
 - Data templating for text.
 - Write CSS directly back to the head for each element!
+- Bind JSON directly to DOM elements!
 <br />
 <br />
 

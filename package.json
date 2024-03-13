@@ -25,7 +25,8 @@
     "template",
     "render",
     "text",
-    "formatting"
+    "formatting",
+    "binding"
   ],
   "bugs": {
     "url": "https://github.com/williamtroup/JHson.js/issues"

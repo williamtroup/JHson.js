@@ -1,5 +1,71 @@
 /*! JHson.js v1.0.0 | (c) Bunoon 2024 | MIT License */
 (function() {
+  function render() {
+    var tagTypes = _configuration.domElementTypes;
+    var tagTypesLength = tagTypes.length;
+    var tagTypeIndex = 0;
+    for (; tagTypeIndex < tagTypesLength; tagTypeIndex++) {
+      var domElements = _parameter_Document.getElementsByTagName(tagTypes[tagTypeIndex]);
+      var elements = [].slice.call(domElements);
+      var elementsLength = elements.length;
+      var elementIndex = 0;
+      for (; elementIndex < elementsLength; elementIndex++) {
+        if (!renderBindingElement(elements[elementIndex])) {
+          break;
+        }
+      }
+    }
+  }
+  function renderBindingElement(element) {
+    var result = true;
+    if (isDefined(element) && element.hasAttribute(_attribute_Name_Options)) {
+      var bindingOptionsData = element.getAttribute(_attribute_Name_Options);
+      if (isDefinedString(bindingOptionsData)) {
+        var bindingOptions = getObjectFromString(bindingOptionsData);
+        if (bindingOptions.parsed && isDefinedObject(bindingOptions.result)) {
+          renderElement(renderBindingOptions(bindingOptions.result, element));
+        } else {
+          if (!_configuration.safeMode) {
+            console.error(_configuration.attributeNotValidErrorText.replace("{{attribute_name}}", _attribute_Name_Options));
+            result = false;
+          }
+        }
+      } else {
+        if (!_configuration.safeMode) {
+          console.error(_configuration.attributeNotSetErrorText.replace("{{attribute_name}}", _attribute_Name_Options));
+          result = false;
+        }
+      }
+    }
+    return result;
+  }
+  function renderBindingOptions(data, element) {
+    var bindingOptions = buildAttributeOptions(data);
+    bindingOptions.currentView = {};
+    bindingOptions.currentView.element = element;
+    return bindingOptions;
+  }
+  function renderElement(bindingOptions) {
+    fireCustomTrigger(bindingOptions.onBeforeRender, bindingOptions.element);
+    var properties = getDefaultHtmlProperties();
+    properties.json = bindingOptions.json;
+    writeHtml(bindingOptions.currentView.element, properties);
+    fireCustomTrigger(bindingOptions.onRenderComplete, bindingOptions.element);
+  }
+  function buildAttributeOptions(newOptions) {
+    var options = !isDefinedObject(newOptions) ? {} : newOptions;
+    options.json = getDefaultString(options.json, _string.empty);
+    options = buildAttributeOptionCustomTriggers(options);
+    return options;
+  }
+  function buildAttributeOptionCustomTriggers(options) {
+    options.onBeforeRender = getDefaultFunction(options.onBeforeRender, null);
+    options.onRenderComplete = getDefaultFunction(options.onRenderComplete, null);
+    return options;
+  }
+  function getDefaultJsonProperties() {
+    return {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[], generateUniqueMissingIds:false};
+  }
   function getJSON(element, properties) {
     var result = _string.empty;
     if (isDefinedObject(element)) {
@@ -116,10 +182,13 @@
     }
     return copy;
   }
+  function getDefaultHtmlProperties() {
+    return {json:_string.empty, templateData:{}, removeOriginalAttributes:true, clearOriginalHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
+  }
   function writeHtml(element, properties) {
-    var writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
       var convertedJsonObject = getObjectFromString(properties.json);
+      var writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
       if (properties.clearCssFromHead) {
         clearCssStyleTagsFromHead();
       }
@@ -291,6 +360,11 @@
     }
     return result;
   }
+  function fireCustomTrigger(triggerFunction) {
+    if (isDefinedFunction(triggerFunction)) {
+      triggerFunction.apply(null, [].slice.call(arguments, 1));
+    }
+  }
   function createElement(container, type) {
     var nodeType = type.toLowerCase();
     var isText = nodeType === "text";
@@ -355,6 +429,9 @@
   function getDefaultObject(value, defaultValue) {
     return isDefinedObject(value) ? value : defaultValue;
   }
+  function getDefaultFunction(value, defaultValue) {
+    return isDefinedFunction(value) ? value : defaultValue;
+  }
   function getDefaultStringOrArray(value, defaultValue) {
     if (isDefinedString(value)) {
       value = value.split(_string.space);
@@ -392,12 +469,15 @@
   function buildDefaultConfiguration(newConfiguration) {
     _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
     _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
+    _configuration.domElementTypes = getDefaultStringOrArray(_configuration.domElementTypes, ["*"]);
     _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
     buildDefaultConfigurationStrings();
   }
   function buildDefaultConfigurationStrings() {
     _configuration.variableWarningText = getDefaultString(_configuration.variableWarningText, "Template variable {{variable_name}} not found.");
     _configuration.objectErrorText = getDefaultString(_configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+    _configuration.attributeNotValidErrorText = getDefaultString(_configuration.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+    _configuration.attributeNotSetErrorText = getDefaultString(_configuration.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
   }
   var _this = this;
   var _parameter_Document = null;
@@ -409,121 +489,93 @@
   var _string = {empty:"", space:" ", newLine:"\n"};
   var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
   var _value = {notFound:-1};
+  var _attribute_Name_Options = "data-jhson-options";
+  this.renderAll = function() {
+    render();
+    return this;
+  };
   this.json = function() {
-    var jsonScope = null;
-    (function() {
-      jsonScope = this;
-      var __properties = {includeAttributes:true, includeCssProperties:false, includeText:true, includeChildren:true, friendlyFormat:true, indentSpaces:2, ignoreNodeTypes:[], ignoreCssProperties:[], ignoreAttributes:[], generateUniqueMissingIds:false};
-      jsonScope.includeAttributes = function(flag) {
-        __properties.includeAttributes = getDefaultBoolean(flag, __properties.includeAttributes);
-        return jsonScope;
-      };
-      jsonScope.includeCssProperties = function(flag) {
-        __properties.includeCssProperties = getDefaultBoolean(flag, __properties.includeCssProperties);
-        return jsonScope;
-      };
-      jsonScope.includeText = function(flag) {
-        __properties.includeText = getDefaultBoolean(flag, __properties.includeText);
-        return jsonScope;
-      };
-      jsonScope.includeChildren = function(flag) {
-        __properties.includeChildren = getDefaultBoolean(flag, __properties.includeChildren);
-        return jsonScope;
-      };
-      jsonScope.friendlyFormat = function(flag) {
-        __properties.friendlyFormat = getDefaultBoolean(flag, __properties.friendlyFormat);
-        return jsonScope;
-      };
-      jsonScope.indentSpaces = function(spaces) {
-        __properties.indentSpaces = getDefaultNumber(spaces, __properties.indentSpaces);
-        return jsonScope;
-      };
-      jsonScope.ignoreNodeTypes = function(types) {
-        __properties.ignoreNodeTypes = getDefaultStringOrArray(types, __properties.ignoreNodeTypes);
-        return jsonScope;
-      };
-      jsonScope.ignoreCssProperties = function(properties) {
-        __properties.ignoreCssProperties = getDefaultStringOrArray(properties, __properties.ignoreCssProperties);
-        return jsonScope;
-      };
-      jsonScope.ignoreAttributes = function(attributes) {
-        __properties.ignoreAttributes = getDefaultStringOrArray(attributes, __properties.ignoreAttributes);
-        return jsonScope;
-      };
-      jsonScope.generateUniqueMissingIds = function(flag) {
-        __properties.generateUniqueMissingIds = getDefaultBoolean(flag, __properties.generateUniqueMissingIds);
-        return jsonScope;
-      };
-      jsonScope.get = function(element) {
-        return getJSON(element, __properties);
-      };
-      jsonScope.getVariables = function(json) {
-        return getTemplateVariables(json);
-      };
-    })();
-    return jsonScope;
+    var properties = getDefaultJsonProperties();
+    return {includeAttributes:function(flag) {
+      properties.includeAttributes = getDefaultBoolean(flag, properties.includeAttributes);
+      return this;
+    }, includeCssProperties:function(flag) {
+      properties.includeCssProperties = getDefaultBoolean(flag, properties.includeCssProperties);
+      return this;
+    }, includeText:function(flag) {
+      properties.includeText = getDefaultBoolean(flag, properties.includeText);
+      return this;
+    }, includeChildren:function(flag) {
+      properties.includeChildren = getDefaultBoolean(flag, properties.includeChildren);
+      return this;
+    }, friendlyFormat:function(flag) {
+      properties.friendlyFormat = getDefaultBoolean(flag, properties.friendlyFormat);
+      return this;
+    }, indentSpaces:function(spaces) {
+      properties.indentSpaces = getDefaultNumber(spaces, properties.indentSpaces);
+      return this;
+    }, ignoreNodeTypes:function(types) {
+      properties.ignoreNodeTypes = getDefaultStringOrArray(types, properties.ignoreNodeTypes);
+      return this;
+    }, ignoreCssProperties:function(properties) {
+      properties.ignoreCssProperties = getDefaultStringOrArray(properties, properties.ignoreCssProperties);
+      return this;
+    }, ignoreAttributes:function(attributes) {
+      properties.ignoreAttributes = getDefaultStringOrArray(attributes, properties.ignoreAttributes);
+      return this;
+    }, generateUniqueMissingIds:function(flag) {
+      properties.generateUniqueMissingIds = getDefaultBoolean(flag, properties.generateUniqueMissingIds);
+      return this;
+    }, get:function(element) {
+      return getJSON(element, properties);
+    }, getVariables:function(json) {
+      return getTemplateVariables(json);
+    }};
   };
   this.html = function() {
-    var htmlScope = null;
-    (function() {
-      htmlScope = this;
-      var __properties = {json:_string.empty, templateData:{}, removeOriginalAttributes:true, clearOriginalHTML:true, addCssToHead:false, clearCssFromHead:false, logTemplateDataWarnings:false, addAttributes:true, addCssProperties:true, addText:true, addChildren:true};
-      htmlScope.json = function(json) {
-        __properties.json = getDefaultString(json, __properties.json);
-        return htmlScope;
-      };
-      htmlScope.templateData = function(templateData) {
-        __properties.templateData = getDefaultObject(templateData, __properties.templateData);
-        return htmlScope;
-      };
-      htmlScope.removeOriginalAttributes = function(flag) {
-        __properties.removeOriginalAttributes = getDefaultBoolean(flag, __properties.removeOriginalAttributes);
-        return htmlScope;
-      };
-      htmlScope.clearOriginalHTML = function(flag) {
-        __properties.clearOriginalHTML = getDefaultBoolean(flag, __properties.clearOriginalHTML);
-        return htmlScope;
-      };
-      htmlScope.addCssToHead = function(flag) {
-        __properties.addCssToHead = getDefaultBoolean(flag, __properties.addCssToHead);
-        return htmlScope;
-      };
-      htmlScope.clearCssFromHead = function(flag) {
-        __properties.clearCssFromHead = getDefaultBoolean(flag, __properties.clearCssFromHead);
-        return htmlScope;
-      };
-      htmlScope.logTemplateDataWarnings = function(flag) {
-        __properties.logTemplateDataWarnings = getDefaultBoolean(flag, __properties.logTemplateDataWarnings);
-        return htmlScope;
-      };
-      htmlScope.addAttributes = function(flag) {
-        __properties.addAttributes = getDefaultBoolean(flag, __properties.addAttributes);
-        return htmlScope;
-      };
-      htmlScope.addCssProperties = function(flag) {
-        __properties.addCssProperties = getDefaultBoolean(flag, __properties.addCssProperties);
-        return htmlScope;
-      };
-      htmlScope.addText = function(flag) {
-        __properties.addText = getDefaultBoolean(flag, __properties.addText);
-        return htmlScope;
-      };
-      htmlScope.addChildren = function(flag) {
-        __properties.addChildren = getDefaultBoolean(flag, __properties.addChildren);
-        return htmlScope;
-      };
-      htmlScope.write = function(element) {
-        return writeHtml(element, __properties);
-      };
-      htmlScope.getVariables = function(element) {
-        var result = [];
-        if (isDefinedObject(element)) {
-          result = getTemplateVariables(element.innerHTML);
-        }
-        return result;
-      };
-    })();
-    return htmlScope;
+    var properties = getDefaultHtmlProperties();
+    return {json:function(json) {
+      properties.json = getDefaultString(json, properties.json);
+      return this;
+    }, templateData:function(templateData) {
+      properties.templateData = getDefaultObject(templateData, properties.templateData);
+      return this;
+    }, removeOriginalAttributes:function(flag) {
+      properties.removeOriginalAttributes = getDefaultBoolean(flag, properties.removeOriginalAttributes);
+      return this;
+    }, clearOriginalHTML:function(flag) {
+      properties.clearOriginalHTML = getDefaultBoolean(flag, properties.clearOriginalHTML);
+      return this;
+    }, addCssToHead:function(flag) {
+      properties.addCssToHead = getDefaultBoolean(flag, properties.addCssToHead);
+      return this;
+    }, clearCssFromHead:function(flag) {
+      properties.clearCssFromHead = getDefaultBoolean(flag, properties.clearCssFromHead);
+      return this;
+    }, logTemplateDataWarnings:function(flag) {
+      properties.logTemplateDataWarnings = getDefaultBoolean(flag, properties.logTemplateDataWarnings);
+      return this;
+    }, addAttributes:function(flag) {
+      properties.addAttributes = getDefaultBoolean(flag, properties.addAttributes);
+      return this;
+    }, addCssProperties:function(flag) {
+      properties.addCssProperties = getDefaultBoolean(flag, properties.addCssProperties);
+      return this;
+    }, addText:function(flag) {
+      properties.addText = getDefaultBoolean(flag, properties.addText);
+      return this;
+    }, addChildren:function(flag) {
+      properties.addChildren = getDefaultBoolean(flag, properties.addChildren);
+      return this;
+    }, write:function(element) {
+      return writeHtml(element, properties);
+    }, getVariables:function(element) {
+      var result = [];
+      if (isDefinedObject(element)) {
+        result = getTemplateVariables(element.innerHTML);
+      }
+      return result;
+    }};
   };
   this.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;
@@ -548,6 +600,9 @@
     _parameter_JSON = jsonObject;
     _parameter_Math = mathObject;
     buildDefaultConfiguration();
+    _parameter_Document.addEventListener("DOMContentLoaded", function() {
+      render();
+    });
     if (!isDefined(_parameter_Window.$jhson)) {
       _parameter_Window.$jhson = this;
     }

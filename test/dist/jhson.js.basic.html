@@ -6,6 +6,7 @@
         <title>JHson.js - Basic</title>
         <link rel="stylesheet" href="../css/styles.css">
         <script src="../../dist/jhson.js"></script>
+        <script src="../js/scripts.js"></script>
     </head>
 
     <body>
@@ -69,38 +70,4 @@
             </div>
         </div>
     </body>
-
-    <script>
-        var _BODY = document.getElementsByTagName( "body" )[ 0 ];
-
-        var _JSON_TEXTAREA = document.getElementById( "json" ),
-            _INCLUDE_ATTRIBUTES = document.getElementById( "includeAttributes" ),
-            _INCLUDE_CSS_STYLES = document.getElementById( "includeCssProperties" ),
-            _INCLUDE_TEXT = document.getElementById( "includeText" ),
-            _INCLUDE_CHILDREN = document.getElementById( "includeChildren" ),
-            _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" ),
-            _INDENT_SPACES = document.getElementById( "indentSpaces" ),
-            _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" ),
-            _IGNORE_CSS_PROPERTIES = document.getElementById( "ignoreCssProperties" ),
-            _IGNORE_ATTRIBUTES = document.getElementById( "ignoreAttributes" ),
-            _GENERATE_UNIQUE_MISSING_IDS = document.getElementById( "generateUniqueMissingIds" );
-
-        document.title += " v" + $jhson.getVersion();
-        document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
-
-        function getJSONData() {
-            _JSON_TEXTAREA.value = $jhson.json()
-                .includeAttributes( _INCLUDE_ATTRIBUTES.checked )
-                .includeCssProperties( _INCLUDE_CSS_STYLES.checked )
-                .includeText( _INCLUDE_TEXT.checked )
-                .includeChildren( _INCLUDE_CHILDREN.checked )
-                .friendlyFormat( _FRIENDLY_FORMAT.checked )
-                .indentSpaces( parseInt( _INDENT_SPACES.value ) )
-                .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
-                .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
-                .ignoreAttributes( _IGNORE_ATTRIBUTES.value )
-                .generateUniqueMissingIds( _GENERATE_UNIQUE_MISSING_IDS.checked )
-                .get( _BODY );
-        }
-    </script>
 </html>

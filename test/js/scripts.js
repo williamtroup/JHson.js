@@ -92,15 +92,16 @@ function getHTMLVariables() {
 }
 
 function writeJSONData() {
-    var html = $jhson
+    var htmlScope = $jhson
         .html()
         .json( _JSON_TEXTAREA.value );
 
     if ( _SET_TEMPLATE_DATA.checked ) {
-        html = html.templateData( { "{{template_data}}": "this template data", "{{template_data_not_available}}": "more template data" } );
+        htmlScope = htmlScope.templateData( { "{{template_data}}": "this template data", "{{template_data_not_available}}": "more template data" } );
     }
 
-    html.removeOriginalAttributes( _REMOVE_ATTRIBUTES.checked )
+    htmlScope
+        .removeOriginalAttributes( _REMOVE_ATTRIBUTES.checked )
         .clearOriginalHTML( _CLEAR_HTML.checked )
         .addCssToHead( _WRITE_CSS_TO_HEAD.checked )
         .clearCssFromHead( _CLEAR_CSS_FROM_HEAD.checked )

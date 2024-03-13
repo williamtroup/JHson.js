@@ -130,6 +130,7 @@
         return options;
     }
 
+    
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * JSON - Get
@@ -293,15 +294,14 @@
      */
 
     function writeHtml( element, properties ) {
-        var writingScope = {
-            css: {},
-            templateDataKeys: [],
-            templateDataKeysLength: 0,
-            templateDataKeysProcessed: []
-        };
-
         if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
-            var convertedJsonObject = getObjectFromString( properties.json );
+            var convertedJsonObject = getObjectFromString( properties.json ),
+                writingScope = {
+                css: {},
+                templateDataKeys: [],
+                templateDataKeysLength: 0,
+                templateDataKeysProcessed: []
+            };
 
             if ( properties.clearCssFromHead ) {
                 clearCssStyleTagsFromHead();

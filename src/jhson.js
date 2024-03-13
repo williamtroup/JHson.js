@@ -113,10 +113,14 @@
     }
 
     function renderElement( bindingOptions ) {
+        fireCustomTrigger( bindingOptions.onBeforeRender, bindingOptions.element );
+
         var properties = getDefaultHtmlProperties();
         properties.json = bindingOptions.json;
 
         writeHtml( bindingOptions.currentView.element, properties );
+
+        fireCustomTrigger( bindingOptions.onRenderComplete, bindingOptions.element );
     }
 
 
@@ -129,6 +133,15 @@
     function buildAttributeOptions( newOptions ) {
         var options = !isDefinedObject( newOptions ) ? {} : newOptions;
         options.json = getDefaultString( options.json, _string.empty );
+
+        options = buildAttributeOptionCustomTriggers( options );
+
+        return options;
+    }
+
+    function buildAttributeOptionCustomTriggers( options ) {
+        options.onBeforeRender = getDefaultFunction( options.onBeforeRender, null );
+        options.onRenderComplete = getDefaultFunction( options.onRenderComplete, null );
 
         return options;
     }
@@ -558,6 +571,19 @@
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Triggering Custom Events
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function fireCustomTrigger( triggerFunction ) {
+        if ( isDefinedFunction( triggerFunction ) ) {
+            triggerFunction.apply( null, [].slice.call( arguments, 1 ) );
+        }
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * Element Handling
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
@@ -667,6 +693,10 @@
 
     function getDefaultObject( value, defaultValue ) {
         return isDefinedObject( value ) ? value : defaultValue;
+    }
+
+    function getDefaultFunction( value, defaultValue ) {
+        return isDefinedFunction( value ) ? value : defaultValue;
     }
 
     function getDefaultStringOrArray( value, defaultValue ) {

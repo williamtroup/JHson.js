@@ -112,6 +112,8 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 
 To see a list of all the available binding options you can use for "data-jhson-options", click [here](docs/binding/OPTIONS.md).
 
+To see a list of all the available custom triggers you can use for "data-jhson-options", click [here](docs/binding/CUSTOM_TRIGGERS.md).
+
 
 ### 5. Finishing Up:
 

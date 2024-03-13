@@ -44,8 +44,87 @@
         // Variables: Values
         _value = {
             notFound: -1
-        };
+        },
 
+        // Variables: Attribute Names
+        _attribute_Name_Options = "data-jhson-options";
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Rendering
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function render() {
+        var tagTypes = _configuration.domElementTypes,
+            tagTypesLength = tagTypes.length;
+
+        for ( var tagTypeIndex = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++ ) {
+            var domElements = _parameter_Document.getElementsByTagName( tagTypes[ tagTypeIndex ] ),
+                elements = [].slice.call( domElements ),
+                elementsLength = elements.length;
+
+            for ( var elementIndex = 0; elementIndex < elementsLength; elementIndex++ ) {
+                if ( !renderElement( elements[ elementIndex ] ) ) {
+                    break;
+                }
+            }
+        }
+    }
+
+    function renderElement( element ) {
+        var result = true;
+
+        if ( isDefined( element ) && element.hasAttribute( _attribute_Name_Options ) ) {
+            var bindingOptionsData = element.getAttribute( _attribute_Name_Options );
+
+            if ( isDefinedString( bindingOptionsData ) ) {
+                var bindingOptions = getObjectFromString( bindingOptionsData );
+
+                if ( bindingOptions.parsed && isDefinedObject( bindingOptions.result ) ) {
+                    renderControl( renderBindingOptions( bindingOptions.result, element ) );
+
+                } else {
+                    if ( !_configuration.safeMode ) {
+                        console.error( _configuration.attributeNotValidErrorText.replace( "{{attribute_name}}", _attribute_Name_Options ) );
+                        result = false;
+                    }
+                }
+
+            } else {
+                if ( !_configuration.safeMode ) {
+                    console.error( _configuration.attributeNotSetErrorText.replace( "{{attribute_name}}", _attribute_Name_Options ) );
+                    result = false;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    function renderBindingOptions( data, element ) {
+        var bindingOptions = buildAttributeOptions( data );
+
+        bindingOptions.currentView = {};
+        bindingOptions.currentView.element = element;
+
+        return bindingOptions;
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Binding Options
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function buildAttributeOptions( newOptions ) {
+        var options = !isDefinedObject( newOptions ) ? {} : newOptions;
+        options.json = getDefaultString( options.json, _string.empty );
+
+        return options;
+    }
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1141,6 +1220,7 @@
     function buildDefaultConfiguration( newConfiguration ) {
         _configuration = !isDefinedObject( newConfiguration ) ? {} : newConfiguration;
         _configuration.safeMode = getDefaultBoolean( _configuration.safeMode, true );
+        _configuration.domElementTypes = getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
         _configuration.formattingNodeTypes = getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",
             "strong",
@@ -1160,6 +1240,8 @@
     function buildDefaultConfigurationStrings() {
         _configuration.variableWarningText = getDefaultString( _configuration.variableWarningText, "Template variable {{variable_name}} not found." );
         _configuration.objectErrorText = getDefaultString( _configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
+        _configuration.attributeNotValidErrorText = getDefaultString( _configuration.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
+        _configuration.attributeNotSetErrorText = getDefaultString( _configuration.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );        
     }
 
 
@@ -1196,6 +1278,10 @@
         _parameter_Math = mathObject;
 
         buildDefaultConfiguration();
+
+        _parameter_Document.addEventListener( "DOMContentLoaded", function() {
+            render();
+        } );
 
         if ( !isDefined( _parameter_Window.$jhson ) ) {
             _parameter_Window.$jhson = this;

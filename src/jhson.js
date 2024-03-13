@@ -131,8 +131,20 @@
      */
 
     function buildAttributeOptions( newOptions ) {
-        var options = !isDefinedObject( newOptions ) ? {} : newOptions;
-        options.json = getDefaultString( options.json, _string.empty );
+        var options = !isDefinedObject( newOptions ) ? {} : newOptions,
+            optionPropertyDefaults = getDefaultHtmlProperties();
+
+        options.json = getDefaultString( options.json, optionPropertyDefaults.json );
+        options.templateData = getDefaultObject( options.templateData, optionPropertyDefaults.templateData );
+        options.removeOriginalAttributes = getDefaultBoolean( options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes );
+        options.clearOriginalHTML = getDefaultBoolean( options.clearOriginalHTML, optionPropertyDefaults.clearOriginalHTML );
+        options.addCssToHead = getDefaultBoolean( options.addCssToHead, optionPropertyDefaults.addCssToHead );
+        options.clearCssFromHead = getDefaultBoolean( options.clearCssFromHead, optionPropertyDefaults.clearCssFromHead );
+        options.logTemplateDataWarnings = getDefaultBoolean( options.logTemplateDataWarnings, optionPropertyDefaults.logTemplateDataWarnings );
+        options.addAttributes = getDefaultBoolean( options.addAttributes, optionPropertyDefaults.addAttributes );
+        options.addCssProperties = getDefaultBoolean( options.addCssProperties, optionPropertyDefaults.addCssProperties );
+        options.addText = getDefaultBoolean( options.addText, optionPropertyDefaults.addText );
+        options.addChildren = getDefaultBoolean( options.addChildren, optionPropertyDefaults.addChildren );
 
         options = buildAttributeOptionCustomTriggers( options );
 

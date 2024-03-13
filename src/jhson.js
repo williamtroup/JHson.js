@@ -113,7 +113,10 @@
     }
 
     function renderElement( bindingOptions ) {
-        _this.html().json( bindingOptions.json ).write( bindingOptions.currentView.element );
+        var properties = getDefaultWriteProperties();
+        properties.json = bindingOptions.json;
+
+        writeHtml( bindingOptions.currentView.element, properties );
     }
 
 
@@ -136,6 +139,21 @@
      * JSON - Get
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
+
+    function getDefaultGetProperties() {
+        return {
+            includeAttributes: true,
+            includeCssProperties: false,
+            includeText: true,
+            includeChildren: true,
+            friendlyFormat: true,
+            indentSpaces: 2,
+            ignoreNodeTypes: [],
+            ignoreCssProperties: [],
+            ignoreAttributes: [],
+            generateUniqueMissingIds: false
+        };
+    }
 
     function getJSON( element, properties ) {
         var result = _string.empty;
@@ -292,6 +310,22 @@
      * JSON - Write HTML
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
+
+    function getDefaultWriteProperties() {
+        return {
+            json: _string.empty,
+            templateData: {},
+            removeOriginalAttributes: true,
+            clearOriginalHTML: true,
+            addCssToHead: false,
+            clearCssFromHead: false,
+            logTemplateDataWarnings: false,
+            addAttributes: true,
+            addCssProperties: true,
+            addText: true,
+            addChildren: true
+        };
+    }
 
     function writeHtml( element, properties ) {
         if ( isDefinedObject( element ) && isDefinedString( properties.json ) ) {
@@ -706,18 +740,7 @@
         ( function() {
             jsonScope = this;
 
-            var __properties = {
-                includeAttributes: true,
-                includeCssProperties: false,
-                includeText: true,
-                includeChildren: true,
-                friendlyFormat: true,
-                indentSpaces: 2,
-                ignoreNodeTypes: [],
-                ignoreCssProperties: [],
-                ignoreAttributes: [],
-                generateUniqueMissingIds: false
-            };
+            var __properties = getDefaultGetProperties();
 
             /**
              * includeAttributes().
@@ -945,19 +968,7 @@
         ( function() {
             htmlScope = this;
             
-            var __properties = {
-                json: _string.empty,
-                templateData: {},
-                removeOriginalAttributes: true,
-                clearOriginalHTML: true,
-                addCssToHead: false,
-                clearCssFromHead: false,
-                logTemplateDataWarnings: false,
-                addAttributes: true,
-                addCssProperties: true,
-                addText: true,
-                addChildren: true
-            };
+            var __properties = getDefaultWriteProperties();
 
             /**
              * json().

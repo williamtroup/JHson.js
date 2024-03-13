@@ -5,6 +5,16 @@ Below is a list of all the public functions that can be called from the JHson.js
 <br>
 
 
+## Binding:
+
+### **renderAll()**:
+Finds all the elements with the correct binding attribute and renders the JSON as HTML.
+<br>
+***Returns***: '*Object*' - The JHson.js class instance.
+<br>
+<br>
+
+
 ## JSON:
 
 ### **json()**:

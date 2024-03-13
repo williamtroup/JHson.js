@@ -25,7 +25,7 @@ var _SET_TEMPLATE_DATA = null,
 
 ( function() {
     document.addEventListener( "DOMContentLoaded", function() {
-        document.title += " v" + $jhson.getVersion();
+        document.title += " - v" + $jhson.getVersion();
         document.getElementById( "header" ).innerText += " - v" + $jhson.getVersion();
 
         _BODY = document.getElementsByTagName( "body" )[ 0 ];

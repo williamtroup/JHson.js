@@ -88,7 +88,8 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 <script>
     var header = document.getElementById( "header" );
 
-    var json = $jhson.json()
+    var json = $jhson
+        .json()
         .includeAttributes( true )
         .includeCssProperties( true )
         .includeText( true )

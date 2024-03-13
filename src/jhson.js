@@ -113,7 +113,7 @@
     }
 
     function renderElement( bindingOptions ) {
-        var properties = getDefaultWriteProperties();
+        var properties = getDefaultHtmlProperties();
         properties.json = bindingOptions.json;
 
         writeHtml( bindingOptions.currentView.element, properties );
@@ -140,7 +140,7 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getDefaultGetProperties() {
+    function getDefaultJsonProperties() {
         return {
             includeAttributes: true,
             includeCssProperties: false,
@@ -311,7 +311,7 @@
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getDefaultWriteProperties() {
+    function getDefaultHtmlProperties() {
         return {
             json: _string.empty,
             templateData: {},
@@ -740,7 +740,7 @@
         ( function() {
             jsonScope = this;
 
-            var __properties = getDefaultGetProperties();
+            var __properties = getDefaultJsonProperties();
 
             /**
              * includeAttributes().
@@ -968,7 +968,7 @@
         ( function() {
             htmlScope = this;
             
-            var __properties = getDefaultWriteProperties();
+            var __properties = getDefaultHtmlProperties();
 
             /**
              * json().

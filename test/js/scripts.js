@@ -62,7 +62,8 @@ function setupConfiguration() {
 }
 
 function getJSONData() {
-    _JSON_TEXTAREA.value = $jhson.json()
+    _JSON_TEXTAREA.value = $jhson
+        .json()
         .includeAttributes( _INCLUDE_ATTRIBUTES.checked )
         .includeCssProperties( _INCLUDE_CSS_STYLES.checked )
         .includeText( _INCLUDE_TEXT.checked )
@@ -85,7 +86,9 @@ function getHTMLVariables() {
 }
 
 function writeJSONData() {
-    var html = $jhson.html().json( _JSON_TEXTAREA.value );
+    var html = $jhson
+        .html()
+        .json( _JSON_TEXTAREA.value );
 
     if ( _SET_TEMPLATE_DATA.checked ) {
         html = html.templateData( { "{{template_data}}": "this template data", "{{template_data_not_available}}": "more template data" } );

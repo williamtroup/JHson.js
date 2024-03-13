@@ -66,14 +66,14 @@
                 elementsLength = elements.length;
 
             for ( var elementIndex = 0; elementIndex < elementsLength; elementIndex++ ) {
-                if ( !renderElement( elements[ elementIndex ] ) ) {
+                if ( !renderBindingElement( elements[ elementIndex ] ) ) {
                     break;
                 }
             }
         }
     }
 
-    function renderElement( element ) {
+    function renderBindingElement( element ) {
         var result = true;
 
         if ( isDefined( element ) && element.hasAttribute( _attribute_Name_Options ) ) {
@@ -83,7 +83,7 @@
                 var bindingOptions = getObjectFromString( bindingOptionsData );
 
                 if ( bindingOptions.parsed && isDefinedObject( bindingOptions.result ) ) {
-                    renderControl( renderBindingOptions( bindingOptions.result, element ) );
+                    renderElement( renderBindingOptions( bindingOptions.result, element ) );
 
                 } else {
                     if ( !_configuration.safeMode ) {
@@ -110,6 +110,10 @@
         bindingOptions.currentView.element = element;
 
         return bindingOptions;
+    }
+
+    function renderElement( bindingOptions ) {
+        _this.html().json( bindingOptions.json ).write( bindingOptions.currentView.element );
     }
 
 

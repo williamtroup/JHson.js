@@ -105,7 +105,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 ### 4. DOM Element Binding (for writing JSON as HTML):
 
 ```markdown
-<div data-json-options="{ 'json': 'json string' }">
+<div data-jhson-options="{ 'json': 'json string' }">
     Your HTML.
 </div>
 ```

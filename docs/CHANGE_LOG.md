@@ -3,10 +3,10 @@
 ## Version 1.0.0:
 
 #### **New Features:**
-- Add binding support! You can now add the attribute "data-jhson-options" to any DOM element to binding JSON, which will be written as HTML.
+- Added binding support! You can now add the attribute "data-jhson-options" to any DOM element to bind JSON, which will be written as HTML.
 
 #### **Public Functions:**
-- Added a new public function called "renderAll()", which will find all the DOM elements with the attribute assigned and will then render their JSON as HTML.
+- Added a new public function called "renderAll()", which will find all the DOM elements with the attribute assigned and render their JSON as HTML.
 
 #### **Fixes & Improvements:**
 - Fixed a major fault that caused the scope of the chained functions to fail when specific methods are called.

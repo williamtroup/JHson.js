@@ -78,11 +78,17 @@ function getJSONData() {
 }
 
 function getJSONVariables() {
-    console.log( JSON.stringify( $jhson.json().getVariables( "{{variable_start}}<div>{{variable_1}}</div><div>{{variable_2}}</div>{{variable_end}}" ) ) )
+    var variables = $jhson.json().getVariables( "{{variable_start}}<div>{{variable_1}}</div><div>{{variable_2}}</div>{{variable_end}}" ),
+        variablesString = JSON.stringify( variables );
+
+    console.log( variablesString );
 }
 
 function getHTMLVariables() {
-    console.log( JSON.stringify( $jhson.html().getVariables( document.getElementById( 'description' ) ) ) )
+    var variables = $jhson.html().getVariables( document.getElementById( "description" ) ),
+        variablesString = JSON.stringify( variables );
+
+    console.log( variablesString );
 }
 
 function writeJSONData() {

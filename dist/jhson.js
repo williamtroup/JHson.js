@@ -1,15 +1,11 @@
 /*! JHson.js v1.1.0 | (c) Bunoon 2024 | MIT License */
 (function() {
+  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-options";
   function render() {
-    var tagTypes = _configuration.domElementTypes;
-    var tagTypesLength = tagTypes.length;
-    var tagTypeIndex = 0;
-    for (; tagTypeIndex < tagTypesLength; tagTypeIndex++) {
-      var domElements = _parameter_Document.getElementsByTagName(tagTypes[tagTypeIndex]);
-      var elements = [].slice.call(domElements);
-      var elementsLength = elements.length;
-      var elementIndex = 0;
-      for (; elementIndex < elementsLength; elementIndex++) {
+    var tagTypes = _configuration.domElementTypes, tagTypesLength = tagTypes.length;
+    for (var tagTypeIndex = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++) {
+      var domElements = _parameter_Document.getElementsByTagName(tagTypes[tagTypeIndex]), elements = [].slice.call(domElements), elementsLength = elements.length;
+      for (var elementIndex = 0; elementIndex < elementsLength; elementIndex++) {
         if (!renderBindingElement(elements[elementIndex])) {
           break;
         }
@@ -53,8 +49,7 @@
     fireCustomTrigger(bindingOptions.onRenderComplete, bindingOptions.element);
   }
   function buildAttributeOptions(newOptions) {
-    var options = !isDefinedObject(newOptions) ? {} : newOptions;
-    var optionPropertyDefaults = getDefaultHtmlProperties();
+    var options = !isDefinedObject(newOptions) ? {} : newOptions, optionPropertyDefaults = getDefaultHtmlProperties();
     options.json = getDefaultString(options.json, optionPropertyDefaults.json);
     options.templateData = getDefaultObject(options.templateData, optionPropertyDefaults.templateData);
     options.removeOriginalAttributes = getDefaultBoolean(options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes);
@@ -80,8 +75,7 @@
   function getJSON(element, properties) {
     var result = _string.empty;
     if (isDefinedObject(element)) {
-      var resultJson = {};
-      var elementJson = getElementObject(element, properties, {});
+      var resultJson = {}, elementJson = getElementObject(element, properties, {});
       resultJson[elementJson.nodeName] = elementJson.nodeValues;
       if (properties.friendlyFormat) {
         result = _parameter_JSON.stringify(resultJson, null, properties.indentSpaces);
@@ -92,9 +86,7 @@
     return result;
   }
   function getElementObject(element, properties, parentCssStyles) {
-    var result = {};
-    var childrenLength = element.children.length;
-    var childrenAdded = 0;
+    var result = {}, childrenLength = element.children.length, childrenAdded = 0;
     if (properties.includeAttributes) {
       getElementAttributes(element, result, properties);
     }
@@ -113,13 +105,11 @@
     return {nodeName:element.nodeName.toLowerCase(), nodeValues:result};
   }
   function getElementAttributes(element, result, properties) {
-    var attributesLength = element.attributes.length;
-    var attributesAvailable = [];
+    var attributesLength = element.attributes.length, attributesAvailable = [];
     if (properties.includeText && element.nodeName.toLowerCase() === "textarea" && isDefined(element.value)) {
       result[_json.text] = element.value;
     }
-    var attributeIndex = 0;
-    for (; attributeIndex < attributesLength; attributeIndex++) {
+    for (var attributeIndex = 0; attributeIndex < attributesLength; attributeIndex++) {
       var attribute = element.attributes[attributeIndex];
       if (isDefinedString(attribute.nodeName) && properties.ignoreAttributes.indexOf(attribute.nodeName) === _value.notFound) {
         result[_json.attribute + attribute.nodeName] = attribute.nodeValue;
@@ -132,14 +122,11 @@
   }
   function getElementCssProperties(element, result, properties, parentCssStyles) {
     if (_parameter_Window.getComputedStyle) {
-      var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle(element);
-      var cssComputedStylesLength = cssComputedStyles.length;
-      var cssComputedStyleIndex = 0;
-      for (; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++) {
+      var cssComputedStyles = _parameter_Document.defaultView.getComputedStyle(element), cssComputedStylesLength = cssComputedStyles.length;
+      for (var cssComputedStyleIndex = 0; cssComputedStyleIndex < cssComputedStylesLength; cssComputedStyleIndex++) {
         var cssComputedStyleName = cssComputedStyles[cssComputedStyleIndex];
         if (properties.ignoreCssProperties.indexOf(cssComputedStyleName) === _value.notFound) {
-          var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName;
-          var cssComputedValue = cssComputedStyles.getPropertyValue(cssComputedStyleName);
+          var cssComputedStyleNameStorage = _json.cssStyle + cssComputedStyleName, cssComputedValue = cssComputedStyles.getPropertyValue(cssComputedStyleName);
           if (!parentCssStyles.hasOwnProperty(cssComputedStyleNameStorage) || parentCssStyles[cssComputedStyleNameStorage] !== cssComputedValue) {
             result[cssComputedStyleNameStorage] = cssComputedValue;
             parentCssStyles[cssComputedStyleNameStorage] = result[cssComputedStyleNameStorage];
@@ -151,11 +138,8 @@
   function getElementChildren(element, result, childrenLength, properties, parentCssStyles) {
     var totalChildren = 0;
     result[_json.children] = [];
-    var childrenIndex = 0;
-    for (; childrenIndex < childrenLength; childrenIndex++) {
-      var child = element.children[childrenIndex];
-      var childElementData = getElementObject(child, properties, getParentCssStylesCopy(parentCssStyles));
-      var addChild = false;
+    for (var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++) {
+      var child = element.children[childrenIndex], childElementData = getElementObject(child, properties, getParentCssStylesCopy(parentCssStyles)), addChild = false;
       if (_configuration.formattingNodeTypes.indexOf(childElementData.nodeName) > _value.notFound) {
         totalChildren++;
       } else {
@@ -185,8 +169,7 @@
   }
   function getParentCssStylesCopy(parentCssStyles) {
     var copy = {};
-    var cssStyleName;
-    for (cssStyleName in parentCssStyles) {
+    for (var cssStyleName in parentCssStyles) {
       if (parentCssStyles.hasOwnProperty(cssStyleName)) {
         copy[cssStyleName] = parentCssStyles[cssStyleName];
       }
@@ -198,8 +181,7 @@
   }
   function writeHtml(element, properties) {
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
-      var convertedJsonObject = getObjectFromString(properties.json);
-      var writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
+      var convertedJsonObject = getObjectFromString(properties.json), writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
       if (properties.clearCssFromHead) {
         clearCssStyleTagsFromHead();
       }
@@ -207,11 +189,10 @@
         setupWritingScopeTemplateDataKeys(properties, writingScope);
       }
       if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
-        var key;
-        for (key in convertedJsonObject.result) {
+        for (var key in convertedJsonObject.result) {
           if (key === element.nodeName.toLowerCase()) {
             if (properties.removeOriginalAttributes) {
-              for (; element.attributes.length > 0;) {
+              while (element.attributes.length > 0) {
                 element.removeAttribute(element.attributes[0].name);
               }
             }
@@ -229,11 +210,10 @@
         checkedForUnusedTemplateData(writingScope);
       }
     }
-    return _this;
+    return _public;
   }
   function setupWritingScopeTemplateDataKeys(properties, writingScope) {
-    var templateDataKey;
-    for (templateDataKey in properties.templateData) {
+    for (var templateDataKey in properties.templateData) {
       if (properties.templateData.hasOwnProperty(templateDataKey)) {
         writingScope.templateDataKeys.push(templateDataKey);
       }
@@ -245,12 +225,10 @@
   }
   function writeNode(element, jsonObject, properties, writingScope) {
     var cssStyles = [];
-    var jsonKey;
-    for (jsonKey in jsonObject) {
+    for (var jsonKey in jsonObject) {
       if (startsWithAnyCase(jsonKey, _json.attribute)) {
         if (properties.addAttributes) {
-          var attributeName = jsonKey.replace(_json.attribute, _string.empty);
-          var attributeValue = jsonObject[jsonKey];
+          var attributeName = jsonKey.replace(_json.attribute, _string.empty), attributeValue = jsonObject[jsonKey];
           element.setAttribute(attributeName, attributeValue);
         }
       } else if (startsWithAnyCase(jsonKey, _json.cssStyle)) {
@@ -269,11 +247,9 @@
       } else if (jsonKey === _json.children) {
         if (properties.addChildren) {
           var childrenLength = jsonObject[jsonKey].length;
-          var childrenIndex = 0;
-          for (; childrenIndex < childrenLength; childrenIndex++) {
+          for (var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++) {
             var childJson = jsonObject[jsonKey][childrenIndex];
-            var childJsonKey;
-            for (childJsonKey in childJson) {
+            for (var childJsonKey in childJson) {
               if (childJson.hasOwnProperty(childJsonKey)) {
                 var childElement = createElement(element, childJsonKey.toLowerCase());
                 writeNode(childElement, childJson[childJsonKey], properties, writingScope);
@@ -290,8 +266,7 @@
   function writeElementTextAndTemplateData(element, value, properties, writingScope) {
     element.innerHTML = value;
     if (writingScope.templateDataKeysLength > 0) {
-      var templateDataKeyIndex = 0;
-      for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+      for (var templateDataKeyIndex = 0; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
         var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
         if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
           element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
@@ -320,10 +295,8 @@
     writingScope.css[element.id] = cssLines;
   }
   function writeCssStyleTag(writingScope) {
-    var head = _parameter_Document.getElementsByTagName("head")[0];
-    var cssLines = [];
-    var elementId;
-    for (elementId in writingScope.css) {
+    var head = _parameter_Document.getElementsByTagName("head")[0], cssLines = [];
+    for (var elementId in writingScope.css) {
       if (writingScope.css.hasOwnProperty(elementId)) {
         cssLines = cssLines.concat(writingScope.css[elementId]);
       }
@@ -333,18 +306,15 @@
     style.appendChild(_parameter_Document.createTextNode(cssLines.join(_string.newLine)));
   }
   function clearCssStyleTagsFromHead() {
-    var styles = [].slice.call(_parameter_Document.getElementsByTagName("styles"));
-    var stylesLength = styles.length;
-    var styleIndex = 0;
-    for (; styleIndex < stylesLength; styleIndex++) {
+    var styles = [].slice.call(_parameter_Document.getElementsByTagName("styles")), stylesLength = styles.length;
+    for (var styleIndex = 0; styleIndex < stylesLength; styleIndex++) {
       styles[styleIndex].parentNode.removeChild(styles[styleIndex]);
     }
   }
   function checkedForUnusedTemplateData(writingScope) {
     var templateDataKeysProcessedLength = writingScope.templateDataKeysProcessed.length;
     if (writingScope.templateDataKeysLength > templateDataKeysProcessedLength) {
-      var templateDataKeyIndex = 0;
-      for (; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
+      for (var templateDataKeyIndex = 0; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
         var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
         if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
           console.warn(_configuration.variableWarningText.replace("{{variable_name}}", templateDataKey));
@@ -355,16 +325,15 @@
   function getTemplateVariables(data) {
     var result = [];
     if (isDefinedString(data)) {
-      var startIndex = 0;
-      var endIndex = 0;
-      for (; startIndex > _value.notFound;) {
+      var startIndex = 0, endIndex = 0;
+      while (startIndex > _value.notFound) {
         startIndex = data.indexOf("{{", endIndex);
         if (startIndex > _value.notFound) {
           endIndex = data.indexOf("}}", startIndex);
           if (endIndex > _value.notFound) {
             var variable = data.substring(startIndex, endIndex + 2);
             result.push(variable);
-            endIndex = endIndex + 2;
+            endIndex += 2;
           }
         }
       }
@@ -377,8 +346,7 @@
     }
   }
   function createElement(container, type) {
-    var nodeType = type.toLowerCase();
-    var isText = nodeType === "text";
+    var nodeType = type.toLowerCase(), isText = nodeType === "text";
     if (!_elements_Type.hasOwnProperty(nodeType)) {
       _elements_Type[nodeType] = isText ? _parameter_Document.createTextNode(_string.empty) : _parameter_Document.createElement(nodeType);
     }
@@ -409,8 +377,7 @@
   }
   function newGuid() {
     var result = [];
-    var charIndex = 0;
-    for (; charIndex < 32; charIndex++) {
+    for (var charIndex = 0; charIndex < 32; charIndex++) {
       if (charIndex === 8 || charIndex === 12 || charIndex === 16 || charIndex === 20) {
         result.push(_string.dash);
       }
@@ -455,8 +422,7 @@
     return value;
   }
   function getObjectFromString(objectString) {
-    var parsed = true;
-    var result = null;
+    var parsed = true, result = null;
     try {
       if (isDefinedString(objectString)) {
         result = _parameter_JSON.parse(objectString);
@@ -477,35 +443,11 @@
     }
     return {parsed:parsed, result:result};
   }
-  function buildDefaultConfiguration(newConfiguration) {
-    _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
-    _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
-    _configuration.domElementTypes = getDefaultStringOrArray(_configuration.domElementTypes, ["*"]);
-    _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
-    buildDefaultConfigurationStrings();
-  }
-  function buildDefaultConfigurationStrings() {
-    _configuration.variableWarningText = getDefaultString(_configuration.variableWarningText, "Template variable {{variable_name}} not found.");
-    _configuration.objectErrorText = getDefaultString(_configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
-    _configuration.attributeNotValidErrorText = getDefaultString(_configuration.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
-    _configuration.attributeNotSetErrorText = getDefaultString(_configuration.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
-  }
-  var _this = this;
-  var _parameter_Document = null;
-  var _parameter_Window = null;
-  var _parameter_JSON = null;
-  var _parameter_Math = null;
-  var _configuration = {};
-  var _elements_Type = {};
-  var _string = {empty:"", space:" ", newLine:"\n"};
-  var _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children"};
-  var _value = {notFound:-1};
-  var _attribute_Name_Options = "data-jhson-options";
-  this.renderAll = function() {
+  _public.renderAll = function() {
     render();
-    return this;
+    return _public;
   };
-  this.json = function() {
+  _public.json = function() {
     var properties = getDefaultJsonProperties();
     return {includeAttributes:function(flag) {
       properties.includeAttributes = getDefaultBoolean(flag, properties.includeAttributes);
@@ -528,8 +470,8 @@
     }, ignoreNodeTypes:function(types) {
       properties.ignoreNodeTypes = getDefaultStringOrArray(types, properties.ignoreNodeTypes);
       return this;
-    }, ignoreCssProperties:function(properties) {
-      properties.ignoreCssProperties = getDefaultStringOrArray(properties, properties.ignoreCssProperties);
+    }, ignoreCssProperties:function(cssProperties) {
+      properties.ignoreCssProperties = getDefaultStringOrArray(cssProperties, properties.ignoreCssProperties);
       return this;
     }, ignoreAttributes:function(attributes) {
       properties.ignoreAttributes = getDefaultStringOrArray(attributes, properties.ignoreAttributes);
@@ -543,7 +485,7 @@
       return getTemplateVariables(json);
     }};
   };
-  this.html = function() {
+  _public.html = function() {
     var properties = getDefaultHtmlProperties();
     return {json:function(json) {
       properties.json = getDefaultString(json, properties.json);
@@ -588,10 +530,9 @@
       return result;
     }};
   };
-  this.setConfiguration = function(newConfiguration) {
+  _public.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;
-    var propertyName;
-    for (propertyName in newConfiguration) {
+    for (var propertyName in newConfiguration) {
       if (newConfiguration.hasOwnProperty(propertyName) && _configuration.hasOwnProperty(propertyName) && newConfiguration[propertyName] !== _configuration[propertyName]) {
         _configuration[propertyName] = newConfiguration[propertyName];
         configurationChanges = true;
@@ -600,9 +541,22 @@
     if (configurationChanges) {
       buildDefaultConfiguration(_configuration);
     }
-    return this;
+    return _public;
   };
-  this.getVersion = function() {
+  function buildDefaultConfiguration(newConfiguration) {
+    _configuration = !isDefinedObject(newConfiguration) ? {} : newConfiguration;
+    _configuration.safeMode = getDefaultBoolean(_configuration.safeMode, true);
+    _configuration.domElementTypes = getDefaultStringOrArray(_configuration.domElementTypes, ["*"]);
+    _configuration.formattingNodeTypes = getDefaultStringOrArray(_configuration.formattingNodeTypes, ["b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup"]);
+    buildDefaultConfigurationStrings();
+  }
+  function buildDefaultConfigurationStrings() {
+    _configuration.variableWarningText = getDefaultString(_configuration.variableWarningText, "Template variable {{variable_name}} not found.");
+    _configuration.objectErrorText = getDefaultString(_configuration.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+    _configuration.attributeNotValidErrorText = getDefaultString(_configuration.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+    _configuration.attributeNotSetErrorText = getDefaultString(_configuration.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
+  }
+  _public.getVersion = function() {
     return "1.1.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
@@ -615,7 +569,7 @@
       render();
     });
     if (!isDefined(_parameter_Window.$jhson)) {
-      _parameter_Window.$jhson = this;
+      _parameter_Window.$jhson = _public;
     }
   })(document, window, JSON, Math);
 })();

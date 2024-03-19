@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v1.0.0
+ * @version     v1.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -12,13 +12,16 @@
 
 
 ( function() {
-    var _this = this,
+    "use strict";
 
-        // Variables: Constructor Parameters
+    var // Variables: Constructor Parameters
         _parameter_Document = null,
         _parameter_Window = null,
         _parameter_JSON = null,
         _parameter_Math = null,
+
+        // Variables: Public Scope
+        _public = {},
 
         // Variables: Configuration
         _configuration = {},
@@ -397,7 +400,7 @@
             }
         }
 
-        return _this;
+        return _public;
     }
 
     function setupWritingScopeTemplateDataKeys( properties, writingScope ) {
@@ -776,10 +779,10 @@
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    this.renderAll = function() {
+    _public.renderAll = function() {
         render();
 
-        return this;
+        return _public;
     };
 
 
@@ -798,7 +801,7 @@
      * 
      * @returns     {Object}                                                The JSON properties object.
      */
-    this.json = function() {
+    _public.json = function() {
         var properties = getDefaultJsonProperties();
 
         return {
@@ -928,12 +931,12 @@
              * 
              * @public
              * 
-             * @param       {Object}    properties                          The CSS properties to ignore (can be an array of strings, or a space separated string, and defaults to []).
+             * @param       {Object}    cssProperties                       The CSS properties to ignore (can be an array of strings, or a space separated string, and defaults to []).
              * 
              * @returns     {Object}                                        The JSON properties object.
              */
-            ignoreCssProperties: function( properties ) {
-                properties.ignoreCssProperties = getDefaultStringOrArray( properties, properties.ignoreCssProperties );
+            ignoreCssProperties: function( cssProperties ) {
+                properties.ignoreCssProperties = getDefaultStringOrArray( cssProperties, properties.ignoreCssProperties );
 
                 return this;
             },
@@ -1020,7 +1023,7 @@
      * 
      * @returns     {Object}                                                The HTML properties object.
      */
-    this.html = function() {
+    _public.html = function() {
         var properties = getDefaultHtmlProperties();
 
         return {
@@ -1267,7 +1270,7 @@
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    this.setConfiguration = function( newConfiguration ) {
+    _public.setConfiguration = function( newConfiguration ) {
         var configurationChanges = false;
 
         for ( var propertyName in newConfiguration ) {
@@ -1281,7 +1284,7 @@
             buildDefaultConfiguration( _configuration );
         }
 
-        return this;
+        return _public;
     };
 
     function buildDefaultConfiguration( newConfiguration ) {
@@ -1327,8 +1330,8 @@
      * 
      * @returns     {string}                                                The version number.
      */
-    this.getVersion = function() {
-        return "1.0.0";
+    _public.getVersion = function() {
+        return "1.1.0";
     };
 
 
@@ -1351,7 +1354,7 @@
         } );
 
         if ( !isDefined( _parameter_Window.$jhson ) ) {
-            _parameter_Window.$jhson = this;
+            _parameter_Window.$jhson = _public;
         }
 
     } ) ( document, window, JSON, Math );

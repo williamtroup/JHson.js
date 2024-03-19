@@ -1,4 +1,4 @@
-/*! JHson.js v1.0.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v1.1.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   function render() {
     var tagTypes = _configuration.domElementTypes;
@@ -603,7 +603,7 @@
     return this;
   };
   this.getVersion = function() {
-    return "1.0.0";
+    return "1.1.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;

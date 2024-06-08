@@ -64,7 +64,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 ```markdown
 <div id="header" class="header">
     <h1>JHson.js</h1>
-    <p>This is a basic example of how to use <b>JHson.js</b> ... with template data {{template_data}}.</p>
+    <p>This is a {{template_type | basic}} example of how to use <b>JHson.js</b> ... with template data {{template_data}}.</p>
 </div>
 
 <script>

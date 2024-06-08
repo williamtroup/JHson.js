@@ -182,13 +182,13 @@
   function writeHtml(element, properties) {
     if (isDefinedObject(element) && isDefinedString(properties.json)) {
       var convertedJsonObject = getObjectFromString(properties.json), writingScope = {css:{}, templateDataKeys:[], templateDataKeysLength:0, templateDataKeysProcessed:[]};
-      if (properties.clearCssFromHead) {
-        clearCssStyleTagsFromHead();
-      }
-      if (isDefinedObject(properties.templateData)) {
-        setupWritingScopeTemplateDataKeys(properties, writingScope);
-      }
       if (convertedJsonObject.parsed && isDefinedObject(convertedJsonObject.result)) {
+        if (properties.clearCssFromHead) {
+          clearCssStyleTagsFromHead();
+        }
+        if (isDefinedObject(properties.templateData)) {
+          setupWritingScopeTemplateDataKeys(properties, writingScope);
+        }
         for (var key in convertedJsonObject.result) {
           if (key === element.nodeName.toLowerCase()) {
             if (properties.removeOriginalAttributes) {
@@ -203,12 +203,12 @@
           }
         }
         processRemainingVariablesForDefaults(element);
-      }
-      if (properties.addCssToHead) {
-        writeCssStyleTag(writingScope);
-      }
-      if (properties.logTemplateDataWarnings) {
-        checkedForUnusedTemplateData(writingScope);
+        if (properties.addCssToHead) {
+          writeCssStyleTag(writingScope);
+        }
+        if (properties.logTemplateDataWarnings) {
+          checkedForUnusedTemplateData(writingScope);
+        }
       }
     }
     return _public;

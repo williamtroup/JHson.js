@@ -1,6 +1,6 @@
 # JHson.js - Binding Options - Custom Triggers:
 
-Below is a list of all the custom triggers supported in the "data-jhson-options" binding attribute for DOM elements.
+Below is a list of all the custom triggers supported in the "data-jhson-js" binding attribute for DOM elements.
 <br>
 <br>
 
@@ -23,7 +23,7 @@ Fires when the rendering of an element is complete.
 ## Binding Example:
 
 ```markdown
-<div data-jhson-options="{ 'onRenderComplete': yourCustomJsFunction }">
+<div data-jhson-js="{ 'onRenderComplete': yourCustomJsFunction }">
     Your HTML.
 </div>
 ```

@@ -1,6 +1,6 @@
 # JHson.js - Binding Options:
 
-Below are all the JSON properties that can be passed in the "data-jhson-options" binding attribute for a DOM element.
+Below are all the JSON properties that can be passed in the "data-jhson-js" binding attribute for a DOM element.
 
 
 ## Standard Options:
@@ -25,7 +25,7 @@ Below are all the JSON properties that can be passed in the "data-jhson-options"
 ## Binding Example:
 
 ```markdown
-<div data-jhson-options="{ 'json': 'json string' }">
+<div data-jhson-js="{ 'json': 'json string' }">
     Your HTML.
 </div>
 ```

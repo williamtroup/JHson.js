@@ -105,14 +105,14 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 ### 4. DOM Element Binding (for writing JSON as HTML):
 
 ```markdown
-<div data-jhson-options="{ 'json': 'json string' }">
+<div data-jhson-js="{ 'json': 'json string' }">
     Your HTML.
 </div>
 ```
 
-To see a list of all the available binding options you can use for "data-jhson-options", click [here](docs/binding/OPTIONS.md).
+To see a list of all the available binding options you can use for "data-jhson-js", click [here](docs/binding/OPTIONS.md).
 
-To see a list of all the available custom triggers you can use for "data-jhson-options", click [here](docs/binding/CUSTOM_TRIGGERS.md).
+To see a list of all the available custom triggers you can use for "data-jhson-js", click [here](docs/binding/CUSTOM_TRIGGERS.md).
 
 
 ### 5. Finishing Up:

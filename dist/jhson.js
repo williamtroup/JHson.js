@@ -1,6 +1,6 @@
 /*! JHson.js v1.2.0 | (c) Bunoon 2024 | MIT License */
 (function() {
-  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-options";
+  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-js";
   function render() {
     var tagTypes = _configuration.domElementTypes, tagTypesLength = tagTypes.length;
     for (var tagTypeIndex = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++) {

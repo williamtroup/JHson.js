@@ -50,7 +50,7 @@
         },
 
         // Variables: Attribute Names
-        _attribute_Name_Options = "data-jhson-options";
+        _attribute_Name_Options = "data-jhson-js";
 
 
     /*

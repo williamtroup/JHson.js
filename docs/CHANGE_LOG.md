@@ -1,7 +1,7 @@
 # JHson.js - Change Log:
 
 ## Version 1.2.0:
-- 
+- BREAKING: Renamed the binding attribute "data-jhson-options" to "data-jhson-js".
 
 <br>
 

@@ -3,6 +3,7 @@
 ## Version 1.2.0:
 - BREAKING: Renamed the binding attribute "data-jhson-options" to "data-jhson-js".
 - The public function "setConfiguration()" can now only be called with a valid object.
+- Template variables now support defaults! This allows you to use the following syntax {{your_variable || your default value}} to specify a default value.
 
 <br>
 

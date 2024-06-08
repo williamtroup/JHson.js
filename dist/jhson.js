@@ -1,6 +1,6 @@
 /*! JHson.js v1.2.0 | (c) Bunoon 2024 | MIT License */
 (function() {
-  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-js";
+  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n", variableStart:"{{", variableEnd:"}}", variableDefault:"||"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-js";
   function render() {
     var tagTypes = _configuration.domElementTypes, tagTypesLength = tagTypes.length;
     for (var tagTypeIndex = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++) {
@@ -202,6 +202,7 @@
             writeNode(element, convertedJsonObject.result[key], properties, writingScope);
           }
         }
+        processRemainingVariablesForDefaults(element);
       }
       if (properties.addCssToHead) {
         writeCssStyleTag(writingScope);
@@ -322,14 +323,26 @@
       }
     }
   }
+  function processRemainingVariablesForDefaults(element) {
+    var remainingVariables = getTemplateVariables(element.innerHTML), remainingVariablesLength = remainingVariables.length;
+    for (var remainingVariableIndex = 0; remainingVariableIndex < remainingVariablesLength; remainingVariableIndex++) {
+      var variable = remainingVariables[remainingVariableIndex];
+      if (variable.indexOf(_string.variableDefault) > _value.notFound) {
+        var defaultValue = variable.replace(_string.variableStart, _string.empty).replace(_string.variableEnd, _string.empty).split(_string.variableDefault)[1];
+        if (isDefinedString(defaultValue)) {
+          element.innerHTML = element.innerHTML.replace(variable, defaultValue.trim());
+        }
+      }
+    }
+  }
   function getTemplateVariables(data) {
     var result = [];
     if (isDefinedString(data)) {
       var startIndex = 0, endIndex = 0;
       while (startIndex > _value.notFound) {
-        startIndex = data.indexOf("{{", endIndex);
+        startIndex = data.indexOf(_string.variableStart, endIndex);
         if (startIndex > _value.notFound) {
-          endIndex = data.indexOf("}}", startIndex);
+          endIndex = data.indexOf(_string.variableEnd, startIndex);
           if (endIndex > _value.notFound) {
             var variable = data.substring(startIndex, endIndex + 2);
             result.push(variable);

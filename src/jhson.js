@@ -33,7 +33,10 @@
         _string = {
             empty: "",
             space: " ",
-            newLine: "\n"
+            newLine: "\n",
+            variableStart: "{{",
+            variableEnd: "}}",
+            variableDefault: "||"
         },
 
         // Variables: JSON
@@ -389,6 +392,8 @@
                         writeNode( element, convertedJsonObject.result[ key ], properties, writingScope );
                     }
                 }
+
+                processRemainingVariablesForDefaults( element );
             }
 
             if ( properties.addCssToHead ) {
@@ -549,6 +554,23 @@
         }
     }
 
+    function processRemainingVariablesForDefaults( element ) {
+        var remainingVariables = getTemplateVariables( element.innerHTML ),
+            remainingVariablesLength = remainingVariables.length;
+        
+        for ( var remainingVariableIndex = 0; remainingVariableIndex < remainingVariablesLength; remainingVariableIndex++ ) {
+            var variable = remainingVariables[ remainingVariableIndex ];
+
+            if ( variable.indexOf( _string.variableDefault ) > _value.notFound ) {
+                var defaultValue = variable.replace( _string.variableStart, _string.empty ).replace( _string.variableEnd, _string.empty ).split( _string.variableDefault )[ 1 ];
+
+                if ( isDefinedString( defaultValue ) ) {
+                    element.innerHTML = element.innerHTML.replace( variable, defaultValue.trim() );
+                }
+            }
+        }
+    }
+
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -564,10 +586,10 @@
                 endIndex = 0;
 
             while ( startIndex > _value.notFound ) {
-                startIndex = data.indexOf( "{{", endIndex );
+                startIndex = data.indexOf( _string.variableStart, endIndex );
 
                 if ( startIndex > _value.notFound ) {
-                    endIndex = data.indexOf( "}}", startIndex );
+                    endIndex = data.indexOf( _string.variableEnd, startIndex );
 
                     if ( endIndex > _value.notFound ) {
                         var variable = data.substring( startIndex, endIndex + 2 );

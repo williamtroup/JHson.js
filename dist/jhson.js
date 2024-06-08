@@ -49,7 +49,7 @@
     fireCustomTrigger(bindingOptions.onRenderComplete, bindingOptions.element);
   }
   function buildAttributeOptions(newOptions) {
-    var options = !isDefinedObject(newOptions) ? {} : newOptions, optionPropertyDefaults = getDefaultHtmlProperties();
+    var options = getDefaultObject(newOptions, {}), optionPropertyDefaults = getDefaultHtmlProperties();
     options.json = getDefaultString(options.json, optionPropertyDefaults.json);
     options.templateData = getDefaultObject(options.templateData, optionPropertyDefaults.templateData);
     options.removeOriginalAttributes = getDefaultBoolean(options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes);
@@ -532,14 +532,16 @@
   };
   _public.setConfiguration = function(newConfiguration) {
     var configurationChanges = false;
-    for (var propertyName in newConfiguration) {
-      if (newConfiguration.hasOwnProperty(propertyName) && _configuration.hasOwnProperty(propertyName) && newConfiguration[propertyName] !== _configuration[propertyName]) {
-        _configuration[propertyName] = newConfiguration[propertyName];
-        configurationChanges = true;
+    if (isDefinedObject(newConfiguration)) {
+      for (var propertyName in newConfiguration) {
+        if (newConfiguration.hasOwnProperty(propertyName) && _configuration.hasOwnProperty(propertyName) && newConfiguration[propertyName] !== _configuration[propertyName]) {
+          _configuration[propertyName] = newConfiguration[propertyName];
+          configurationChanges = true;
+        }
       }
-    }
-    if (configurationChanges) {
-      buildDefaultConfiguration(_configuration);
+      if (configurationChanges) {
+        buildDefaultConfiguration(_configuration);
+      }
     }
     return _public;
   };

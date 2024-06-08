@@ -97,7 +97,11 @@ function writeJSONData() {
         .json( _JSON_TEXTAREA.value );
 
     if ( _SET_TEMPLATE_DATA.checked ) {
-        htmlScope = htmlScope.templateData( { "{{template_data}}": "this template data", "{{template_data_not_available}}": "more template data" } );
+        htmlScope = htmlScope.templateData( { 
+            "{{template_data}}": "this template data",
+            "{{template_data_not_available}}": "more template data",
+            "{{template_bootstrap}}": "bootstrap"
+        } );
     }
 
     htmlScope

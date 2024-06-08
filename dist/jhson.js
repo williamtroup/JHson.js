@@ -1,6 +1,6 @@
 /*! JHson.js v1.2.0 | (c) Bunoon 2024 | MIT License */
 (function() {
-  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n", variableStart:"{{", variableEnd:"}}", variableDefault:"||"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-js";
+  var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n", variableStart:"{{", variableEnd:"}}", variableDefault:"|"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-js";
   function render() {
     var tagTypes = _configuration.domElementTypes, tagTypesLength = tagTypes.length;
     for (var tagTypeIndex = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++) {
@@ -269,10 +269,23 @@
     if (writingScope.templateDataKeysLength > 0) {
       for (var templateDataKeyIndex = 0; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++) {
         var templateDataKey = writingScope.templateDataKeys[templateDataKeyIndex];
-        if (properties.templateData.hasOwnProperty(templateDataKey) && element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
-          element.innerHTML = replaceAll(element.innerHTML, templateDataKey, properties.templateData[templateDataKey]);
-          if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
-            writingScope.templateDataKeysProcessed.push(templateDataKey);
+        if (properties.templateData.hasOwnProperty(templateDataKey)) {
+          var templateDataKeyReplacement = properties.templateData[templateDataKey];
+          if (element.innerHTML.indexOf(templateDataKey) > _value.notFound) {
+            element.innerHTML = replaceAll(element.innerHTML, templateDataKey, templateDataKeyReplacement);
+            if (writingScope.templateDataKeysProcessed.indexOf(templateDataKey) === _value.notFound) {
+              writingScope.templateDataKeysProcessed.push(templateDataKey);
+            }
+          } else {
+            templateDataKey = templateDataKey.replace(_string.variableEnd, _string.empty) + _string.space + _string.variableDefault;
+            var startIndex = element.innerHTML.indexOf(templateDataKey);
+            if (startIndex > _value.notFound) {
+              var endIndex = element.innerHTML.indexOf(_string.variableEnd, startIndex);
+              if (endIndex > _value.notFound) {
+                var variable = element.innerHTML.substring(startIndex, endIndex + _string.variableEnd.length);
+                element.innerHTML = replaceAll(element.innerHTML, variable, templateDataKeyReplacement);
+              }
+            }
           }
         }
       }
@@ -344,7 +357,7 @@
         if (startIndex > _value.notFound) {
           endIndex = data.indexOf(_string.variableEnd, startIndex);
           if (endIndex > _value.notFound) {
-            var variable = data.substring(startIndex, endIndex + 2);
+            var variable = data.substring(startIndex, endIndex + _string.variableEnd.length);
             result.push(variable);
             endIndex += 2;
           }
@@ -403,7 +416,7 @@
     return data.substring(0, start.length).toLowerCase() === start.toLowerCase();
   }
   function replaceAll(string, find, replace) {
-    return string.replace(new RegExp(find, "g"), replace);
+    return string.replace(new RegExp(find.replace(_string.variableDefault, "[" + _string.variableDefault + "]"), "g"), replace);
   }
   function getDefaultBoolean(value, defaultValue) {
     return isDefinedBoolean(value) ? value : defaultValue;

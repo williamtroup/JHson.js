@@ -36,7 +36,7 @@
             newLine: "\n",
             variableStart: "{{",
             variableEnd: "}}",
-            variableDefault: "||"
+            variableDefault: "|"
         },
 
         // Variables: JSON
@@ -481,11 +481,31 @@
             for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
                 var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
-                if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
-                    element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
+                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                    var templateDataKeyReplacement = properties.templateData[ templateDataKey ];
 
-                    if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
-                        writingScope.templateDataKeysProcessed.push( templateDataKey );
+                    if ( element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
+                        element.innerHTML = replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
+
+                        if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                            writingScope.templateDataKeysProcessed.push( templateDataKey );
+                        }
+
+                    } else {
+                        templateDataKey = templateDataKey.replace( _string.variableEnd, _string.empty ) + _string.space + _string.variableDefault;
+
+                        var startIndex = element.innerHTML.indexOf( templateDataKey );
+
+                        if ( startIndex > _value.notFound ) {
+                            var endIndex = element.innerHTML.indexOf( _string.variableEnd, startIndex );
+
+                            if ( endIndex > _value.notFound ) {
+                                
+                                var variable = element.innerHTML.substring( startIndex, endIndex + _string.variableEnd.length );
+                                
+                                element.innerHTML = replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
+                            }
+                        }
                     }
                 }
             }
@@ -562,7 +582,10 @@
             var variable = remainingVariables[ remainingVariableIndex ];
 
             if ( variable.indexOf( _string.variableDefault ) > _value.notFound ) {
-                var defaultValue = variable.replace( _string.variableStart, _string.empty ).replace( _string.variableEnd, _string.empty ).split( _string.variableDefault )[ 1 ];
+                var defaultValue = variable
+                    .replace( _string.variableStart, _string.empty )
+                    .replace( _string.variableEnd, _string.empty )
+                    .split( _string.variableDefault )[ 1 ];
 
                 if ( isDefinedString( defaultValue ) ) {
                     element.innerHTML = element.innerHTML.replace( variable, defaultValue.trim() );
@@ -592,7 +615,7 @@
                     endIndex = data.indexOf( _string.variableEnd, startIndex );
 
                     if ( endIndex > _value.notFound ) {
-                        var variable = data.substring( startIndex, endIndex + 2 );
+                        var variable = data.substring( startIndex, endIndex + _string.variableEnd.length );
 
                         result.push( variable );
 
@@ -702,7 +725,7 @@
     }
 
     function replaceAll( string, find, replace ) {
-        return string.replace( new RegExp( find, "g" ), replace );
+        return string.replace( new RegExp( find.replace( _string.variableDefault, "[" + _string.variableDefault + "]" ), "g" ), replace );
     }
 
 

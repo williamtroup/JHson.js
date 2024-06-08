@@ -1,4 +1,4 @@
-/*! JHson.js v1.1.0 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v1.2.0 | (c) Bunoon 2024 | MIT License */
 (function() {
   var _parameter_Document = null, _parameter_Window = null, _parameter_JSON = null, _parameter_Math = null, _public = {}, _configuration = {}, _elements_Type = {}, _string = {empty:"", space:" ", newLine:"\n"}, _json = {text:"#text", cssStyle:"$", attribute:"@", children:"&children",}, _value = {notFound:-1}, _attribute_Name_Options = "data-jhson-options";
   function render() {
@@ -557,7 +557,7 @@
     _configuration.attributeNotSetErrorText = getDefaultString(_configuration.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
   }
   _public.getVersion = function() {
-    return "1.1.0";
+    return "1.2.0";
   };
   (function(documentObject, windowObject, jsonObject, mathObject) {
     _parameter_Document = documentObject;

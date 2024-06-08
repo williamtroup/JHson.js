@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v1.1.0
+ * @version     v1.2.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -33,7 +33,10 @@
         _string = {
             empty: "",
             space: " ",
-            newLine: "\n"
+            newLine: "\n",
+            variableStart: "{{",
+            variableEnd: "}}",
+            variableDefault: "|"
         },
 
         // Variables: JSON
@@ -50,7 +53,7 @@
         },
 
         // Variables: Attribute Names
-        _attribute_Name_Options = "data-jhson-options";
+        _attribute_Name_Options = "data-jhson-js";
 
 
     /*
@@ -134,7 +137,7 @@
      */
 
     function buildAttributeOptions( newOptions ) {
-        var options = !isDefinedObject( newOptions ) ? {} : newOptions,
+        var options = getDefaultObject( newOptions, {} ),
             optionPropertyDefaults = getDefaultHtmlProperties();
 
         options.json = getDefaultString( options.json, optionPropertyDefaults.json );
@@ -365,15 +368,15 @@
                 templateDataKeysProcessed: []
             };
 
-            if ( properties.clearCssFromHead ) {
-                clearCssStyleTagsFromHead();
-            }
-
-            if ( isDefinedObject( properties.templateData ) ) {
-                setupWritingScopeTemplateDataKeys( properties, writingScope );
-            }
-
             if ( convertedJsonObject.parsed && isDefinedObject( convertedJsonObject.result ) ) {
+                if ( properties.clearCssFromHead ) {
+                    clearCssStyleTagsFromHead();
+                }
+    
+                if ( isDefinedObject( properties.templateData ) ) {
+                    setupWritingScopeTemplateDataKeys( properties, writingScope );
+                }
+
                 for ( var key in convertedJsonObject.result ) {
                     if ( key === element.nodeName.toLowerCase() ) {
                         if ( properties.removeOriginalAttributes ) {
@@ -389,14 +392,16 @@
                         writeNode( element, convertedJsonObject.result[ key ], properties, writingScope );
                     }
                 }
-            }
 
-            if ( properties.addCssToHead ) {
-                writeCssStyleTag( writingScope );
-            }
+                processRemainingVariablesForDefaults( element );
 
-            if ( properties.logTemplateDataWarnings ) {
-                checkedForUnusedTemplateData( writingScope );
+                if ( properties.addCssToHead ) {
+                    writeCssStyleTag( writingScope );
+                }
+    
+                if ( properties.logTemplateDataWarnings ) {
+                    checkedForUnusedTemplateData( writingScope );
+                }
             }
         }
 
@@ -476,11 +481,31 @@
             for ( var templateDataKeyIndex = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
                 var templateDataKey = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
-                if ( properties.templateData.hasOwnProperty( templateDataKey ) && element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
-                    element.innerHTML = replaceAll( element.innerHTML, templateDataKey, properties.templateData[ templateDataKey ] );
+                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                    var templateDataKeyReplacement = properties.templateData[ templateDataKey ];
 
-                    if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
-                        writingScope.templateDataKeysProcessed.push( templateDataKey );
+                    if ( element.innerHTML.indexOf( templateDataKey ) > _value.notFound ) {
+                        element.innerHTML = replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
+
+                        if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === _value.notFound ) {
+                            writingScope.templateDataKeysProcessed.push( templateDataKey );
+                        }
+
+                    } else {
+                        templateDataKey = templateDataKey.replace( _string.variableEnd, _string.empty ) + _string.space + _string.variableDefault;
+
+                        var startIndex = element.innerHTML.indexOf( templateDataKey );
+
+                        if ( startIndex > _value.notFound ) {
+                            var endIndex = element.innerHTML.indexOf( _string.variableEnd, startIndex );
+
+                            if ( endIndex > _value.notFound ) {
+                                
+                                var variable = element.innerHTML.substring( startIndex, endIndex + _string.variableEnd.length );
+                                
+                                element.innerHTML = replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
+                            }
+                        }
                     }
                 }
             }
@@ -549,6 +574,26 @@
         }
     }
 
+    function processRemainingVariablesForDefaults( element ) {
+        var remainingVariables = getTemplateVariables( element.innerHTML ),
+            remainingVariablesLength = remainingVariables.length;
+        
+        for ( var remainingVariableIndex = 0; remainingVariableIndex < remainingVariablesLength; remainingVariableIndex++ ) {
+            var variable = remainingVariables[ remainingVariableIndex ];
+
+            if ( variable.indexOf( _string.variableDefault ) > _value.notFound ) {
+                var defaultValue = variable
+                    .replace( _string.variableStart, _string.empty )
+                    .replace( _string.variableEnd, _string.empty )
+                    .split( _string.variableDefault )[ 1 ];
+
+                if ( isDefinedString( defaultValue ) ) {
+                    element.innerHTML = element.innerHTML.replace( variable, defaultValue.trim() );
+                }
+            }
+        }
+    }
+
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -564,13 +609,13 @@
                 endIndex = 0;
 
             while ( startIndex > _value.notFound ) {
-                startIndex = data.indexOf( "{{", endIndex );
+                startIndex = data.indexOf( _string.variableStart, endIndex );
 
                 if ( startIndex > _value.notFound ) {
-                    endIndex = data.indexOf( "}}", startIndex );
+                    endIndex = data.indexOf( _string.variableEnd, startIndex );
 
                     if ( endIndex > _value.notFound ) {
-                        var variable = data.substring( startIndex, endIndex + 2 );
+                        var variable = data.substring( startIndex, endIndex + _string.variableEnd.length );
 
                         result.push( variable );
 
@@ -680,7 +725,7 @@
     }
 
     function replaceAll( string, find, replace ) {
-        return string.replace( new RegExp( find, "g" ), replace );
+        return string.replace( new RegExp( find.replace( _string.variableDefault, "[" + _string.variableDefault + "]" ), "g" ), replace );
     }
 
 
@@ -1273,15 +1318,17 @@
     _public.setConfiguration = function( newConfiguration ) {
         var configurationChanges = false;
 
-        for ( var propertyName in newConfiguration ) {
-            if ( newConfiguration.hasOwnProperty( propertyName ) && _configuration.hasOwnProperty( propertyName ) && newConfiguration[ propertyName ] !== _configuration[ propertyName ] ) {
-                _configuration[ propertyName ] = newConfiguration[ propertyName ];
-                configurationChanges = true;
+        if ( isDefinedObject( newConfiguration ) ) {
+            for ( var propertyName in newConfiguration ) {
+                if ( newConfiguration.hasOwnProperty( propertyName ) && _configuration.hasOwnProperty( propertyName ) && newConfiguration[ propertyName ] !== _configuration[ propertyName ] ) {
+                    _configuration[ propertyName ] = newConfiguration[ propertyName ];
+                    configurationChanges = true;
+                }
             }
-        }
-
-        if ( configurationChanges ) {
-            buildDefaultConfiguration( _configuration );
+    
+            if ( configurationChanges ) {
+                buildDefaultConfiguration( _configuration );
+            }
         }
 
         return _public;
@@ -1331,7 +1378,7 @@
      * @returns     {string}                                                The version number.
      */
     _public.getVersion = function() {
-        return "1.1.0";
+        return "1.2.0";
     };
 
 

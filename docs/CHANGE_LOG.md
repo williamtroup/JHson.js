@@ -1,5 +1,14 @@
 # JHson.js - Change Log:
 
+## Version 1.2.0:
+- BREAKING: Renamed the binding attribute "data-jhson-options" to "data-jhson-js".
+- The public function "setConfiguration()" can now only be called with a valid object.
+- Template variables now support defaults! This allows you to use the following syntax {{your_variable | your default value}} to specify a default value.
+- The public function "html().write()" will now only do all of its actions if the JSON specified is valid.
+
+<br>
+
+
 ## Version 1.1.0:
 - Added "use strict" support internally and updated all public functions to use the new scope.
 - Fixed a fault that caused the function parameter "properties" to collide with an outer scope variable of the same name for "json() > ignoreCssProperties()".

@@ -1,8 +1,8 @@
-# JHson.js v1.1.0
+# JHson.js v1.2.0
 
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=JHson.js%2C%20a%20free%20JavaScript%json%20converter&url=https://github.com/williamtroup/JHson.js&hashtags=javascript,json,html,converter)
-[![npm](https://img.shields.io/badge/npmjs-v1.1.0-blue)](https://www.npmjs.com/package/jhson.js)
-[![nuget](https://img.shields.io/badge/nuget-v1.1.0-purple)](https://www.nuget.org/packages/JHson.js/)
+[![npm](https://img.shields.io/badge/npmjs-v1.2.0-blue)](https://www.npmjs.com/package/jhson.js)
+[![nuget](https://img.shields.io/badge/nuget-v1.2.0-purple)](https://www.nuget.org/packages/JHson.js/)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/williamtroup/JHson.js/blob/main/LICENSE.txt)
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
@@ -17,7 +17,7 @@
 - Full support for Attributes, CSS style properties, and formatted text!
 - Write your JSON directly to any DOM element for rendering.
 - Copy the layout for an entire page without additional files!
-- Data templating for text.
+- Data templating for text (with defaults support).
 - Write CSS directly back to the head for each element!
 - Bind JSON directly to DOM elements!
 
@@ -64,7 +64,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 ```markdown
 <div id="header" class="header">
     <h1>JHson.js</h1>
-    <p>This is a basic example of how to use <b>JHson.js</b> ... with template data {{template_data}}.</p>
+    <p>This is a {{template_type | basic}} example of how to use <b>JHson.js</b> ... with template data {{template_data}}.</p>
 </div>
 
 <script>
@@ -105,14 +105,14 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 ### 4. DOM Element Binding (for writing JSON as HTML):
 
 ```markdown
-<div data-jhson-options="{ 'json': 'json string' }">
+<div data-jhson-js="{ 'json': 'json string' }">
     Your HTML.
 </div>
 ```
 
-To see a list of all the available binding options you can use for "data-jhson-options", click [here](docs/binding/OPTIONS.md).
+To see a list of all the available binding options you can use for "data-jhson-js", click [here](docs/binding/OPTIONS.md).
 
-To see a list of all the available custom triggers you can use for "data-jhson-options", click [here](docs/binding/CUSTOM_TRIGGERS.md).
+To see a list of all the available custom triggers you can use for "data-jhson-js", click [here](docs/binding/CUSTOM_TRIGGERS.md).
 
 
 ### 5. Finishing Up:

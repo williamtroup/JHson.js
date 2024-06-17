@@ -18,6 +18,7 @@ JHson.js
 <h1>What features does JHson.js have?</h1>
 
 - Zero-dependencies and extremely lightweight!
+- Exportable for use in other frameworks!
 - Full API available via public functions.
 - Full support for Attributes, CSS style properties, and formatted text!
 - Write your JSON directly to any DOM element for rendering.

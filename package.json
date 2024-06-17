@@ -2,7 +2,7 @@
   "name": "jhson.js",
   "title": "JHson.js",
   "description": "A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "dist/jhson.js",
   "homepage": "https://www.william-troup.com/jhson-js/",
   "author": {

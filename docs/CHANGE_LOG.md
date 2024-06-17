@@ -1,5 +1,11 @@
 # JHson.js - Change Log:
 
+## Version 1.2.1:
+- Added export support for the global "$jhson" object, which can now be imported as "jhson.js".
+
+<br>
+
+
 ## Version 1.2.0:
 - BREAKING: Renamed the binding attribute "data-jhson-options" to "data-jhson-js".
 - The public function "setConfiguration()" can now only be called with a valid object.

@@ -1,5 +1,11 @@
 # JHson.js - Change Log:
 
+## Version 1.2.2:
+- Added CDN link support, and updated documentation.
+
+<br>
+
+
 ## Version 1.2.1:
 - Added export support for the global "$jhson" object, which can now be imported as "jhson.js".
 

@@ -46,7 +46,6 @@ You can also use the following CDN links:
 ```markdown
 https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@1.2.2/dist/jhson.min.js
 https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@1.2.2/dist/jhson.export.js
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@1.2.2/dist/jhson.js.min.css
 ```
 
 

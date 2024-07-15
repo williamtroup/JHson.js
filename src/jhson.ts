@@ -71,8 +71,8 @@ type JsonProperties = {
 
 type ElementObject = {
     nodeName: string;
-    nodeValues: any;
-}
+    nodeValues: Record<string, any>;
+};
 
 
 ( () => {
@@ -230,7 +230,7 @@ type ElementObject = {
     }
 
     function getElementObject( element: HTMLElement, properties: JsonProperties, parentCssStyles: Record<string, string> ) : ElementObject {
-        const result: any = {};
+        const result: Record<string, any> = {};
         const childrenLength: number = element.children.length;
         let childrenAdded: number = 0;
 
@@ -260,7 +260,7 @@ type ElementObject = {
         } as ElementObject;
     }
 
-    function getElementAttributes( element: HTMLElement, result: any, properties: JsonProperties ) : void {
+    function getElementAttributes( element: HTMLElement, result: Record<string, any>, properties: JsonProperties ) : void {
         const attributesLength: number = element.attributes.length;
         const attributesAvailable: string[] = [];
 
@@ -286,7 +286,7 @@ type ElementObject = {
         }
     }
 
-    function getElementCssProperties( element: HTMLElement, result: any, properties: JsonProperties, parentCssStyles: Record<string, string> ) : void {
+    function getElementCssProperties( element: HTMLElement, result: Record<string, any>, properties: JsonProperties, parentCssStyles: Record<string, string> ) : void {
         const computedStyles: CSSStyleDeclaration = getComputedStyle( element );
         const computedStylesLength: number = computedStyles.length;
 
@@ -305,7 +305,7 @@ type ElementObject = {
         }
     }
 
-    function getElementChildren( element: HTMLElement, result: any, childrenLength: number, properties: JsonProperties, parentCssStyles: Record<string, string> ) : number {
+    function getElementChildren( element: HTMLElement, result: Record<string, any>, childrenLength: number, properties: JsonProperties, parentCssStyles: Record<string, string> ) : number {
         let totalChildren: number = 0;
         
         result[ JsonValue.children ] = [];
@@ -326,7 +326,7 @@ type ElementObject = {
             }
 
             if ( addChild ) {
-                const childJson: Record<string, string> = {} as Record<string, string>;
+                const childJson: Record<string, any> = {} as Record<string, any>;
                 childJson[ childElementData.nodeName ] = childElementData.nodeValues;
 
                 result[ JsonValue.children ].push( childJson );
@@ -336,7 +336,7 @@ type ElementObject = {
         return totalChildren;
     }
 
-    function getElementText( element: HTMLElement, result: any, childrenAdded: number ) : void {
+    function getElementText( element: HTMLElement, result: Record<string, any>, childrenAdded: number ) : void {
         if ( Is.definedString( element.innerText ) ) {
             if ( childrenAdded > 0 && result.hasOwnProperty( JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
                 result[ JsonValue.text ] = element.innerHTML;

@@ -1,13 +1,13 @@
 var __getOwnPropNames = Object.getOwnPropertyNames;
 
-var __esm = (e, t) => function r() {
-    return e && (t = (0, e[__getOwnPropNames(e)[0]])(e = 0)), t;
+var __esm = (n, e) => function t() {
+    return n && (e = (0, n[__getOwnPropNames(n)[0]])(n = 0)), e;
 };
 
-var __commonJS = (e, t) => function r() {
-    return t || (0, e[__getOwnPropNames(e)[0]])((t = {
+var __commonJS = (n, e) => function t() {
+    return e || (0, n[__getOwnPropNames(n)[0]])((e = {
         exports: {}
-    }).exports, t), t.exports;
+    }).exports, e), e.exports;
 };
 
 var init_enum = __esm({
@@ -22,35 +22,35 @@ var init_is = __esm({
     "src/ts/is.ts"() {
         "use strict";
         init_enum();
-        (e => {
-            function t(e) {
-                return e !== null && e !== void 0 && e.toString() !== "";
+        (n => {
+            function e(n) {
+                return n !== null && n !== void 0 && n.toString() !== "";
             }
-            e.defined = t;
-            function r(e) {
-                return t(e) && typeof e === "object";
+            n.defined = e;
+            function t(n) {
+                return e(n) && typeof n === "object";
             }
-            e.definedObject = r;
-            function n(e) {
-                return t(e) && typeof e === "boolean";
+            n.definedObject = t;
+            function r(n) {
+                return e(n) && typeof n === "boolean";
             }
-            e.definedBoolean = n;
-            function o(e) {
-                return t(e) && typeof e === "string";
+            n.definedBoolean = r;
+            function o(n) {
+                return e(n) && typeof n === "string";
             }
-            e.definedString = o;
-            function i(e) {
-                return t(e) && typeof e === "function";
+            n.definedString = o;
+            function i(n) {
+                return e(n) && typeof n === "function";
             }
-            e.definedFunction = i;
-            function s(e) {
-                return t(e) && typeof e === "number";
+            n.definedFunction = i;
+            function u(n) {
+                return e(n) && typeof n === "number";
             }
-            e.definedNumber = s;
-            function u(e) {
-                return r(e) && e instanceof Array;
+            n.definedNumber = u;
+            function c(n) {
+                return t(n) && n instanceof Array;
             }
-            e.definedArray = u;
+            n.definedArray = c;
         })(Is || (Is = {}));
     }
 });
@@ -60,9 +60,9 @@ var require_jhson = __commonJS({
         init_is();
         (() => {
             let _configuration = {};
-            function fireCustomTriggerEvent(e, ...t) {
-                if (Is.definedFunction(e)) {
-                    e.apply(null, [].slice.call(t, 0));
+            function fireCustomTriggerEvent(n, ...e) {
+                if (Is.definedFunction(n)) {
+                    n.apply(null, [].slice.call(e, 0));
                 }
             }
             function getObjectFromString(objectString) {
@@ -80,9 +80,9 @@ var require_jhson = __commonJS({
                         if (Is.definedFunction(result.object)) {
                             result.object = result.object();
                         }
-                    } catch (e) {
+                    } catch (n) {
                         if (!_configuration.safeMode) {
-                            console.error(_configuration.text.objectErrorText.replace("{{error_1}}", e1.message).replace("{{error_2}}", e.message));
+                            console.error(_configuration.text.objectErrorText.replace("{{error_1}}", e1.message).replace("{{error_2}}", n.message));
                             result.parsed = false;
                         }
                         result.object = null;
@@ -90,6 +90,99 @@ var require_jhson = __commonJS({
                 }
                 return result;
             }
+            const _public = {
+                json: function() {
+                    const n = {
+                        includeAttributes: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        includeCssProperties: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        includeText: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        includeChildren: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        friendlyFormat: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        indentSpaces: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        ignoreNodeTypes: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        ignoreCssProperties: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        ignoreAttributes: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        generateUniqueMissingIds: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        get: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        getVariables: function(n) {
+                            throw new Error("Function not implemented.");
+                        }
+                    };
+                    return n;
+                },
+                html: function() {
+                    const n = {
+                        json: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        templateData: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        removeOriginalAttributes: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        clearOriginalHTML: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        addCssToHead: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        clearCssFromHead: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        logTemplateDataWarnings: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        addAttributes: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        addCssProperties: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        addText: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        addChildren: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        write: function(n) {
+                            throw new Error("Function not implemented.");
+                        },
+                        getVariables: function(n) {
+                            throw new Error("Function not implemented.");
+                        }
+                    };
+                    return n;
+                },
+                setConfiguration: function(n) {
+                    throw new Error("Function not implemented.");
+                },
+                getVersion: function() {
+                    throw new Error("Function not implemented.");
+                }
+            };
             (() => {})();
         })();
     }

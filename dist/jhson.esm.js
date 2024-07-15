@@ -209,9 +209,9 @@ var require_jhson = __commonJS({
             function renderBindingElement(e) {
                 let t = true;
                 if (Is.defined(e) && e.hasAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME)) {
-                    var n = e.getAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME);
+                    let n = e.getAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME);
                     if (Is.definedString(n)) {
-                        var r = getObjectFromString(n);
+                        const r = getObjectFromString(n);
                         if (r.parsed && Is.definedObject(r.object)) {
                             renderElement(renderBindingOptions(r.object, e));
                         } else {

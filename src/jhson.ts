@@ -107,10 +107,10 @@ type ElementObject = {
         let result: boolean = true;
 
         if ( Is.defined( element ) && element.hasAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME ) ) {
-            var bindingOptionsData = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME );
+            let bindingOptionsData: string = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME )!;
 
             if ( Is.definedString( bindingOptionsData ) ) {
-                var bindingOptions = getObjectFromString( bindingOptionsData );
+                const bindingOptions: StringToJson = getObjectFromString( bindingOptionsData );
 
                 if ( bindingOptions.parsed && Is.definedObject( bindingOptions.object ) ) {
                     renderElement( renderBindingOptions( bindingOptions.object, element ) );

@@ -36,10 +36,10 @@ type StringToJson = {
 };
 
 type WritingScope = {
-    css: Record<string, string[]>,
-    templateDataKeys: string[],
-    templateDataKeysLength: number,
-    templateDataKeysProcessed: string[]
+    css: Record<string, string[]>;
+    templateDataKeys: string[];
+    templateDataKeysLength: number;
+    templateDataKeysProcessed: string[];
 };
 
 type HtmlProperties = {
@@ -57,16 +57,16 @@ type HtmlProperties = {
 };
 
 type JsonProperties = {
-    includeAttributes: boolean,
-    includeCssProperties: boolean,
-    includeText: boolean,
-    includeChildren: boolean,
-    friendlyFormat: boolean,
-    indentSpaces: number,
-    ignoreNodeTypes: string[],
-    ignoreCssProperties: string[],
-    ignoreAttributes: string[],
-    generateUniqueMissingIds: boolean
+    includeAttributes: boolean;
+    includeCssProperties: boolean;
+    includeText: boolean;
+    includeChildren: boolean;
+    friendlyFormat: boolean;
+    indentSpaces: number;
+    ignoreNodeTypes: string[];
+    ignoreCssProperties: string[];
+    ignoreAttributes: string[];
+    generateUniqueMissingIds: boolean;
 };
 
 type ElementObject = {

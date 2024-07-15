@@ -1,6 +1,6 @@
 # JHson.js - Change Log:
 
-## Version 3.0.0:
+## Version 2.0.0:
 
 #### **Language Shift:**
 - The entire project has been rewritten in TypeScript, allowing all components to be exported, which allows better support for libraries such as React, Angular, etc.

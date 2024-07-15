@@ -13,6 +13,9 @@
 
 import { PublicApi, PublicApiHtml, PublicApiJson } from "./ts/api";
 import { Constants } from "./ts/constant"
+import { Data } from "./ts/data";
+import { DomElement } from "./ts/dom";
+import { Char, JsonValue, Value } from "./ts/enum";
 import { Is } from "./ts/is";
 import { type Configuration } from "./ts/type";
 
@@ -22,12 +25,292 @@ type StringToJson = {
     object: any;
 };
 
+type WritingScope = {
+    css: Record<string, string[]>,
+    templateDataKeys: string[],
+    templateDataKeysLength: number,
+    templateDataKeysProcessed: string[]
+};
+
+type HtmlProperties = {
+    json: string;
+    templateData: Record<string, string>;
+    removeOriginalAttributes: boolean;
+    clearOriginalHTML: boolean;
+    addCssToHead: boolean;
+    clearCssFromHead: boolean;
+    logTemplateDataWarnings: boolean;
+    addAttributes: boolean;
+    addCssProperties: boolean;
+    addText: boolean;
+    addChildren: boolean;
+}
+
 
 ( () => {
     // Variables: Configuration
     let _configuration: Configuration = {} as Configuration;
     
     
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * JSON - Write HTML
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function getDefaultHtmlProperties() : HtmlProperties {
+        return {
+            json: Char.empty,
+            templateData: {},
+            removeOriginalAttributes: true,
+            clearOriginalHTML: true,
+            addCssToHead: false,
+            clearCssFromHead: false,
+            logTemplateDataWarnings: false,
+            addAttributes: true,
+            addCssProperties: true,
+            addText: true,
+            addChildren: true
+        } as HtmlProperties;
+    }
+
+    function writeHtml( element: HTMLElement, properties: HtmlProperties ) : PublicApi {
+        if ( Is.definedObject( element ) && Is.definedString( properties.json ) ) {
+            const convertedJsonObject: StringToJson = getObjectFromString( properties.json );
+            const writingScope: WritingScope = {
+                css: {},
+                templateDataKeys: [],
+                templateDataKeysLength: 0,
+                templateDataKeysProcessed: []
+            } as WritingScope;
+
+            if ( convertedJsonObject.parsed && Is.definedObject( convertedJsonObject.object ) ) {
+                if ( properties.clearCssFromHead ) {
+                    clearCssStyleTagsFromHead();
+                }
+    
+                if ( Is.definedObject( properties.templateData ) ) {
+                    setupWritingScopeTemplateDataKeys( properties, writingScope );
+                }
+
+                for ( let key in convertedJsonObject.object ) {
+                    if ( key === element.nodeName.toLowerCase() ) {
+                        if ( properties.removeOriginalAttributes ) {
+                            while ( element.attributes.length > 0 ) {
+                                element.removeAttribute( element.attributes[ 0 ].name );
+                            }
+                        }
+
+                        if ( properties.clearOriginalHTML ) {
+                            element.innerHTML = Char.empty;
+                        }
+
+                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
+                    }
+                }
+
+                processRemainingVariablesForDefaults( element );
+
+                if ( properties.addCssToHead ) {
+                    writeCssStyleTag( writingScope );
+                }
+    
+                if ( properties.logTemplateDataWarnings ) {
+                    checkedForUnusedTemplateData( writingScope );
+                }
+            }
+        }
+
+        return _public;
+    }
+
+    function setupWritingScopeTemplateDataKeys( properties: HtmlProperties, writingScope: WritingScope ) : void {
+        for ( let templateDataKey in properties.templateData ) {
+            if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                writingScope.templateDataKeys.push( templateDataKey );
+            }
+        }
+
+        writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
+            return b.length - a.length;
+        } );
+
+        writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
+    }
+
+    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
+        const cssStyles: string[] = [];
+
+        for ( var jsonKey in jsonObject ) {
+            if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
+                if ( properties.addAttributes ) {
+                    const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
+                    const attributeValue: string = jsonObject[ jsonKey ];
+
+                    element.setAttribute( attributeName, attributeValue );
+                }
+
+            } else if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.cssStyle ) ) {
+                if ( properties.addCssProperties ) {
+                    const cssStyleName: string = jsonKey.replace( JsonValue.cssStyle, Char.empty );
+
+                    if ( !properties.addCssToHead ) {
+                        element.style.setProperty( cssStyleName, jsonObject[ jsonKey ] );
+                    } else {
+                        cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
+                    }
+                }
+
+            } else if ( jsonKey === JsonValue.text ) {
+                if ( properties.addText ) {
+                    writeElementTextAndTemplateData( element, jsonObject[ jsonKey ], properties, writingScope );
+                }
+
+            } else if ( jsonKey === JsonValue.children ) {
+                if ( properties.addChildren ) {
+                    const childrenLength: number = jsonObject[ jsonKey ].length;
+
+                    for ( let childrenIndex: number = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+                        const childJson: any = jsonObject[ jsonKey ][ childrenIndex ];
+    
+                        for ( var childJsonKey in childJson ) {
+                            if ( childJson.hasOwnProperty( childJsonKey ) ) {
+                                const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
+    
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ( cssStyles.length > 0 ) {
+            storeCssStyles( element, cssStyles, writingScope );
+        } 
+    }
+
+    function writeElementTextAndTemplateData( element: HTMLElement, value: string, properties: HtmlProperties, writingScope: WritingScope ) : void {
+        element.innerHTML = value;
+
+        if ( writingScope.templateDataKeysLength > 0 ) {
+            for ( let templateDataKeyIndex: number = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                let templateDataKey: string = writingScope.templateDataKeys[ templateDataKeyIndex ];
+
+                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                    const templateDataKeyReplacement: string = properties.templateData[ templateDataKey ];
+
+                    if ( element.innerHTML.indexOf( templateDataKey ) > Value.notFound ) {
+                        element.innerHTML = Data.String.replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
+
+                        if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === Value.notFound ) {
+                            writingScope.templateDataKeysProcessed.push( templateDataKey );
+                        }
+
+                    } else {
+                        templateDataKey = templateDataKey.replace( Char.variableEnd, Char.empty ) + Char.space + Char.variableDefault;
+
+                        const startIndex: number = element.innerHTML.indexOf( templateDataKey );
+
+                        if ( startIndex > Value.notFound ) {
+                            const endIndex: number = element.innerHTML.indexOf( Char.variableEnd, startIndex );
+
+                            if ( endIndex > Value.notFound ) {
+                                
+                                const variable: string = element.innerHTML.substring( startIndex, endIndex + Char.variableEnd.length );
+                                
+                                element.innerHTML = Data.String.replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function storeCssStyles( element: HTMLElement, cssStyles: string[], writingScope: WritingScope ) : void {
+        let identifier: string = null!;
+
+        if ( Is.definedString( element.className ) ) {
+            const classNameParts: string[] = element.className.split( Char.space );
+
+            identifier = element.nodeName.toLowerCase() + "." + classNameParts[ 0 ] + " {";
+        } else {
+
+            if ( !Is.definedString( element.id ) ) {
+                element.id = Data.String.newGuid();
+            }
+
+            identifier = "#" + element.id + " {";
+        }
+
+        let cssLines: string[] = [];
+        cssLines.push( identifier );
+        cssLines = cssLines.concat( cssStyles );
+        cssLines.push( "}" );
+
+        writingScope.css[ element.id ] = cssLines;
+    }
+
+    function writeCssStyleTag( writingScope: WritingScope ) : void {
+        const head: HTMLElement = document.getElementsByTagName( "head" )[ 0 ];
+        let cssLines: string[] = [];
+
+        for ( let elementId in writingScope.css ) {
+            if ( writingScope.css.hasOwnProperty( elementId ) ) {
+                cssLines = cssLines.concat( writingScope.css[ elementId ] );
+            }
+        }
+
+        const style: HTMLStyleElement = DomElement.create( head, "style" ) as HTMLStyleElement;
+        style.appendChild( document.createTextNode( cssLines.join( Char.newLine ) ) );
+    }
+
+    function clearCssStyleTagsFromHead() : void {
+        const styles: HTMLElement[] = [].slice.call( document.getElementsByTagName( "styles" ) );
+        const stylesLength: number = styles.length;
+
+        for ( let styleIndex: number = 0; styleIndex < stylesLength; styleIndex++ ) {
+            styles[ styleIndex ].parentNode!.removeChild( styles[ styleIndex ] );
+        }
+    }
+
+    function checkedForUnusedTemplateData( writingScope: WritingScope ) : void {
+        const templateDataKeysProcessedLength: number = writingScope.templateDataKeysProcessed.length;
+
+        if ( writingScope.templateDataKeysLength > templateDataKeysProcessedLength ) {
+            for ( let templateDataKeyIndex: number = 0; templateDataKeyIndex < writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
+                const templateDataKey: string = writingScope.templateDataKeys[ templateDataKeyIndex ];
+
+                if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === Value.notFound ) {
+                    console.warn( _configuration.text!.variableWarningText!.replace( "{{variable_name}}", templateDataKey ) );
+                }
+            }
+        }
+    }
+
+    function processRemainingVariablesForDefaults( element: HTMLElement ) : void {
+        const remainingVariables: string[] = Data.String.getTemplateVariables( element.innerHTML );
+        const remainingVariablesLength: number = remainingVariables.length;
+        
+        for ( let remainingVariableIndex: number = 0; remainingVariableIndex < remainingVariablesLength; remainingVariableIndex++ ) {
+            const variable: string = remainingVariables[ remainingVariableIndex ];
+
+            if ( variable.indexOf( Char.variableDefault ) > Value.notFound ) {
+                const defaultValue: string = variable
+                    .replace( Char.variableStart, Char.empty )
+                    .replace( Char.variableEnd, Char.empty )
+                    .split( Char.variableDefault )[ 1 ];
+
+                if ( Is.definedString( defaultValue ) ) {
+                    element.innerHTML = element.innerHTML.replace( variable, defaultValue.trim() );
+                }
+            }
+        }
+    }
+
+
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * Triggering Custom Events

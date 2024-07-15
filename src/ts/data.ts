@@ -11,7 +11,7 @@
  */
 
 
-import { Char } from "./enum";
+import { Char, Value } from "./enum";
 import { Is } from "./is";
 
 
@@ -38,6 +38,33 @@ export namespace Data {
 
         export function replaceAll( string: string, find: string, replace: string ) : string {
             return string.replace( new RegExp( find.replace( Char.variableDefault, `[${Char.variableDefault}]` ), "g" ), replace );
+        }
+
+        export function getTemplateVariables( data: string ) : string[] {
+            const result: string[] = [];
+    
+            if ( Is.definedString( data ) ) {
+                let startIndex: number = 0;
+                let endIndex: number = 0;
+    
+                while ( startIndex > Value.notFound ) {
+                    startIndex = data.indexOf( Char.variableStart, endIndex );
+    
+                    if ( startIndex > Value.notFound ) {
+                        endIndex = data.indexOf( Char.variableEnd, startIndex );
+    
+                        if ( endIndex > Value.notFound ) {
+                            const variable: string = data.substring( startIndex, endIndex + Char.variableEnd.length );
+    
+                            result.push( variable );
+    
+                            endIndex += 2;
+                        }
+                    }
+                }
+            }
+    
+            return result;
         }
     }
 

@@ -42,8 +42,8 @@ export type BindingOptions = {
 };
 
 export type BindingOptionEvents = {
-    onBeforeRender?: Function;
-    onRenderComplete?: Function;
+    onBeforeRender?: ( element: HTMLElement ) => void;
+    onRenderComplete?: ( element: HTMLElement ) => void;
 }
 
 export type CurrentView = {

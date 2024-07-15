@@ -338,7 +338,7 @@ type ElementObject = {
 
     function getElementText( element: HTMLElement, result: any, childrenAdded: number ) : void {
         if ( Is.definedString( element.innerText ) ) {
-            if ( childrenAdded > 0 && Is.defined( result[ JsonValue.children ] ) && result[ JsonValue.children ].length === 0 ) {
+            if ( childrenAdded > 0 && result.hasOwnProperty( JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
                 result[ JsonValue.text ] = element.innerHTML;
             } else {
     

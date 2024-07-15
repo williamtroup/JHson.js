@@ -330,7 +330,7 @@ var DomElement;
     }
     function getElementText(e, t, n) {
         if (Is.definedString(e.innerText)) {
-            if (n > 0 && Is.defined(t["&children"]) && t["&children"].length === 0) {
+            if (n > 0 && t.hasOwnProperty("&children") && t["&children"].length === 0) {
                 t["#text"] = e.innerHTML;
             } else {
                 if (e.innerText.trim() === e.innerHTML.trim()) {

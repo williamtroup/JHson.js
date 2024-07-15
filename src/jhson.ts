@@ -271,7 +271,7 @@ type ElementObject = {
         }
 
         if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound) {
-            result[ JsonValue.attribute + "id" ] = Data.String.newGuid();
+            result[ `${JsonValue.attribute}id` ] = Data.String.newGuid();
         }
     }
 
@@ -456,7 +456,7 @@ type ElementObject = {
                     if ( !properties.addCssToHead ) {
                         element.style.setProperty( cssStyleName, jsonObject[ jsonKey ] );
                     } else {
-                        cssStyles.push( cssStyleName + ":" + jsonObject[ jsonKey ] + ";" );
+                        cssStyles.push( `${cssStyleName}:${jsonObject[jsonKey]};` );
                     }
                 }
 
@@ -533,14 +533,14 @@ type ElementObject = {
         if ( Is.definedString( element.className ) ) {
             const classNameParts: string[] = element.className.split( Char.space );
 
-            identifier = element.nodeName.toLowerCase() + "." + classNameParts[ 0 ] + " {";
+            identifier = `${element.nodeName.toLowerCase()}.${classNameParts[0]} {`;
         } else {
 
             if ( !Is.definedString( element.id ) ) {
                 element.id = Data.String.newGuid();
             }
 
-            identifier = "#" + element.id + " {";
+            identifier = `#${element.id} {`;
         }
 
         let cssLines: string[] = [];

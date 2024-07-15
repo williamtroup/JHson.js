@@ -333,7 +333,7 @@ var require_jhson = __commonJS({
                     }
                 }
                 if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
-                    t["@" + "id"] = Data.String.newGuid();
+                    t[`${"@"}id`] = Data.String.newGuid();
                 }
             }
             function getElementCssProperties(e, t, n, r) {
@@ -475,7 +475,7 @@ var require_jhson = __commonJS({
                             if (!n.addCssToHead) {
                                 e.style.setProperty(r, t[a]);
                             } else {
-                                i.push(r + ":" + t[a] + ";");
+                                i.push(`${r}:${t[a]};`);
                             }
                         }
                     } else if (a === "#text") {
@@ -532,12 +532,12 @@ var require_jhson = __commonJS({
                 let r = null;
                 if (Is.definedString(e.className)) {
                     const t = e.className.split(" ");
-                    r = e.nodeName.toLowerCase() + "." + t[0] + " {";
+                    r = `${e.nodeName.toLowerCase()}.${t[0]} {`;
                 } else {
                     if (!Is.definedString(e.id)) {
                         e.id = Data.String.newGuid();
                     }
-                    r = "#" + e.id + " {";
+                    r = `#${e.id} {`;
                 }
                 let i = [];
                 i.push(r);

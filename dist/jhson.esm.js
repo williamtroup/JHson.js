@@ -43,14 +43,14 @@ var init_is = __esm({
                 return t(e) && typeof e === "function";
             }
             e.definedFunction = o;
-            function a(e) {
+            function s(e) {
                 return t(e) && typeof e === "number";
             }
-            e.definedNumber = a;
-            function s(e) {
+            e.definedNumber = s;
+            function a(e) {
                 return n(e) && e instanceof Array;
             }
-            e.definedArray = s;
+            e.definedArray = a;
         })(Is || (Is = {}));
     }
 });
@@ -122,19 +122,19 @@ var init_data = __esm({
                 return Is.definedNumber(e) ? e : t;
             }
             e.getDefaultNumber = o;
-            function a(e, t) {
+            function s(e, t) {
                 return Is.definedFunction(e) ? e : t;
             }
-            e.getDefaultFunction = a;
-            function s(e, t) {
+            e.getDefaultFunction = s;
+            function a(e, t) {
                 return Is.definedArray(e) ? e : t;
             }
-            e.getDefaultArray = s;
-            function c(e, t) {
+            e.getDefaultArray = a;
+            function l(e, t) {
                 return Is.definedObject(e) ? e : t;
             }
-            e.getDefaultObject = c;
-            function l(e, t) {
+            e.getDefaultObject = l;
+            function c(e, t) {
                 let n = t;
                 if (Is.definedString(e)) {
                     const r = e.toString().split(" ");
@@ -144,11 +144,11 @@ var init_data = __esm({
                         n = r;
                     }
                 } else {
-                    n = s(e, t);
+                    n = a(e, t);
                 }
                 return n;
             }
-            e.getDefaultStringOrArray = l;
+            e.getDefaultStringOrArray = c;
         })(Data || (Data = {}));
     }
 });
@@ -180,6 +180,135 @@ var require_jhson = __commonJS({
         init_is();
         (() => {
             let _configuration = {};
+            function getDefaultJsonProperties() {
+                return {
+                    includeAttributes: true,
+                    includeCssProperties: false,
+                    includeText: true,
+                    includeChildren: true,
+                    friendlyFormat: true,
+                    indentSpaces: 2,
+                    ignoreNodeTypes: [],
+                    ignoreCssProperties: [],
+                    ignoreAttributes: [],
+                    generateUniqueMissingIds: false
+                };
+            }
+            function getJSON(e, t) {
+                let n = "";
+                if (Is.definedObject(e)) {
+                    const r = {};
+                    const i = getElementObject(e, t, {});
+                    r[i.nodeName] = i.nodeValues;
+                    if (t.friendlyFormat) {
+                        n = JSON.stringify(r, null, t.indentSpaces);
+                    } else {
+                        n = JSON.stringify(r);
+                    }
+                }
+                return n;
+            }
+            function getElementObject(e, t, n) {
+                const r = {};
+                const i = e.children.length;
+                let o = 0;
+                if (t.includeAttributes) {
+                    getElementAttributes(e, r, t);
+                }
+                if (t.includeCssProperties) {
+                    getElementCssProperties(e, r, t, n);
+                }
+                if (t.includeChildren && i > 0) {
+                    o = getElementChildren(e, r, i, t, n);
+                }
+                if (t.includeText) {
+                    getElementText(e, r, o);
+                }
+                if (Is.defined(r["&children"]) && r["&children"].length === 0) {
+                    delete r["&children"];
+                }
+                return {
+                    nodeName: e.nodeName.toLowerCase(),
+                    nodeValues: r
+                };
+            }
+            function getElementAttributes(e, t, n) {
+                var r = e.attributes.length, i = [];
+                if (n.includeText && e.nodeName.toLowerCase() === "textarea") {
+                    const n = e;
+                    if (Is.defined(n.value)) {
+                        t["#text"] = n.value;
+                    }
+                }
+                for (let o = 0; o < r; o++) {
+                    const r = e.attributes[o];
+                    if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
+                        t["@" + r.nodeName] = r.nodeValue;
+                        i.push(r.nodeName);
+                    }
+                }
+                if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
+                    t["@" + "id"] = Data.String.newGuid();
+                }
+            }
+            function getElementCssProperties(e, t, n, r) {
+                const i = getComputedStyle(e);
+                const o = i.length;
+                for (let e = 0; e < o; e++) {
+                    const o = i[e];
+                    if (n.ignoreCssProperties.indexOf(o) === -1) {
+                        const e = "$" + o;
+                        const n = i.getPropertyValue(o);
+                        if (!r.hasOwnProperty(e) || r[e] !== n) {
+                            t[e] = n;
+                            r[e] = t[e];
+                        }
+                    }
+                }
+            }
+            function getElementChildren(e, t, n, r, i) {
+                let o = 0;
+                t["&children"] = [];
+                for (var s = 0; s < n; s++) {
+                    const n = e.children[s];
+                    const a = getElementObject(n, r, getParentCssStylesCopy(i));
+                    let l = false;
+                    if (_configuration.formattingNodeTypes.indexOf(a.nodeName) > -1) {
+                        o++;
+                    } else {
+                        if (r.ignoreNodeTypes.indexOf(a.nodeName) === -1) {
+                            l = true;
+                            o++;
+                        }
+                    }
+                    if (l) {
+                        const e = {};
+                        e[a.nodeName] = a.nodeValues;
+                        t["&children"].push(e);
+                    }
+                }
+                return o;
+            }
+            function getElementText(e, t, n) {
+                if (Is.definedString(e.innerText)) {
+                    if (n > 0 && Is.defined(t["&children"]) && t["&children"].length === 0) {
+                        t["#text"] = e.innerHTML;
+                    } else {
+                        if (e.innerText.trim() === e.innerHTML.trim()) {
+                            t["#text"] = e.innerText;
+                        }
+                    }
+                }
+            }
+            function getParentCssStylesCopy(e) {
+                const t = {};
+                for (let n in e) {
+                    if (e.hasOwnProperty(n)) {
+                        t[n] = e[n];
+                    }
+                }
+                return t;
+            }
             function getDefaultHtmlProperties() {
                 return {
                     json: "",
@@ -271,12 +400,12 @@ var require_jhson = __commonJS({
                     } else if (o === "&children") {
                         if (n.addChildren) {
                             const i = t[o].length;
-                            for (let s = 0; s < i; s++) {
-                                const i = t[o][s];
-                                for (var a in i) {
-                                    if (i.hasOwnProperty(a)) {
-                                        const t = DomElement.create(e, a.toLowerCase());
-                                        writeNode(t, i[a], n, r);
+                            for (let a = 0; a < i; a++) {
+                                const i = t[o][a];
+                                for (var s in i) {
+                                    if (i.hasOwnProperty(s)) {
+                                        const t = DomElement.create(e, s.toLowerCase());
+                                        writeNode(t, i[s], n, r);
                                     }
                                 }
                             }

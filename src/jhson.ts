@@ -44,6 +44,24 @@ type HtmlProperties = {
     addCssProperties: boolean;
     addText: boolean;
     addChildren: boolean;
+};
+
+type JsonProperties = {
+    includeAttributes: boolean,
+    includeCssProperties: boolean,
+    includeText: boolean,
+    includeChildren: boolean,
+    friendlyFormat: boolean,
+    indentSpaces: number,
+    ignoreNodeTypes: string[],
+    ignoreCssProperties: string[],
+    ignoreAttributes: string[],
+    generateUniqueMissingIds: boolean
+};
+
+type ElementObject = {
+    nodeName: string;
+    nodeValues: any;
 }
 
 
@@ -52,6 +70,178 @@ type HtmlProperties = {
     let _configuration: Configuration = {} as Configuration;
     
     
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * JSON - Get
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function getDefaultJsonProperties() : JsonProperties {
+        return {
+            includeAttributes: true,
+            includeCssProperties: false,
+            includeText: true,
+            includeChildren: true,
+            friendlyFormat: true,
+            indentSpaces: 2,
+            ignoreNodeTypes: [],
+            ignoreCssProperties: [],
+            ignoreAttributes: [],
+            generateUniqueMissingIds: false
+        } as JsonProperties;
+    }
+
+    function getJSON( element: HTMLElement, properties: JsonProperties ) : string {
+        let result: string = Char.empty;
+
+        if ( Is.definedObject( element ) ) {
+            const resultJson: any = {};
+            const elementJson: ElementObject = getElementObject( element, properties, {} );
+
+            resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
+
+            if ( properties.friendlyFormat ) {
+                result = JSON.stringify( resultJson, null, properties.indentSpaces );
+            } else {
+                result = JSON.stringify( resultJson );
+            }
+        }
+        
+        return result;
+    }
+
+    function getElementObject( element: HTMLElement, properties: JsonProperties, parentCssStyles: Record<string, string> ) : ElementObject {
+        const result: any = {};
+        const childrenLength: number = element.children.length;
+        let childrenAdded: number = 0;
+
+        if ( properties.includeAttributes ) {
+            getElementAttributes( element, result, properties );
+        }
+
+        if ( properties.includeCssProperties ) {
+            getElementCssProperties( element, result, properties, parentCssStyles );
+        }
+
+        if ( properties.includeChildren && childrenLength > 0 ) {
+            childrenAdded = getElementChildren( element, result, childrenLength, properties, parentCssStyles );
+        }
+
+        if ( properties.includeText ) {
+            getElementText( element, result, childrenAdded );
+        }
+
+        if ( Is.defined( result[ JsonValue.children ] ) && result[ JsonValue.children ].length === 0 ) {
+            delete result[ JsonValue.children ];
+        }
+
+        return {
+            nodeName: element.nodeName.toLowerCase(),
+            nodeValues: result
+        } as ElementObject;
+    }
+
+    function getElementAttributes( element: HTMLElement, result: any, properties: JsonProperties ) : void {
+        var attributesLength = element.attributes.length,
+            attributesAvailable = [];
+
+        if ( properties.includeText && element.nodeName.toLowerCase() === "textarea" ) {
+            const textArea: HTMLTextAreaElement = element as HTMLTextAreaElement;
+
+            if ( Is.defined( textArea.value ) ) {
+                result[ JsonValue.text ] = textArea.value;
+            }
+        }
+
+        for ( let attributeIndex: number = 0; attributeIndex < attributesLength; attributeIndex++ ) {
+            const attribute: Attr = element.attributes[ attributeIndex ];
+
+            if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
+                result[ JsonValue.attribute + attribute.nodeName ] = attribute.nodeValue;
+                attributesAvailable.push( attribute.nodeName );
+            }
+        }
+
+        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound) {
+            result[ JsonValue.attribute + "id" ] = Data.String.newGuid();
+        }
+    }
+
+    function getElementCssProperties( element: HTMLElement, result: any, properties: JsonProperties, parentCssStyles: Record<string, string> ) : void {
+        const computedStyles: CSSStyleDeclaration = getComputedStyle( element );
+        const computedStylesLength: number = computedStyles.length;
+
+        for ( let cssComputedStyleIndex: number = 0; cssComputedStyleIndex < computedStylesLength; cssComputedStyleIndex++ ) {
+            const cssComputedStyleName: string = computedStyles[ cssComputedStyleIndex ];
+
+            if ( properties.ignoreCssProperties.indexOf( cssComputedStyleName ) === Value.notFound ) {
+                const cssComputedStyleNameStorage: string = JsonValue.cssStyle + cssComputedStyleName;
+                const cssComputedValue: string = computedStyles.getPropertyValue( cssComputedStyleName );
+
+                if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
+                    result[ cssComputedStyleNameStorage ] = cssComputedValue;
+                    parentCssStyles[ cssComputedStyleNameStorage ] = result[ cssComputedStyleNameStorage ];
+                }
+            }
+        }
+    }
+
+    function getElementChildren( element: HTMLElement, result: any, childrenLength: number, properties: JsonProperties, parentCssStyles: Record<string, string> ) : number {
+        let totalChildren: number = 0;
+        
+        result[ JsonValue.children ] = [];
+
+        for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+            const child: HTMLElement = element.children[ childrenIndex ] as HTMLElement;
+            const childElementData: ElementObject = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) );
+            let addChild: boolean = false;
+
+            if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
+                totalChildren++;
+            } else {
+
+                if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === Value.notFound ) {
+                    addChild = true;
+                    totalChildren++;
+                }
+            }
+
+            if ( addChild ) {
+                const childJson: Record<string, string> = {} as Record<string, string>;
+                childJson[ childElementData.nodeName ] = childElementData.nodeValues;
+
+                result[ JsonValue.children ].push( childJson );
+            }
+        }
+
+        return totalChildren;
+    }
+
+    function getElementText( element: HTMLElement, result: any, childrenAdded: number ) : void {
+        if ( Is.definedString( element.innerText ) ) {
+            if ( childrenAdded > 0 && Is.defined( result[ JsonValue.children ] ) && result[ JsonValue.children ].length === 0 ) {
+                result[ JsonValue.text ] = element.innerHTML;
+            } else {
+    
+                if ( element.innerText.trim() === element.innerHTML.trim() ) {
+                    result[ JsonValue.text ] = element.innerText;
+                }
+            }
+        }
+    }
+
+    function getParentCssStylesCopy( parentCssStyles: Record<string, string> ) : Record<string, string> {
+        const copy: Record<string, string> = {};
+
+        for ( let cssStyleName in parentCssStyles ) {
+            if ( parentCssStyles.hasOwnProperty( cssStyleName ) ) {
+                copy[ cssStyleName ] = parentCssStyles[ cssStyleName ];
+            }
+        }
+
+        return copy;
+    }
+
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

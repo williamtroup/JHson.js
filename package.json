@@ -2,17 +2,18 @@
   "name": "jhson.js",
   "title": "JHson.js",
   "description": "A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.",
-  "version": "1.2.2",
-  "main": "dist/jhson.js",
+  "version": "2.0.0",
   "homepage": "https://www.william-troup.com/jhson-js/",
   "author": {
     "name": "Bunoon"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/williamtroup/JHson.js"
   },
   "keywords": [
+    "typescript",
     "javascript",
     "css",
     "html5",
@@ -31,5 +32,21 @@
   "bugs": {
     "url": "https://github.com/williamtroup/JHson.js/issues"
   },
-  "license": "MIT"
+  "main": "dist/jhson.js",
+  "types": "dist/jhson.d.ts",
+  "scripts": {
+    "build-all": "npm run build && npm run build-minimized",
+    "build": "tsup --config tsup.build.config.ts && tsup --config tsup.build.esm.config.ts",
+    "build-minimized": "tsup --config tsup.build.min.config.ts",
+    "build-typescript": "tsup --config tsup.build.config.ts",
+    "build-typescript-esm": "tsup --config tsup.build.esm.config.ts",
+    "build-typescript-minimized": "tsup --config tsup.build.min.config.ts"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.6.13",
+    "sass": "^1.77.8",
+    "terser": "^5.31.2",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3"
+  }
 }

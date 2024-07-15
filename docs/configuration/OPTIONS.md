@@ -18,12 +18,12 @@ Below are all the configuration options that can be passed to the "setConfigurat
 
 ### Options - Strings:
 
-| Type: | Name: | Description: |
-| --- | --- | --- |
-| *string* | variableWarningText | The warning text that should be shown in the console when a template variable is not used (defaults to "Template variable {{variable_name}} not found."). |
-| *string* | objectErrorText | The error text that should be shown when an object error is detected (defaults to "Errors in object: {{error_1}}, {{error_2}}"). |
-| *string* | attributeNotValidErrorText | The error text that should be shown when a binding object is'nt valid (defaults to "The attribute '{{attribute_name}}' is not a valid object."). |
-| *string* | attributeNotSetErrorText | The error text that should be shown when a binding attribute is'nt set (defaults to "The attribute '{{attribute_name}}' has not been set correctly."). |
+| Category: |Type: | Name: | Description: |
+| --- | --- | --- | --- |
+| text | *string* | variableWarningText | The warning text that should be shown in the console when a template variable is not used (defaults to "Template variable {{variable_name}} not found."). |
+| text | *string* | objectErrorText | The error text that should be shown when an object error is detected (defaults to "Errors in object: {{error_1}}, {{error_2}}"). |
+| text | *string* | attributeNotValidErrorText | The error text that should be shown when a binding object is'nt valid (defaults to "The attribute '{{attribute_name}}' is not a valid object."). |
+| text | *string* | attributeNotSetErrorText | The error text that should be shown when a binding attribute is'nt set (defaults to "The attribute '{{attribute_name}}' has not been set correctly."). |
 
 <br/>
 

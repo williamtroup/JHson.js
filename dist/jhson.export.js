@@ -1,4 +1,4 @@
-/*! JHson.js v1.2.2 | (c) Bunoon 2024 | MIT License */
+/*! JHson.js v2.0.0 | (c) Bunoon 2024 | MIT License */
 var jhson = {js:function() {
   return window.$jhson;
 }};

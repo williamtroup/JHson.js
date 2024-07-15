@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.js
- * @version     v1.2.2
+ * @version     v2.0.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024

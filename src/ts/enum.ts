@@ -18,6 +18,7 @@ export const enum Char {
     variableStart = "{{",
     variableEnd = "}}",
     variableDefault = "|",
+    dash = "-",
 }
 
 export const enum Value {

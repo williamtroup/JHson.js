@@ -142,8 +142,8 @@ type ElementObject = {
     }
 
     function getElementAttributes( element: HTMLElement, result: any, properties: JsonProperties ) : void {
-        var attributesLength = element.attributes.length,
-            attributesAvailable = [];
+        const attributesLength: number = element.attributes.length;
+        const attributesAvailable: string[] = [];
 
         if ( properties.includeText && element.nodeName.toLowerCase() === "textarea" ) {
             const textArea: HTMLTextAreaElement = element as HTMLTextAreaElement;
@@ -191,7 +191,7 @@ type ElementObject = {
         
         result[ JsonValue.children ] = [];
 
-        for ( var childrenIndex = 0; childrenIndex < childrenLength; childrenIndex++ ) {
+        for ( let childrenIndex: number = 0; childrenIndex < childrenLength; childrenIndex++ ) {
             const child: HTMLElement = element.children[ childrenIndex ] as HTMLElement;
             const childElementData: ElementObject = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) );
             let addChild: boolean = false;
@@ -332,7 +332,7 @@ type ElementObject = {
     function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
         const cssStyles: string[] = [];
 
-        for ( var jsonKey in jsonObject ) {
+        for ( let jsonKey in jsonObject ) {
             if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
                 if ( properties.addAttributes ) {
                     const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
@@ -364,7 +364,7 @@ type ElementObject = {
                     for ( let childrenIndex: number = 0; childrenIndex < childrenLength; childrenIndex++ ) {
                         const childJson: any = jsonObject[ jsonKey ][ childrenIndex ];
     
-                        for ( var childJsonKey in childJson ) {
+                        for ( let childJsonKey in childJson ) {
                             if ( childJson.hasOwnProperty( childJsonKey ) ) {
                                 const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
     

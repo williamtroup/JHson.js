@@ -233,7 +233,8 @@ var require_jhson = __commonJS({
                 };
             }
             function getElementAttributes(e, t, n) {
-                var r = e.attributes.length, i = [];
+                const r = e.attributes.length;
+                const i = [];
                 if (n.includeText && e.nodeName.toLowerCase() === "textarea") {
                     const n = e;
                     if (Is.defined(n.value)) {
@@ -269,7 +270,7 @@ var require_jhson = __commonJS({
             function getElementChildren(e, t, n, r, i) {
                 let o = 0;
                 t["&children"] = [];
-                for (var s = 0; s < n; s++) {
+                for (let s = 0; s < n; s++) {
                     const n = e.children[s];
                     const a = getElementObject(n, r, getParentCssStylesCopy(i));
                     let l = false;
@@ -377,7 +378,7 @@ var require_jhson = __commonJS({
             }
             function writeNode(e, t, n, r) {
                 const i = [];
-                for (var o in t) {
+                for (let o in t) {
                     if (Data.String.startsWithAnyCase(o, "@")) {
                         if (n.addAttributes) {
                             const n = o.replace("@", "");
@@ -400,12 +401,12 @@ var require_jhson = __commonJS({
                     } else if (o === "&children") {
                         if (n.addChildren) {
                             const i = t[o].length;
-                            for (let a = 0; a < i; a++) {
-                                const i = t[o][a];
-                                for (var s in i) {
-                                    if (i.hasOwnProperty(s)) {
-                                        const t = DomElement.create(e, s.toLowerCase());
-                                        writeNode(t, i[s], n, r);
+                            for (let s = 0; s < i; s++) {
+                                const i = t[o][s];
+                                for (let t in i) {
+                                    if (i.hasOwnProperty(t)) {
+                                        const o = DomElement.create(e, t.toLowerCase());
+                                        writeNode(o, i[t], n, r);
                                     }
                                 }
                             }

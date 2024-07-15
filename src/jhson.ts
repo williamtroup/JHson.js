@@ -11,13 +11,13 @@
  */
 
 
-import { PublicApi, PublicApiHtml, PublicApiJson } from "./ts/api";
-import { Constants } from "./ts/constant"
+import { type BindingOptions, type Configuration } from "./ts/type";
+import { type PublicApi, type PublicApiHtml, type PublicApiJson } from "./ts/api";
+import { Constant } from "./ts/constant"
 import { Data } from "./ts/data";
 import { DomElement } from "./ts/dom";
 import { Char, JsonValue, Value } from "./ts/enum";
 import { Is } from "./ts/is";
-import { type Configuration } from "./ts/type";
 
 
 type StringToJson = {
@@ -69,7 +69,114 @@ type ElementObject = {
     // Variables: Configuration
     let _configuration: Configuration = {} as Configuration;
     
-    
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Rendering
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function render() : void {
+        const tagTypes: string[] = _configuration.domElementTypes as string[];
+        const tagTypesLength: number = tagTypes.length;
+
+        for ( let tagTypeIndex: number = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++ ) {
+            const domElements: HTMLCollectionOf<Element> = document.getElementsByTagName( tagTypes[ tagTypeIndex ] );
+            const elements: HTMLElement[] = [].slice.call( domElements );
+            const elementsLength: number = elements.length;
+
+            for ( let elementIndex: number = 0; elementIndex < elementsLength; elementIndex++ ) {
+                if ( !renderBindingElement( elements[ elementIndex ] ) ) {
+                    break;
+                }
+            }
+        }
+    }
+
+    function renderBindingElement( element: HTMLElement ) : boolean {
+        let result: boolean = true;
+
+        if ( Is.defined( element ) && element.hasAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME ) ) {
+            var bindingOptionsData = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME );
+
+            if ( Is.definedString( bindingOptionsData ) ) {
+                var bindingOptions = getObjectFromString( bindingOptionsData );
+
+                if ( bindingOptions.parsed && Is.definedObject( bindingOptions.object ) ) {
+                    renderElement( renderBindingOptions( bindingOptions.object, element ) );
+
+                } else {
+                    if ( !_configuration.safeMode ) {
+                        console.error( _configuration.text!.attributeNotValidErrorText!.replace( "{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME ) );
+                        result = false;
+                    }
+                }
+
+            } else {
+                if ( !_configuration.safeMode ) {
+                    console.error( _configuration.text!.attributeNotSetErrorText!.replace( "{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME ) );
+                    result = false;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    function renderBindingOptions( data: any, element: HTMLElement ) : BindingOptions {
+        const bindingOptions: BindingOptions = buildAttributeOptions( data );
+        bindingOptions._currentView.element = element;
+
+        return bindingOptions;
+    }
+
+    function renderElement( bindingOptions: BindingOptions ) : void {
+        fireCustomTriggerEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
+
+        const properties: HtmlProperties = getDefaultHtmlProperties();
+        properties.json = bindingOptions.json!;
+
+        writeHtml( bindingOptions._currentView.element, properties );
+
+        fireCustomTriggerEvent( bindingOptions.events!.onRenderComplete!, bindingOptions._currentView.element );
+    }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Binding Options
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+    function buildAttributeOptions( newOptions: any ) {
+        let options: BindingOptions = Data.getDefaultObject( newOptions, {} as BindingOptions );
+        const optionPropertyDefaults: HtmlProperties = getDefaultHtmlProperties();
+
+        options.json = Data.getDefaultString( options.json, optionPropertyDefaults.json );
+        options.templateData = Data.getDefaultObject( options.templateData, optionPropertyDefaults.templateData );
+        options.removeOriginalAttributes = Data.getDefaultBoolean( options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes );
+        options.clearOriginalHTML = Data.getDefaultBoolean( options.clearOriginalHTML, optionPropertyDefaults.clearOriginalHTML );
+        options.addCssToHead = Data.getDefaultBoolean( options.addCssToHead, optionPropertyDefaults.addCssToHead );
+        options.clearCssFromHead = Data.getDefaultBoolean( options.clearCssFromHead, optionPropertyDefaults.clearCssFromHead );
+        options.logTemplateDataWarnings = Data.getDefaultBoolean( options.logTemplateDataWarnings, optionPropertyDefaults.logTemplateDataWarnings );
+        options.addAttributes = Data.getDefaultBoolean( options.addAttributes, optionPropertyDefaults.addAttributes );
+        options.addCssProperties = Data.getDefaultBoolean( options.addCssProperties, optionPropertyDefaults.addCssProperties );
+        options.addText = Data.getDefaultBoolean( options.addText, optionPropertyDefaults.addText );
+        options.addChildren = Data.getDefaultBoolean( options.addChildren, optionPropertyDefaults.addChildren );
+
+        options = buildAttributeOptionCustomTriggers( options );
+
+        return options;
+    }
+
+    function buildAttributeOptionCustomTriggers( options: BindingOptions ) : BindingOptions {
+        options.events!.onBeforeRender = Data.getDefaultFunction( options.events!.onBeforeRender, null! );
+        options.events!.onRenderComplete = Data.getDefaultFunction( options.events!.onRenderComplete, null! );
+
+        return options;
+    }
+
+
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * JSON - Get

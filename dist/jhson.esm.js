@@ -10,6 +10,17 @@ var __commonJS = (e, t) => function n() {
     }).exports, t), t.exports;
 };
 
+var Constant;
+
+var init_constant = __esm({
+    "src/ts/constant.ts"() {
+        "use strict";
+        (e => {
+            e.JHSON_JS_ATTRIBUTE_NAME = "data-jhson-js";
+        })(Constant || (Constant = {}));
+    }
+});
+
 var init_enum = __esm({
     "src/ts/enum.ts"() {
         "use strict";
@@ -43,14 +54,14 @@ var init_is = __esm({
                 return t(e) && typeof e === "function";
             }
             e.definedFunction = o;
-            function s(e) {
+            function a(e) {
                 return t(e) && typeof e === "number";
             }
-            e.definedNumber = s;
-            function a(e) {
+            e.definedNumber = a;
+            function s(e) {
                 return n(e) && e instanceof Array;
             }
-            e.definedArray = a;
+            e.definedArray = s;
         })(Is || (Is = {}));
     }
 });
@@ -122,14 +133,14 @@ var init_data = __esm({
                 return Is.definedNumber(e) ? e : t;
             }
             e.getDefaultNumber = o;
-            function s(e, t) {
+            function a(e, t) {
                 return Is.definedFunction(e) ? e : t;
             }
-            e.getDefaultFunction = s;
-            function a(e, t) {
+            e.getDefaultFunction = a;
+            function s(e, t) {
                 return Is.definedArray(e) ? e : t;
             }
-            e.getDefaultArray = a;
+            e.getDefaultArray = s;
             function l(e, t) {
                 return Is.definedObject(e) ? e : t;
             }
@@ -144,7 +155,7 @@ var init_data = __esm({
                         n = r;
                     }
                 } else {
-                    n = a(e, t);
+                    n = s(e, t);
                 }
                 return n;
             }
@@ -174,12 +185,84 @@ var init_dom = __esm({
 
 var require_jhson = __commonJS({
     "src/jhson.ts"(exports, module) {
+        init_constant();
         init_data();
         init_dom();
         init_enum();
         init_is();
         (() => {
             let _configuration = {};
+            function render() {
+                const e = _configuration.domElementTypes;
+                const t = e.length;
+                for (let n = 0; n < t; n++) {
+                    const t = document.getElementsByTagName(e[n]);
+                    const r = [].slice.call(t);
+                    const i = r.length;
+                    for (let e = 0; e < i; e++) {
+                        if (!renderBindingElement(r[e])) {
+                            break;
+                        }
+                    }
+                }
+            }
+            function renderBindingElement(e) {
+                let t = true;
+                if (Is.defined(e) && e.hasAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME)) {
+                    var n = e.getAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME);
+                    if (Is.definedString(n)) {
+                        var r = getObjectFromString(n);
+                        if (r.parsed && Is.definedObject(r.object)) {
+                            renderElement(renderBindingOptions(r.object, e));
+                        } else {
+                            if (!_configuration.safeMode) {
+                                console.error(_configuration.text.attributeNotValidErrorText.replace("{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME));
+                                t = false;
+                            }
+                        }
+                    } else {
+                        if (!_configuration.safeMode) {
+                            console.error(_configuration.text.attributeNotSetErrorText.replace("{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME));
+                            t = false;
+                        }
+                    }
+                }
+                return t;
+            }
+            function renderBindingOptions(e, t) {
+                const n = buildAttributeOptions(e);
+                n._currentView.element = t;
+                return n;
+            }
+            function renderElement(e) {
+                fireCustomTriggerEvent(e.events.onBeforeRender, e._currentView.element);
+                const t = getDefaultHtmlProperties();
+                t.json = e.json;
+                writeHtml(e._currentView.element, t);
+                fireCustomTriggerEvent(e.events.onRenderComplete, e._currentView.element);
+            }
+            function buildAttributeOptions(e) {
+                let t = Data.getDefaultObject(e, {});
+                const n = getDefaultHtmlProperties();
+                t.json = Data.getDefaultString(t.json, n.json);
+                t.templateData = Data.getDefaultObject(t.templateData, n.templateData);
+                t.removeOriginalAttributes = Data.getDefaultBoolean(t.removeOriginalAttributes, n.removeOriginalAttributes);
+                t.clearOriginalHTML = Data.getDefaultBoolean(t.clearOriginalHTML, n.clearOriginalHTML);
+                t.addCssToHead = Data.getDefaultBoolean(t.addCssToHead, n.addCssToHead);
+                t.clearCssFromHead = Data.getDefaultBoolean(t.clearCssFromHead, n.clearCssFromHead);
+                t.logTemplateDataWarnings = Data.getDefaultBoolean(t.logTemplateDataWarnings, n.logTemplateDataWarnings);
+                t.addAttributes = Data.getDefaultBoolean(t.addAttributes, n.addAttributes);
+                t.addCssProperties = Data.getDefaultBoolean(t.addCssProperties, n.addCssProperties);
+                t.addText = Data.getDefaultBoolean(t.addText, n.addText);
+                t.addChildren = Data.getDefaultBoolean(t.addChildren, n.addChildren);
+                t = buildAttributeOptionCustomTriggers(t);
+                return t;
+            }
+            function buildAttributeOptionCustomTriggers(e) {
+                e.events.onBeforeRender = Data.getDefaultFunction(e.events.onBeforeRender, null);
+                e.events.onRenderComplete = Data.getDefaultFunction(e.events.onRenderComplete, null);
+                return e;
+            }
             function getDefaultJsonProperties() {
                 return {
                     includeAttributes: true,
@@ -270,21 +353,21 @@ var require_jhson = __commonJS({
             function getElementChildren(e, t, n, r, i) {
                 let o = 0;
                 t["&children"] = [];
-                for (let s = 0; s < n; s++) {
-                    const n = e.children[s];
-                    const a = getElementObject(n, r, getParentCssStylesCopy(i));
+                for (let a = 0; a < n; a++) {
+                    const n = e.children[a];
+                    const s = getElementObject(n, r, getParentCssStylesCopy(i));
                     let l = false;
-                    if (_configuration.formattingNodeTypes.indexOf(a.nodeName) > -1) {
+                    if (_configuration.formattingNodeTypes.indexOf(s.nodeName) > -1) {
                         o++;
                     } else {
-                        if (r.ignoreNodeTypes.indexOf(a.nodeName) === -1) {
+                        if (r.ignoreNodeTypes.indexOf(s.nodeName) === -1) {
                             l = true;
                             o++;
                         }
                     }
                     if (l) {
                         const e = {};
-                        e[a.nodeName] = a.nodeValues;
+                        e[s.nodeName] = s.nodeValues;
                         t["&children"].push(e);
                     }
                 }
@@ -401,8 +484,8 @@ var require_jhson = __commonJS({
                     } else if (o === "&children") {
                         if (n.addChildren) {
                             const i = t[o].length;
-                            for (let s = 0; s < i; s++) {
-                                const i = t[o][s];
+                            for (let a = 0; a < i; a++) {
+                                const i = t[o][a];
                                 for (let t in i) {
                                     if (i.hasOwnProperty(t)) {
                                         const o = DomElement.create(e, t.toLowerCase());

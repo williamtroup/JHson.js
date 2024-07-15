@@ -159,7 +159,7 @@ type ElementObject = {
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function buildAttributeOptions( newOptions: any ) {
+    function buildAttributeOptions( newOptions: any ) : BindingOptions {
         let options: BindingOptions = Data.getDefaultObject( newOptions, {} as BindingOptions );
         const optionPropertyDefaults: HtmlProperties = getDefaultHtmlProperties();
 
@@ -897,7 +897,7 @@ type ElementObject = {
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
 
-        setConfiguration: function ( newConfiguration: any ): PublicApi {
+        setConfiguration: function ( newConfiguration: any ) : PublicApi {
             if ( Is.definedObject( newConfiguration ) ) {
                 let configurationHasChanged: boolean = false;
                 const newInternalConfiguration: any = _configuration;
@@ -924,7 +924,7 @@ type ElementObject = {
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
 
-        getVersion: function (): string {
+        getVersion: function () : string {
             return "2.0.0";
         }
     };

@@ -184,6 +184,7 @@ var DomElement;
     }
     function renderBindingOptions(e, t) {
         const n = buildAttributeOptions(e);
+        n._currentView = {};
         n._currentView.element = t;
         return n;
     }

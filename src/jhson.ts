@@ -11,8 +11,18 @@
  */
 
 
-import { BindingOptionEvents, ConfigurationText, type BindingOptions, type Configuration } from "./ts/type";
-import { type PublicApi, type PublicApiHtml, type PublicApiJson } from "./ts/api";
+import {
+    type BindingOptionEvents,
+    type ConfigurationText,
+    type CurrentView,
+    type BindingOptions,
+    type Configuration } from "./ts/type";
+
+import {
+    type PublicApi,
+    type PublicApiHtml,
+    type PublicApiJson } from "./ts/api";
+    
 import { Constant } from "./ts/constant"
 import { Data } from "./ts/data";
 import { DomElement } from "./ts/dom";
@@ -125,6 +135,7 @@ type ElementObject = {
 
     function renderBindingOptions( data: any, element: HTMLElement ) : BindingOptions {
         const bindingOptions: BindingOptions = buildAttributeOptions( data );
+        bindingOptions._currentView = {} as CurrentView;
         bindingOptions._currentView.element = element;
 
         return bindingOptions;

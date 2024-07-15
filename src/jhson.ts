@@ -515,7 +515,6 @@ type ElementObject = {
                             const endIndex: number = element.innerHTML.indexOf( Char.variableEnd, startIndex );
 
                             if ( endIndex > Value.notFound ) {
-                                
                                 const variable: string = element.innerHTML.substring( startIndex, endIndex + Char.variableEnd.length );
                                 
                                 element.innerHTML = Data.String.replaceAll( element.innerHTML, variable, templateDataKeyReplacement );

@@ -21,18 +21,18 @@ var Is;
         return t(e) && typeof e === "boolean";
     }
     e.definedBoolean = r;
-    function i(e) {
+    function a(e) {
         return t(e) && typeof e === "string";
     }
-    e.definedString = i;
-    function o(e) {
+    e.definedString = a;
+    function i(e) {
         return t(e) && typeof e === "function";
     }
-    e.definedFunction = o;
-    function a(e) {
+    e.definedFunction = i;
+    function o(e) {
         return t(e) && typeof e === "number";
     }
-    e.definedNumber = a;
+    e.definedNumber = o;
     function s(e) {
         return n(e) && e instanceof Array;
     }
@@ -64,7 +64,7 @@ var Data;
             return e.replace(new RegExp(t.replace("|", `[${"|"}]`), "g"), n);
         }
         e.replaceAll = r;
-        function i(e) {
+        function a(e) {
             const t = [];
             if (Is.definedString(e)) {
                 let n = 0;
@@ -74,8 +74,8 @@ var Data;
                     if (n > -1) {
                         r = e.indexOf("}}", n);
                         if (r > -1) {
-                            const i = e.substring(n, r + "}}".length);
-                            t.push(i);
+                            const a = e.substring(n, r + "}}".length);
+                            t.push(a);
                             r += 2;
                         }
                     }
@@ -83,7 +83,7 @@ var Data;
             }
             return t;
         }
-        e.getTemplateVariables = i;
+        e.getTemplateVariables = a;
     })(t = e.String || (e.String = {}));
     function n(e, t) {
         return typeof e === "string" ? e : t;
@@ -93,18 +93,18 @@ var Data;
         return Is.definedString(e) ? e : t;
     }
     e.getDefaultString = r;
-    function i(e, t) {
+    function a(e, t) {
         return Is.definedBoolean(e) ? e : t;
     }
-    e.getDefaultBoolean = i;
-    function o(e, t) {
+    e.getDefaultBoolean = a;
+    function i(e, t) {
         return Is.definedNumber(e) ? e : t;
     }
-    e.getDefaultNumber = o;
-    function a(e, t) {
+    e.getDefaultNumber = i;
+    function o(e, t) {
         return Is.definedFunction(e) ? e : t;
     }
-    e.getDefaultFunction = a;
+    e.getDefaultFunction = o;
     function s(e, t) {
         return Is.definedArray(e) ? e : t;
     }
@@ -113,7 +113,7 @@ var Data;
         return Is.definedObject(e) ? e : t;
     }
     e.getDefaultObject = l;
-    function c(e, t) {
+    function u(e, t) {
         let n = t;
         if (Is.definedString(e)) {
             const r = e.toString().split(" ");
@@ -127,7 +127,7 @@ var Data;
         }
         return n;
     }
-    e.getDefaultStringOrArray = c;
+    e.getDefaultStringOrArray = u;
 })(Data || (Data = {}));
 
 var DomElement;
@@ -136,9 +136,9 @@ var DomElement;
     function t(e, t) {
         const n = t.toLowerCase();
         const r = n === "text";
-        let i = r ? document.createTextNode("") : document.createElement(n);
-        e.appendChild(i);
-        return i;
+        let a = r ? document.createTextNode("") : document.createElement(n);
+        e.appendChild(a);
+        return a;
     }
     e.create = t;
 })(DomElement || (DomElement = {}));
@@ -151,8 +151,8 @@ var DomElement;
         for (let n = 0; n < t; n++) {
             const t = document.getElementsByTagName(e[n]);
             const r = [].slice.call(t);
-            const i = r.length;
-            for (let e = 0; e < i; e++) {
+            const a = r.length;
+            for (let e = 0; e < a; e++) {
                 if (!renderBindingElement(r[e])) {
                     break;
                 }
@@ -234,8 +234,8 @@ var DomElement;
         let n = "";
         if (Is.definedObject(e)) {
             const r = {};
-            const i = getElementObject(e, t, {});
-            r[i.nodeName] = i.nodeValues;
+            const a = getElementObject(e, t, {});
+            r[a.nodeName] = a.nodeValues;
             if (t.friendlyFormat) {
                 n = JSON.stringify(r, null, t.indentSpaces);
             } else {
@@ -246,19 +246,19 @@ var DomElement;
     }
     function getElementObject(e, t, n) {
         const r = {};
-        const i = e.children.length;
-        let o = 0;
+        const a = e.children.length;
+        let i = 0;
         if (t.includeAttributes) {
             getElementAttributes(e, r, t);
         }
         if (t.includeCssProperties) {
             getElementCssProperties(e, r, t, n);
         }
-        if (t.includeChildren && i > 0) {
-            o = getElementChildren(e, r, i, t, n);
+        if (t.includeChildren && a > 0) {
+            i = getElementChildren(e, r, a, t, n);
         }
         if (t.includeText) {
-            getElementText(e, r, o);
+            getElementText(e, r, i);
         }
         if (Is.defined(r["&children"]) && r["&children"].length === 0) {
             delete r["&children"];
@@ -270,32 +270,32 @@ var DomElement;
     }
     function getElementAttributes(e, t, n) {
         const r = e.attributes.length;
-        const i = [];
+        const a = [];
         if (n.includeText && e.nodeName.toLowerCase() === "textarea") {
             const n = e;
             if (Is.defined(n.value)) {
                 t["#text"] = n.value;
             }
         }
-        for (let o = 0; o < r; o++) {
-            const r = e.attributes[o];
+        for (let i = 0; i < r; i++) {
+            const r = e.attributes[i];
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
                 t["@" + r.nodeName] = r.nodeValue;
-                i.push(r.nodeName);
+                a.push(r.nodeName);
             }
         }
-        if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
+        if (n.generateUniqueMissingIds && a.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
             t["@" + "id"] = Data.String.newGuid();
         }
     }
     function getElementCssProperties(e, t, n, r) {
-        const i = getComputedStyle(e);
-        const o = i.length;
-        for (let e = 0; e < o; e++) {
-            const o = i[e];
-            if (n.ignoreCssProperties.indexOf(o) === -1) {
-                const e = "$" + o;
-                const n = i.getPropertyValue(o);
+        const a = getComputedStyle(e);
+        const i = a.length;
+        for (let e = 0; e < i; e++) {
+            const i = a[e];
+            if (n.ignoreCssProperties.indexOf(i) === -1) {
+                const e = "$" + i;
+                const n = a.getPropertyValue(i);
                 if (!r.hasOwnProperty(e) || r[e] !== n) {
                     t[e] = n;
                     r[e] = t[e];
@@ -303,19 +303,19 @@ var DomElement;
             }
         }
     }
-    function getElementChildren(e, t, n, r, i) {
-        let o = 0;
+    function getElementChildren(e, t, n, r, a) {
+        let i = 0;
         t["&children"] = [];
-        for (let a = 0; a < n; a++) {
-            const n = e.children[a];
-            const s = getElementObject(n, r, getParentCssStylesCopy(i));
+        for (let o = 0; o < n; o++) {
+            const n = e.children[o];
+            const s = getElementObject(n, r, getParentCssStylesCopy(a));
             let l = false;
             if (_configuration.formattingNodeTypes.indexOf(s.nodeName) > -1) {
-                o++;
+                i++;
             } else {
                 if (r.ignoreNodeTypes.indexOf(s.nodeName) === -1) {
                     l = true;
-                    o++;
+                    i++;
                 }
             }
             if (l) {
@@ -324,7 +324,7 @@ var DomElement;
                 t["&children"].push(e);
             }
         }
-        return o;
+        return i;
     }
     function getElementText(e, t, n) {
         if (Is.definedString(e.innerText)) {
@@ -377,8 +377,8 @@ var DomElement;
                 if (Is.definedObject(t.templateData)) {
                     setupWritingScopeTemplateDataKeys(t, r);
                 }
-                for (let i in n.object) {
-                    if (i === e.nodeName.toLowerCase()) {
+                for (let a in n.object) {
+                    if (a === e.nodeName.toLowerCase()) {
                         if (t.removeOriginalAttributes) {
                             while (e.attributes.length > 0) {
                                 e.removeAttribute(e.attributes[0].name);
@@ -387,7 +387,7 @@ var DomElement;
                         if (t.clearOriginalHTML) {
                             e.innerHTML = "";
                         }
-                        writeNode(e, n.object[i], t, r);
+                        writeNode(e, n.object[a], t, r);
                     }
                 }
                 processRemainingVariablesForDefaults(e);
@@ -413,66 +413,66 @@ var DomElement;
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
     function writeNode(e, t, n, r) {
-        const i = [];
-        for (let o in t) {
-            if (Data.String.startsWithAnyCase(o, "@")) {
+        const a = [];
+        for (let i in t) {
+            if (Data.String.startsWithAnyCase(i, "@")) {
                 if (n.addAttributes) {
-                    const n = o.replace("@", "");
-                    const r = t[o];
+                    const n = i.replace("@", "");
+                    const r = t[i];
                     e.setAttribute(n, r);
                 }
-            } else if (Data.String.startsWithAnyCase(o, "$")) {
+            } else if (Data.String.startsWithAnyCase(i, "$")) {
                 if (n.addCssProperties) {
-                    const r = o.replace("$", "");
+                    const r = i.replace("$", "");
                     if (!n.addCssToHead) {
-                        e.style.setProperty(r, t[o]);
+                        e.style.setProperty(r, t[i]);
                     } else {
-                        i.push(r + ":" + t[o] + ";");
+                        a.push(r + ":" + t[i] + ";");
                     }
                 }
-            } else if (o === "#text") {
+            } else if (i === "#text") {
                 if (n.addText) {
-                    writeElementTextAndTemplateData(e, t[o], n, r);
+                    writeElementTextAndTemplateData(e, t[i], n, r);
                 }
-            } else if (o === "&children") {
+            } else if (i === "&children") {
                 if (n.addChildren) {
-                    const i = t[o].length;
-                    for (let a = 0; a < i; a++) {
-                        const i = t[o][a];
-                        for (let t in i) {
-                            if (i.hasOwnProperty(t)) {
-                                const o = DomElement.create(e, t.toLowerCase());
-                                writeNode(o, i[t], n, r);
+                    const a = t[i].length;
+                    for (let o = 0; o < a; o++) {
+                        const a = t[i][o];
+                        for (let t in a) {
+                            if (a.hasOwnProperty(t)) {
+                                const i = DomElement.create(e, t.toLowerCase());
+                                writeNode(i, a[t], n, r);
                             }
                         }
                     }
                 }
             }
         }
-        if (i.length > 0) {
-            storeCssStyles(e, i, r);
+        if (a.length > 0) {
+            storeCssStyles(e, a, r);
         }
     }
     function writeElementTextAndTemplateData(e, t, n, r) {
         e.innerHTML = t;
         if (r.templateDataKeysLength > 0) {
             for (let t = 0; t < r.templateDataKeysLength; t++) {
-                let i = r.templateDataKeys[t];
-                if (n.templateData.hasOwnProperty(i)) {
-                    const t = n.templateData[i];
-                    if (e.innerHTML.indexOf(i) > -1) {
-                        e.innerHTML = Data.String.replaceAll(e.innerHTML, i, t);
-                        if (r.templateDataKeysProcessed.indexOf(i) === -1) {
-                            r.templateDataKeysProcessed.push(i);
+                let a = r.templateDataKeys[t];
+                if (n.templateData.hasOwnProperty(a)) {
+                    const t = n.templateData[a];
+                    if (e.innerHTML.indexOf(a) > -1) {
+                        e.innerHTML = Data.String.replaceAll(e.innerHTML, a, t);
+                        if (r.templateDataKeysProcessed.indexOf(a) === -1) {
+                            r.templateDataKeysProcessed.push(a);
                         }
                     } else {
-                        i = i.replace("}}", "") + " " + "|";
-                        const n = e.innerHTML.indexOf(i);
+                        a = a.replace("}}", "") + " " + "|";
+                        const n = e.innerHTML.indexOf(a);
                         if (n > -1) {
                             const r = e.innerHTML.indexOf("}}", n);
                             if (r > -1) {
-                                const i = e.innerHTML.substring(n, r + "}}".length);
-                                e.innerHTML = Data.String.replaceAll(e.innerHTML, i, t);
+                                const a = e.innerHTML.substring(n, r + "}}".length);
+                                e.innerHTML = Data.String.replaceAll(e.innerHTML, a, t);
                             }
                         }
                     }
@@ -491,11 +491,11 @@ var DomElement;
             }
             r = "#" + e.id + " {";
         }
-        let i = [];
-        i.push(r);
-        i = i.concat(t);
-        i.push("}");
-        n.css[e.id] = i;
+        let a = [];
+        a.push(r);
+        a = a.concat(t);
+        a.push("}");
+        n.css[e.id] = a;
     }
     function writeCssStyleTag(e) {
         const t = document.getElementsByTagName("head")[0];
@@ -569,98 +569,159 @@ var DomElement;
         }
         return result;
     }
+    function buildDefaultConfiguration(e = null) {
+        _configuration = Data.getDefaultObject(e, {});
+        _configuration.safeMode = Data.getDefaultBoolean(_configuration.safeMode, true);
+        _configuration.domElementTypes = Data.getDefaultStringOrArray(_configuration.domElementTypes, [ "*" ]);
+        _configuration.formattingNodeTypes = Data.getDefaultStringOrArray(_configuration.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
+        buildDefaultConfigurationStrings();
+    }
+    function buildDefaultConfigurationStrings() {
+        _configuration.text.variableWarningText = Data.getDefaultString(_configuration.text.variableWarningText, "Template variable {{variable_name}} not found.");
+        _configuration.text.objectErrorText = Data.getDefaultString(_configuration.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+        _configuration.text.attributeNotValidErrorText = Data.getDefaultString(_configuration.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+        _configuration.text.attributeNotSetErrorText = Data.getDefaultString(_configuration.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
+    }
     const _public = {
         json: function() {
-            const e = {
-                includeAttributes: function(e) {
-                    throw new Error("Function not implemented.");
+            const e = getDefaultJsonProperties();
+            const t = {
+                includeAttributes: function(t) {
+                    e.includeAttributes = Data.getDefaultBoolean(t, e.includeAttributes);
+                    return this;
                 },
-                includeCssProperties: function(e) {
-                    throw new Error("Function not implemented.");
+                includeCssProperties: function(t) {
+                    e.includeCssProperties = Data.getDefaultBoolean(t, e.includeCssProperties);
+                    return this;
                 },
-                includeText: function(e) {
-                    throw new Error("Function not implemented.");
+                includeText: function(t) {
+                    e.includeText = Data.getDefaultBoolean(t, e.includeText);
+                    return this;
                 },
-                includeChildren: function(e) {
-                    throw new Error("Function not implemented.");
+                includeChildren: function(t) {
+                    e.includeChildren = Data.getDefaultBoolean(t, e.includeChildren);
+                    return this;
                 },
-                friendlyFormat: function(e) {
-                    throw new Error("Function not implemented.");
+                friendlyFormat: function(t) {
+                    e.friendlyFormat = Data.getDefaultBoolean(t, e.friendlyFormat);
+                    return this;
                 },
-                indentSpaces: function(e) {
-                    throw new Error("Function not implemented.");
+                indentSpaces: function(t) {
+                    e.indentSpaces = Data.getDefaultNumber(t, e.indentSpaces);
+                    return this;
                 },
-                ignoreNodeTypes: function(e) {
-                    throw new Error("Function not implemented.");
+                ignoreNodeTypes: function(t) {
+                    e.ignoreNodeTypes = Data.getDefaultStringOrArray(t, e.ignoreNodeTypes);
+                    return this;
                 },
-                ignoreCssProperties: function(e) {
-                    throw new Error("Function not implemented.");
+                ignoreCssProperties: function(t) {
+                    e.ignoreCssProperties = Data.getDefaultStringOrArray(t, e.ignoreCssProperties);
+                    return this;
                 },
-                ignoreAttributes: function(e) {
-                    throw new Error("Function not implemented.");
+                ignoreAttributes: function(t) {
+                    e.ignoreAttributes = Data.getDefaultStringOrArray(t, e.ignoreAttributes);
+                    return this;
                 },
-                generateUniqueMissingIds: function(e) {
-                    throw new Error("Function not implemented.");
+                generateUniqueMissingIds: function(t) {
+                    e.generateUniqueMissingIds = Data.getDefaultBoolean(t, e.generateUniqueMissingIds);
+                    return this;
                 },
-                get: function(e) {
-                    throw new Error("Function not implemented.");
+                get: function(t) {
+                    return getJSON(t, e);
                 },
                 getVariables: function(e) {
-                    throw new Error("Function not implemented.");
+                    return Data.String.getTemplateVariables(e);
                 }
             };
-            return e;
+            return t;
         },
         html: function() {
-            const e = {
-                json: function(e) {
-                    throw new Error("Function not implemented.");
+            const e = getDefaultHtmlProperties();
+            const t = {
+                json: function(n) {
+                    e.json = Data.getDefaultString(n, e.json);
+                    return t;
                 },
-                templateData: function(e) {
-                    throw new Error("Function not implemented.");
+                templateData: function(n) {
+                    e.templateData = Data.getDefaultObject(n, e.templateData);
+                    return t;
                 },
-                removeOriginalAttributes: function(e) {
-                    throw new Error("Function not implemented.");
+                removeOriginalAttributes: function(n) {
+                    e.removeOriginalAttributes = Data.getDefaultBoolean(n, e.removeOriginalAttributes);
+                    return t;
                 },
-                clearOriginalHTML: function(e) {
-                    throw new Error("Function not implemented.");
+                clearOriginalHTML: function(n) {
+                    e.clearOriginalHTML = Data.getDefaultBoolean(n, e.clearOriginalHTML);
+                    return t;
                 },
-                addCssToHead: function(e) {
-                    throw new Error("Function not implemented.");
+                addCssToHead: function(n) {
+                    e.addCssToHead = Data.getDefaultBoolean(n, e.addCssToHead);
+                    return t;
                 },
-                clearCssFromHead: function(e) {
-                    throw new Error("Function not implemented.");
+                clearCssFromHead: function(n) {
+                    e.clearCssFromHead = Data.getDefaultBoolean(n, e.clearCssFromHead);
+                    return t;
                 },
-                logTemplateDataWarnings: function(e) {
-                    throw new Error("Function not implemented.");
+                logTemplateDataWarnings: function(n) {
+                    e.logTemplateDataWarnings = Data.getDefaultBoolean(n, e.logTemplateDataWarnings);
+                    return t;
                 },
-                addAttributes: function(e) {
-                    throw new Error("Function not implemented.");
+                addAttributes: function(n) {
+                    e.addAttributes = Data.getDefaultBoolean(n, e.addAttributes);
+                    return t;
                 },
-                addCssProperties: function(e) {
-                    throw new Error("Function not implemented.");
+                addCssProperties: function(n) {
+                    e.addCssProperties = Data.getDefaultBoolean(n, e.addCssProperties);
+                    return t;
                 },
-                addText: function(e) {
-                    throw new Error("Function not implemented.");
+                addText: function(n) {
+                    e.addText = Data.getDefaultBoolean(n, e.addText);
+                    return t;
                 },
-                addChildren: function(e) {
-                    throw new Error("Function not implemented.");
+                addChildren: function(n) {
+                    e.addChildren = Data.getDefaultBoolean(n, e.addChildren);
+                    return t;
                 },
-                write: function(e) {
-                    throw new Error("Function not implemented.");
+                write: function(t) {
+                    return writeHtml(t, e);
                 },
                 getVariables: function(e) {
-                    throw new Error("Function not implemented.");
+                    let t = [];
+                    if (Is.definedObject(e)) {
+                        t = Data.String.getTemplateVariables(e.innerHTML);
+                    }
+                    return t;
                 }
             };
-            return e;
+            return t;
         },
         setConfiguration: function(e) {
-            throw new Error("Function not implemented.");
+            if (Is.definedObject(e)) {
+                let t = false;
+                const n = _configuration;
+                for (let r in e) {
+                    if (e.hasOwnProperty(r) && _configuration.hasOwnProperty(r) && n[r] !== e[r]) {
+                        n[r] = e[r];
+                        t = true;
+                    }
+                }
+                if (t) {
+                    buildDefaultConfiguration(n);
+                }
+            }
+            return _public;
         },
         getVersion: function() {
-            throw new Error("Function not implemented.");
+            return "2.0.0";
         }
     };
-    (() => {})();
+    (() => {
+        buildDefaultConfiguration();
+        document.addEventListener("DOMContentLoaded", (function() {
+            render();
+        }));
+        if (!Is.defined(window.$jhson)) {
+            window.$jhson = _public;
+        }
+    })();
 })();//# sourceMappingURL=jhson.js.map

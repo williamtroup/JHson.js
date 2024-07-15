@@ -50,14 +50,14 @@ var init_is = __esm({
                 return t(e) && typeof e === "string";
             }
             e.definedString = i;
-            function o(e) {
+            function a(e) {
                 return t(e) && typeof e === "function";
             }
-            e.definedFunction = o;
-            function a(e) {
+            e.definedFunction = a;
+            function o(e) {
                 return t(e) && typeof e === "number";
             }
-            e.definedNumber = a;
+            e.definedNumber = o;
             function s(e) {
                 return n(e) && e instanceof Array;
             }
@@ -129,14 +129,14 @@ var init_data = __esm({
                 return Is.definedBoolean(e) ? e : t;
             }
             e.getDefaultBoolean = i;
-            function o(e, t) {
+            function a(e, t) {
                 return Is.definedNumber(e) ? e : t;
             }
-            e.getDefaultNumber = o;
-            function a(e, t) {
+            e.getDefaultNumber = a;
+            function o(e, t) {
                 return Is.definedFunction(e) ? e : t;
             }
-            e.getDefaultFunction = a;
+            e.getDefaultFunction = o;
             function s(e, t) {
                 return Is.definedArray(e) ? e : t;
             }
@@ -145,7 +145,7 @@ var init_data = __esm({
                 return Is.definedObject(e) ? e : t;
             }
             e.getDefaultObject = l;
-            function c(e, t) {
+            function u(e, t) {
                 let n = t;
                 if (Is.definedString(e)) {
                     const r = e.toString().split(" ");
@@ -159,7 +159,7 @@ var init_data = __esm({
                 }
                 return n;
             }
-            e.getDefaultStringOrArray = c;
+            e.getDefaultStringOrArray = u;
         })(Data || (Data = {}));
     }
 });
@@ -294,7 +294,7 @@ var require_jhson = __commonJS({
             function getElementObject(e, t, n) {
                 const r = {};
                 const i = e.children.length;
-                let o = 0;
+                let a = 0;
                 if (t.includeAttributes) {
                     getElementAttributes(e, r, t);
                 }
@@ -302,10 +302,10 @@ var require_jhson = __commonJS({
                     getElementCssProperties(e, r, t, n);
                 }
                 if (t.includeChildren && i > 0) {
-                    o = getElementChildren(e, r, i, t, n);
+                    a = getElementChildren(e, r, i, t, n);
                 }
                 if (t.includeText) {
-                    getElementText(e, r, o);
+                    getElementText(e, r, a);
                 }
                 if (Is.defined(r["&children"]) && r["&children"].length === 0) {
                     delete r["&children"];
@@ -324,8 +324,8 @@ var require_jhson = __commonJS({
                         t["#text"] = n.value;
                     }
                 }
-                for (let o = 0; o < r; o++) {
-                    const r = e.attributes[o];
+                for (let a = 0; a < r; a++) {
+                    const r = e.attributes[a];
                     if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
                         t["@" + r.nodeName] = r.nodeValue;
                         i.push(r.nodeName);
@@ -337,12 +337,12 @@ var require_jhson = __commonJS({
             }
             function getElementCssProperties(e, t, n, r) {
                 const i = getComputedStyle(e);
-                const o = i.length;
-                for (let e = 0; e < o; e++) {
-                    const o = i[e];
-                    if (n.ignoreCssProperties.indexOf(o) === -1) {
-                        const e = "$" + o;
-                        const n = i.getPropertyValue(o);
+                const a = i.length;
+                for (let e = 0; e < a; e++) {
+                    const a = i[e];
+                    if (n.ignoreCssProperties.indexOf(a) === -1) {
+                        const e = "$" + a;
+                        const n = i.getPropertyValue(a);
                         if (!r.hasOwnProperty(e) || r[e] !== n) {
                             t[e] = n;
                             r[e] = t[e];
@@ -351,18 +351,18 @@ var require_jhson = __commonJS({
                 }
             }
             function getElementChildren(e, t, n, r, i) {
-                let o = 0;
+                let a = 0;
                 t["&children"] = [];
-                for (let a = 0; a < n; a++) {
-                    const n = e.children[a];
+                for (let o = 0; o < n; o++) {
+                    const n = e.children[o];
                     const s = getElementObject(n, r, getParentCssStylesCopy(i));
                     let l = false;
                     if (_configuration.formattingNodeTypes.indexOf(s.nodeName) > -1) {
-                        o++;
+                        a++;
                     } else {
                         if (r.ignoreNodeTypes.indexOf(s.nodeName) === -1) {
                             l = true;
-                            o++;
+                            a++;
                         }
                     }
                     if (l) {
@@ -371,7 +371,7 @@ var require_jhson = __commonJS({
                         t["&children"].push(e);
                     }
                 }
-                return o;
+                return a;
             }
             function getElementText(e, t, n) {
                 if (Is.definedString(e.innerText)) {
@@ -461,35 +461,35 @@ var require_jhson = __commonJS({
             }
             function writeNode(e, t, n, r) {
                 const i = [];
-                for (let o in t) {
-                    if (Data.String.startsWithAnyCase(o, "@")) {
+                for (let a in t) {
+                    if (Data.String.startsWithAnyCase(a, "@")) {
                         if (n.addAttributes) {
-                            const n = o.replace("@", "");
-                            const r = t[o];
+                            const n = a.replace("@", "");
+                            const r = t[a];
                             e.setAttribute(n, r);
                         }
-                    } else if (Data.String.startsWithAnyCase(o, "$")) {
+                    } else if (Data.String.startsWithAnyCase(a, "$")) {
                         if (n.addCssProperties) {
-                            const r = o.replace("$", "");
+                            const r = a.replace("$", "");
                             if (!n.addCssToHead) {
-                                e.style.setProperty(r, t[o]);
+                                e.style.setProperty(r, t[a]);
                             } else {
-                                i.push(r + ":" + t[o] + ";");
+                                i.push(r + ":" + t[a] + ";");
                             }
                         }
-                    } else if (o === "#text") {
+                    } else if (a === "#text") {
                         if (n.addText) {
-                            writeElementTextAndTemplateData(e, t[o], n, r);
+                            writeElementTextAndTemplateData(e, t[a], n, r);
                         }
-                    } else if (o === "&children") {
+                    } else if (a === "&children") {
                         if (n.addChildren) {
-                            const i = t[o].length;
-                            for (let a = 0; a < i; a++) {
-                                const i = t[o][a];
+                            const i = t[a].length;
+                            for (let o = 0; o < i; o++) {
+                                const i = t[a][o];
                                 for (let t in i) {
                                     if (i.hasOwnProperty(t)) {
-                                        const o = DomElement.create(e, t.toLowerCase());
-                                        writeNode(o, i[t], n, r);
+                                        const a = DomElement.create(e, t.toLowerCase());
+                                        writeNode(a, i[t], n, r);
                                     }
                                 }
                             }
@@ -616,100 +616,161 @@ var require_jhson = __commonJS({
                 }
                 return result;
             }
+            function buildDefaultConfiguration(e = null) {
+                _configuration = Data.getDefaultObject(e, {});
+                _configuration.safeMode = Data.getDefaultBoolean(_configuration.safeMode, true);
+                _configuration.domElementTypes = Data.getDefaultStringOrArray(_configuration.domElementTypes, [ "*" ]);
+                _configuration.formattingNodeTypes = Data.getDefaultStringOrArray(_configuration.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
+                buildDefaultConfigurationStrings();
+            }
+            function buildDefaultConfigurationStrings() {
+                _configuration.text.variableWarningText = Data.getDefaultString(_configuration.text.variableWarningText, "Template variable {{variable_name}} not found.");
+                _configuration.text.objectErrorText = Data.getDefaultString(_configuration.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+                _configuration.text.attributeNotValidErrorText = Data.getDefaultString(_configuration.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+                _configuration.text.attributeNotSetErrorText = Data.getDefaultString(_configuration.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
+            }
             const _public = {
                 json: function() {
-                    const e = {
-                        includeAttributes: function(e) {
-                            throw new Error("Function not implemented.");
+                    const e = getDefaultJsonProperties();
+                    const t = {
+                        includeAttributes: function(t) {
+                            e.includeAttributes = Data.getDefaultBoolean(t, e.includeAttributes);
+                            return this;
                         },
-                        includeCssProperties: function(e) {
-                            throw new Error("Function not implemented.");
+                        includeCssProperties: function(t) {
+                            e.includeCssProperties = Data.getDefaultBoolean(t, e.includeCssProperties);
+                            return this;
                         },
-                        includeText: function(e) {
-                            throw new Error("Function not implemented.");
+                        includeText: function(t) {
+                            e.includeText = Data.getDefaultBoolean(t, e.includeText);
+                            return this;
                         },
-                        includeChildren: function(e) {
-                            throw new Error("Function not implemented.");
+                        includeChildren: function(t) {
+                            e.includeChildren = Data.getDefaultBoolean(t, e.includeChildren);
+                            return this;
                         },
-                        friendlyFormat: function(e) {
-                            throw new Error("Function not implemented.");
+                        friendlyFormat: function(t) {
+                            e.friendlyFormat = Data.getDefaultBoolean(t, e.friendlyFormat);
+                            return this;
                         },
-                        indentSpaces: function(e) {
-                            throw new Error("Function not implemented.");
+                        indentSpaces: function(t) {
+                            e.indentSpaces = Data.getDefaultNumber(t, e.indentSpaces);
+                            return this;
                         },
-                        ignoreNodeTypes: function(e) {
-                            throw new Error("Function not implemented.");
+                        ignoreNodeTypes: function(t) {
+                            e.ignoreNodeTypes = Data.getDefaultStringOrArray(t, e.ignoreNodeTypes);
+                            return this;
                         },
-                        ignoreCssProperties: function(e) {
-                            throw new Error("Function not implemented.");
+                        ignoreCssProperties: function(t) {
+                            e.ignoreCssProperties = Data.getDefaultStringOrArray(t, e.ignoreCssProperties);
+                            return this;
                         },
-                        ignoreAttributes: function(e) {
-                            throw new Error("Function not implemented.");
+                        ignoreAttributes: function(t) {
+                            e.ignoreAttributes = Data.getDefaultStringOrArray(t, e.ignoreAttributes);
+                            return this;
                         },
-                        generateUniqueMissingIds: function(e) {
-                            throw new Error("Function not implemented.");
+                        generateUniqueMissingIds: function(t) {
+                            e.generateUniqueMissingIds = Data.getDefaultBoolean(t, e.generateUniqueMissingIds);
+                            return this;
                         },
-                        get: function(e) {
-                            throw new Error("Function not implemented.");
+                        get: function(t) {
+                            return getJSON(t, e);
                         },
                         getVariables: function(e) {
-                            throw new Error("Function not implemented.");
+                            return Data.String.getTemplateVariables(e);
                         }
                     };
-                    return e;
+                    return t;
                 },
                 html: function() {
-                    const e = {
-                        json: function(e) {
-                            throw new Error("Function not implemented.");
+                    const e = getDefaultHtmlProperties();
+                    const t = {
+                        json: function(n) {
+                            e.json = Data.getDefaultString(n, e.json);
+                            return t;
                         },
-                        templateData: function(e) {
-                            throw new Error("Function not implemented.");
+                        templateData: function(n) {
+                            e.templateData = Data.getDefaultObject(n, e.templateData);
+                            return t;
                         },
-                        removeOriginalAttributes: function(e) {
-                            throw new Error("Function not implemented.");
+                        removeOriginalAttributes: function(n) {
+                            e.removeOriginalAttributes = Data.getDefaultBoolean(n, e.removeOriginalAttributes);
+                            return t;
                         },
-                        clearOriginalHTML: function(e) {
-                            throw new Error("Function not implemented.");
+                        clearOriginalHTML: function(n) {
+                            e.clearOriginalHTML = Data.getDefaultBoolean(n, e.clearOriginalHTML);
+                            return t;
                         },
-                        addCssToHead: function(e) {
-                            throw new Error("Function not implemented.");
+                        addCssToHead: function(n) {
+                            e.addCssToHead = Data.getDefaultBoolean(n, e.addCssToHead);
+                            return t;
                         },
-                        clearCssFromHead: function(e) {
-                            throw new Error("Function not implemented.");
+                        clearCssFromHead: function(n) {
+                            e.clearCssFromHead = Data.getDefaultBoolean(n, e.clearCssFromHead);
+                            return t;
                         },
-                        logTemplateDataWarnings: function(e) {
-                            throw new Error("Function not implemented.");
+                        logTemplateDataWarnings: function(n) {
+                            e.logTemplateDataWarnings = Data.getDefaultBoolean(n, e.logTemplateDataWarnings);
+                            return t;
                         },
-                        addAttributes: function(e) {
-                            throw new Error("Function not implemented.");
+                        addAttributes: function(n) {
+                            e.addAttributes = Data.getDefaultBoolean(n, e.addAttributes);
+                            return t;
                         },
-                        addCssProperties: function(e) {
-                            throw new Error("Function not implemented.");
+                        addCssProperties: function(n) {
+                            e.addCssProperties = Data.getDefaultBoolean(n, e.addCssProperties);
+                            return t;
                         },
-                        addText: function(e) {
-                            throw new Error("Function not implemented.");
+                        addText: function(n) {
+                            e.addText = Data.getDefaultBoolean(n, e.addText);
+                            return t;
                         },
-                        addChildren: function(e) {
-                            throw new Error("Function not implemented.");
+                        addChildren: function(n) {
+                            e.addChildren = Data.getDefaultBoolean(n, e.addChildren);
+                            return t;
                         },
-                        write: function(e) {
-                            throw new Error("Function not implemented.");
+                        write: function(t) {
+                            return writeHtml(t, e);
                         },
                         getVariables: function(e) {
-                            throw new Error("Function not implemented.");
+                            let t = [];
+                            if (Is.definedObject(e)) {
+                                t = Data.String.getTemplateVariables(e.innerHTML);
+                            }
+                            return t;
                         }
                     };
-                    return e;
+                    return t;
                 },
                 setConfiguration: function(e) {
-                    throw new Error("Function not implemented.");
+                    if (Is.definedObject(e)) {
+                        let t = false;
+                        const n = _configuration;
+                        for (let r in e) {
+                            if (e.hasOwnProperty(r) && _configuration.hasOwnProperty(r) && n[r] !== e[r]) {
+                                n[r] = e[r];
+                                t = true;
+                            }
+                        }
+                        if (t) {
+                            buildDefaultConfiguration(n);
+                        }
+                    }
+                    return _public;
                 },
                 getVersion: function() {
-                    throw new Error("Function not implemented.");
+                    return "2.0.0";
                 }
             };
-            (() => {})();
+            (() => {
+                buildDefaultConfiguration();
+                document.addEventListener("DOMContentLoaded", (function() {
+                    render();
+                }));
+                if (!Is.defined(window.$jhson)) {
+                    window.$jhson = _public;
+                }
+            })();
         })();
     }
 });

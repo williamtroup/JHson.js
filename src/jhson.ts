@@ -662,6 +662,40 @@ type ElementObject = {
 
 	/*
 	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 * Public API Functions:  Helpers:  Configuration
+	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 */
+
+    function buildDefaultConfiguration( newConfiguration: any = null ) : void {
+        _configuration = Data.getDefaultObject( newConfiguration, {} as Configuration );
+        _configuration.safeMode = Data.getDefaultBoolean( _configuration.safeMode, true );
+        _configuration.domElementTypes = Data.getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
+        _configuration.formattingNodeTypes = Data.getDefaultStringOrArray( _configuration.formattingNodeTypes, [
+            "b",
+            "strong",
+            "i",
+            "em",
+            "mark",
+            "small",
+            "del",
+            "ins",
+            "sub",
+            "sup"
+        ] );
+
+        buildDefaultConfigurationStrings();
+    }
+
+    function buildDefaultConfigurationStrings() : void {
+        _configuration.text!.variableWarningText = Data.getDefaultString( _configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
+        _configuration.text!.objectErrorText = Data.getDefaultString( _configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
+        _configuration.text!.attributeNotValidErrorText = Data.getDefaultString( _configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
+        _configuration.text!.attributeNotSetErrorText = Data.getDefaultString( _configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );        
+    }
+
+
+	/*
+	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 * Public API Functions:
 	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 */
@@ -674,53 +708,75 @@ type ElementObject = {
          */
 
         json: function () : PublicApiJson {
+            const properties: JsonProperties = getDefaultJsonProperties();
+
             const scope: PublicApiJson = {
                 includeAttributes: function ( flag: boolean ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.includeAttributes = Data.getDefaultBoolean( flag, properties.includeAttributes );
+
+                    return this;
                 },
 
                 includeCssProperties: function ( flag: boolean ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.includeCssProperties = Data.getDefaultBoolean( flag, properties.includeCssProperties );
+
+                    return this;
                 },
 
                 includeText: function ( flag: boolean ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.includeText = Data.getDefaultBoolean( flag, properties.includeText );
+
+                    return this;
                 },
 
                 includeChildren: function ( flag: boolean ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.includeChildren = Data.getDefaultBoolean( flag, properties.includeChildren );
+
+                    return this;
                 },
 
                 friendlyFormat: function ( flag: boolean ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.friendlyFormat = Data.getDefaultBoolean( flag, properties.friendlyFormat );
+
+                    return this;
                 },
 
                 indentSpaces: function ( spaces: number ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.indentSpaces = Data.getDefaultNumber( spaces, properties.indentSpaces );
+
+                    return this;
                 },
 
                 ignoreNodeTypes: function ( types: string[] | string ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.ignoreNodeTypes = Data.getDefaultStringOrArray( types, properties.ignoreNodeTypes );
+
+                    return this;
                 },
 
                 ignoreCssProperties: function ( cssProperties: string[] | string ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.ignoreCssProperties = Data.getDefaultStringOrArray( cssProperties, properties.ignoreCssProperties );
+
+                    return this;
                 },
 
                 ignoreAttributes: function ( attributes: string[] | string ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.ignoreAttributes = Data.getDefaultStringOrArray( attributes, properties.ignoreAttributes );
+
+                    return this;
                 },
 
                 generateUniqueMissingIds: function ( flag: boolean ) : PublicApiJson {
-                    throw new Error("Function not implemented.");
+                    properties.generateUniqueMissingIds = Data.getDefaultBoolean( flag, properties.generateUniqueMissingIds );
+
+                    return this;
                 },
 
                 get: function ( element: HTMLElement ) : string {
-                    throw new Error("Function not implemented.");
+                    return getJSON( element, properties );
                 },
 
                 getVariables: function ( json: string ) : string[] {
-                    throw new Error("Function not implemented.");
+                    return Data.String.getTemplateVariables( json );
                 }
             };
 
@@ -735,57 +791,87 @@ type ElementObject = {
          */
 
         html: function () : PublicApiHtml {
+            const properties: HtmlProperties = getDefaultHtmlProperties();
+
             const scope: PublicApiHtml = {
                 json: function ( json: string ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.json = Data.getDefaultString( json, properties.json );
+
+                    return scope;
                 },
 
                 templateData: function ( templateData: Record<string, string> ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.templateData = Data.getDefaultObject( templateData, properties.templateData );
+
+                    return scope;
                 },
 
                 removeOriginalAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.removeOriginalAttributes = Data.getDefaultBoolean( flag, properties.removeOriginalAttributes );
+
+                    return scope;
                 },
 
                 clearOriginalHTML: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.clearOriginalHTML = Data.getDefaultBoolean( flag, properties.clearOriginalHTML );
+
+                    return scope;
                 },
 
                 addCssToHead: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.addCssToHead = Data.getDefaultBoolean( flag, properties.addCssToHead );
+
+                    return scope;
                 },
 
                 clearCssFromHead: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.clearCssFromHead = Data.getDefaultBoolean( flag, properties.clearCssFromHead );
+
+                    return scope;
                 },
 
                 logTemplateDataWarnings: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.logTemplateDataWarnings = Data.getDefaultBoolean( flag, properties.logTemplateDataWarnings );
+
+                    return scope;
                 },
 
                 addAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.addAttributes = Data.getDefaultBoolean( flag, properties.addAttributes );
+
+                    return scope;
                 },
 
                 addCssProperties: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.addCssProperties = Data.getDefaultBoolean( flag, properties.addCssProperties );
+
+                    return scope;
                 },
 
                 addText: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.addText = Data.getDefaultBoolean( flag, properties.addText );
+
+                    return scope;
                 },
 
                 addChildren: function ( flag: boolean ) : PublicApiHtml {
-                    throw new Error("Function not implemented.");
+                    properties.addChildren = Data.getDefaultBoolean( flag, properties.addChildren );
+
+                    return scope;
                 },
 
                 write: function ( element: HTMLElement ) : PublicApi {
-                    throw new Error("Function not implemented.");
+                    return writeHtml( element, properties );
                 },
 
                 getVariables: function ( element: HTMLElement ) : string[] {
-                    throw new Error("Function not implemented.");
+                    let result: string[] = [];
+
+                    if ( Is.definedObject( element ) ) {
+                        result = Data.String.getTemplateVariables( element.innerHTML );
+                    }
+                    
+                    return result;
                 }
             };
 
@@ -800,7 +886,23 @@ type ElementObject = {
          */
 
         setConfiguration: function ( newConfiguration: any ): PublicApi {
-            throw new Error("Function not implemented.");
+            if ( Is.definedObject( newConfiguration ) ) {
+                let configurationHasChanged: boolean = false;
+                const newInternalConfiguration: any = _configuration;
+            
+                for ( let propertyName in newConfiguration ) {
+                    if ( newConfiguration.hasOwnProperty( propertyName ) && _configuration.hasOwnProperty( propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
+                        newInternalConfiguration[ propertyName ] = newConfiguration[ propertyName ];
+                        configurationHasChanged = true;
+                    }
+                }
+        
+                if ( configurationHasChanged ) {
+                    buildDefaultConfiguration( newInternalConfiguration );
+                }
+            }
+    
+            return _public;
         },
 
 
@@ -811,7 +913,7 @@ type ElementObject = {
          */
 
         getVersion: function (): string {
-            throw new Error("Function not implemented.");
+            return "2.0.0";
         }
     };
 
@@ -823,6 +925,14 @@ type ElementObject = {
      */
 
     ( () => {
-    
+        buildDefaultConfiguration();
+
+        document.addEventListener( "DOMContentLoaded", function() {
+            render();
+        } );
+
+        if ( !Is.defined( window.$jhson ) ) {
+            window.$jhson = _public;
+        }
     } )();
 } )();

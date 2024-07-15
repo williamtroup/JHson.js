@@ -11,7 +11,7 @@
  */
 
 
-import { type BindingOptions, type Configuration } from "./ts/type";
+import { BindingOptionEvents, ConfigurationText, type BindingOptions, type Configuration } from "./ts/type";
 import { type PublicApi, type PublicApiHtml, type PublicApiJson } from "./ts/api";
 import { Constant } from "./ts/constant"
 import { Data } from "./ts/data";
@@ -170,6 +170,7 @@ type ElementObject = {
     }
 
     function buildAttributeOptionCustomTriggers( options: BindingOptions ) : BindingOptions {
+        options.events = Data.getDefaultObject( options.events, {} as BindingOptionEvents );
         options.events!.onBeforeRender = Data.getDefaultFunction( options.events!.onBeforeRender, null! );
         options.events!.onRenderComplete = Data.getDefaultFunction( options.events!.onRenderComplete, null! );
 
@@ -687,6 +688,7 @@ type ElementObject = {
     }
 
     function buildDefaultConfigurationStrings() : void {
+        _configuration.text = Data.getDefaultObject( _configuration.text, {} as ConfigurationText );
         _configuration.text!.variableWarningText = Data.getDefaultString( _configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
         _configuration.text!.objectErrorText = Data.getDefaultString( _configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
         _configuration.text!.attributeNotValidErrorText = Data.getDefaultString( _configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );

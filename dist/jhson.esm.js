@@ -259,6 +259,7 @@ var require_jhson = __commonJS({
                 return t;
             }
             function buildAttributeOptionCustomTriggers(e) {
+                e.events = Data.getDefaultObject(e.events, {});
                 e.events.onBeforeRender = Data.getDefaultFunction(e.events.onBeforeRender, null);
                 e.events.onRenderComplete = Data.getDefaultFunction(e.events.onRenderComplete, null);
                 return e;
@@ -624,6 +625,7 @@ var require_jhson = __commonJS({
                 buildDefaultConfigurationStrings();
             }
             function buildDefaultConfigurationStrings() {
+                _configuration.text = Data.getDefaultObject(_configuration.text, {});
                 _configuration.text.variableWarningText = Data.getDefaultString(_configuration.text.variableWarningText, "Template variable {{variable_name}} not found.");
                 _configuration.text.objectErrorText = Data.getDefaultString(_configuration.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
                 _configuration.text.attributeNotValidErrorText = Data.getDefaultString(_configuration.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");

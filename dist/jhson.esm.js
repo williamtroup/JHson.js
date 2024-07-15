@@ -309,7 +309,7 @@ var require_jhson = __commonJS({
                 if (t.includeText) {
                     getElementText(e, r, a);
                 }
-                if (Is.defined(r["&children"]) && r["&children"].length === 0) {
+                if (r.hasOwnProperty("&children") && r["&children"].length === 0) {
                     delete r["&children"];
                 }
                 return {

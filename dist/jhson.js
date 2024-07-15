@@ -262,7 +262,7 @@ var DomElement;
         if (t.includeText) {
             getElementText(e, r, i);
         }
-        if (Is.defined(r["&children"]) && r["&children"].length === 0) {
+        if (r.hasOwnProperty("&children") && r["&children"].length === 0) {
             delete r["&children"];
         }
         return {

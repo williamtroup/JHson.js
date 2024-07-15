@@ -250,7 +250,7 @@ type ElementObject = {
             getElementText( element, result, childrenAdded );
         }
 
-        if ( Is.defined( result[ JsonValue.children ] ) && result[ JsonValue.children ].length === 0 ) {
+        if ( result.hasOwnProperty( JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
             delete result[ JsonValue.children ];
         }
 

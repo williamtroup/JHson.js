@@ -847,9 +847,7 @@ type ElementObject = {
     ( () => {
         _configuration = Config.Options.get();
 
-        document.addEventListener( "DOMContentLoaded", function() {
-            render();
-        } );
+        document.addEventListener( "DOMContentLoaded", () => render() );
 
         if ( !Is.defined( window.$jhson ) ) {
             window.$jhson = _public;

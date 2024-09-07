@@ -20,9 +20,9 @@
 - Updates to the README files to make the features stand out.
 
 #### **Fixes:**
-- Fixed some errors in the documentation headers in each file.
+- Fixed some errors in the documentation headers for each file.
 - Fixed a fault that caused html() > write() to loop through the remaining keys once the main one has been found.
-- Fixed some errors in the documentation that states the wrong defaults.
+- Fixed some errors in the documentation that stated the wrong defaults.
 
 <br>
 

@@ -12,7 +12,7 @@
 
 
 import {
-    StringToJson,
+    type StringToJson,
     type BindingOptions,
     type Configuration, 
     type HtmlProperties } from "./ts/type";

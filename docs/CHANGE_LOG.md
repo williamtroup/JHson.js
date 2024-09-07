@@ -9,6 +9,7 @@
 - Complete reorganized the files into separate folders, with some renames.
 - The GUIDs generated now used the "crypto.randomUUID()" instead of the custom-built one (this is now RFC4122-compliant).
 - Added some missing types.
+- Added an ignore path for ".DS_Store" files when packing the NuGet package.
 
 <br>
 

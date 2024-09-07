@@ -8,6 +8,7 @@
 - Added new rules to enforce stricter types across the code base.
 - Complete reorganized the files into separate folders, with some renames.
 - The GUIDs generated now used the "crypto.randomUUID()" instead of the custom-built one (this is now RFC4122-compliant).
+- Added some missing types.
 
 <br>
 

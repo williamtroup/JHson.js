@@ -12,5 +12,5 @@
 
 
 export namespace Constant {
-    export const JHSON_JS_ATTRIBUTE_NAME = "data-jhson-js";
+    export const JHSON_JS_ATTRIBUTE_NAME: string = "data-jhson-js";
 }

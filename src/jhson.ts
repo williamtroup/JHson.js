@@ -14,7 +14,7 @@
 import {
     type BindingOptionEvents,
     type ConfigurationText,
-    type CurrentView,
+    type BindingOptionsCurrentView,
     type BindingOptions,
     type Configuration } from "./ts/type";
 
@@ -136,7 +136,7 @@ type ElementObject = {
 
     function renderBindingOptions( data: any, element: HTMLElement ) : BindingOptions {
         const bindingOptions: BindingOptions = buildAttributeOptions( data );
-        bindingOptions._currentView = {} as CurrentView;
+        bindingOptions._currentView = {} as BindingOptionsCurrentView;
         bindingOptions._currentView.element = element;
 
         return bindingOptions;

@@ -26,7 +26,7 @@ export type ConfigurationText = {
 };
 
 export type BindingOptions = {
-    _currentView: CurrentView;
+    _currentView: BindingOptionsCurrentView;
     json?: string;
     templateData?: object;
     removeOriginalAttributes?: boolean;
@@ -44,8 +44,8 @@ export type BindingOptions = {
 export type BindingOptionEvents = {
     onBeforeRender?: ( element: HTMLElement ) => void;
     onRenderComplete?: ( element: HTMLElement ) => void;
-}
+};
 
-export type CurrentView = {
+export type BindingOptionsCurrentView = {
     element: HTMLElement;
 };

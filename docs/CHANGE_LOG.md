@@ -17,6 +17,7 @@
 
 #### **Fixes:**
 - Fixed some errors in the documentation headers in each file.
+- Fixed a fault that caused html() > write() to loop through the remaining keys once the main one has been found.
 
 <br>
 

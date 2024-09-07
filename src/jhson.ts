@@ -221,7 +221,7 @@ type ElementObject = {
             }
         }
 
-        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound) {
+        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound ) {
             result[ `${JsonValue.attribute}id` ] = crypto.randomUUID();
         }
     }
@@ -356,6 +356,7 @@ type ElementObject = {
                         }
 
                         writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
+                        break;
                     }
                 }
 

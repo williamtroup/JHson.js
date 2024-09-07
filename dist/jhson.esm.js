@@ -449,6 +449,7 @@ var Trigger;
                             t.innerHTML = "";
                         }
                         p(t, r.object[e], n, i);
+                        break;
                     }
                 }
                 O(t);

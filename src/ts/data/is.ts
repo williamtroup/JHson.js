@@ -3,8 +3,8 @@
  * 
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
- * @file        is.js
- * @version     v2.0.0
+ * @file        is.ts
+ * @version     v2.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024

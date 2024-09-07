@@ -3,15 +3,15 @@
  * 
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
- * @file        dom.js
- * @version     v2.0.0
+ * @file        dom.ts
+ * @version     v2.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
  */
 
 
-import { Char } from "./enum";
+import { Char } from "../data/enum";
 
 
 export namespace DomElement {

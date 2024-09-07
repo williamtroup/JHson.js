@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.ts
- * @version     v2.0.0
+ * @version     v2.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -12,11 +12,10 @@
 
 
 import {
-    type BindingOptionEvents,
-    type ConfigurationText,
-    type CurrentView,
+    type StringToJson,
     type BindingOptions,
-    type Configuration } from "./ts/type";
+    type Configuration, 
+    type HtmlProperties } from "./ts/type";
 
 import {
     type PublicApi,
@@ -24,36 +23,21 @@ import {
     type PublicApiJson } from "./ts/api";
     
 import { Constant } from "./ts/constant"
-import { Data } from "./ts/data";
-import { DomElement } from "./ts/dom";
-import { Char, JsonValue, Value } from "./ts/enum";
-import { Is } from "./ts/is";
+import { Default } from "./ts/data/default";
+import { DomElement } from "./ts/dom/dom";
+import { Char, JsonValue, Value } from "./ts/data/enum";
+import { Is } from "./ts/data/is";
+import { Str } from "./ts/data/str";
+import { Config } from "./ts/options/config";
+import { Binding } from "./ts/options/binding";
+import { Trigger } from "./ts/area/trigger";
 
-
-type StringToJson = {
-    parsed: boolean;
-    object: any;
-};
 
 type WritingScope = {
     css: Record<string, string[]>;
     templateDataKeys: string[];
     templateDataKeysLength: number;
     templateDataKeysProcessed: string[];
-};
-
-type HtmlProperties = {
-    json: string;
-    templateData: Record<string, string>;
-    removeOriginalAttributes: boolean;
-    clearOriginalHTML: boolean;
-    addCssToHead: boolean;
-    clearCssFromHead: boolean;
-    logTemplateDataWarnings: boolean;
-    addAttributes: boolean;
-    addCssProperties: boolean;
-    addText: boolean;
-    addChildren: boolean;
 };
 
 type JsonProperties = {
@@ -67,6 +51,7 @@ type JsonProperties = {
     ignoreCssProperties: string[];
     ignoreAttributes: string[];
     generateUniqueMissingIds: boolean;
+    generateUniqueMissingNames: boolean;
 };
 
 type ElementObject = {
@@ -110,10 +95,10 @@ type ElementObject = {
             let bindingOptionsData: string = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME )!;
 
             if ( Is.definedString( bindingOptionsData ) ) {
-                const bindingOptions: StringToJson = getObjectFromString( bindingOptionsData );
+                const bindingOptions: StringToJson = Default.getObjectFromString( bindingOptionsData, _configuration );
 
                 if ( bindingOptions.parsed && Is.definedObject( bindingOptions.object ) ) {
-                    renderElement( renderBindingOptions( bindingOptions.object, element ) );
+                    renderElement( Binding.Options.getForNewInstance( bindingOptions.object, element, getDefaultHtmlProperties() ) );
 
                 } else {
                     if ( !_configuration.safeMode ) {
@@ -133,59 +118,15 @@ type ElementObject = {
         return result;
     }
 
-    function renderBindingOptions( data: any, element: HTMLElement ) : BindingOptions {
-        const bindingOptions: BindingOptions = buildAttributeOptions( data );
-        bindingOptions._currentView = {} as CurrentView;
-        bindingOptions._currentView.element = element;
-
-        return bindingOptions;
-    }
-
     function renderElement( bindingOptions: BindingOptions ) : void {
-        fireCustomTriggerEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
+        Trigger.customEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
 
         const properties: HtmlProperties = getDefaultHtmlProperties();
         properties.json = bindingOptions.json!;
 
         writeHtml( bindingOptions._currentView.element, properties );
 
-        fireCustomTriggerEvent( bindingOptions.events!.onRenderComplete!, bindingOptions._currentView.element );
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Binding Options
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function buildAttributeOptions( newOptions: any ) : BindingOptions {
-        let options: BindingOptions = Data.getDefaultObject( newOptions, {} as BindingOptions );
-        const optionPropertyDefaults: HtmlProperties = getDefaultHtmlProperties();
-
-        options.json = Data.getDefaultString( options.json, optionPropertyDefaults.json );
-        options.templateData = Data.getDefaultObject( options.templateData, optionPropertyDefaults.templateData );
-        options.removeOriginalAttributes = Data.getDefaultBoolean( options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes );
-        options.clearOriginalHTML = Data.getDefaultBoolean( options.clearOriginalHTML, optionPropertyDefaults.clearOriginalHTML );
-        options.addCssToHead = Data.getDefaultBoolean( options.addCssToHead, optionPropertyDefaults.addCssToHead );
-        options.clearCssFromHead = Data.getDefaultBoolean( options.clearCssFromHead, optionPropertyDefaults.clearCssFromHead );
-        options.logTemplateDataWarnings = Data.getDefaultBoolean( options.logTemplateDataWarnings, optionPropertyDefaults.logTemplateDataWarnings );
-        options.addAttributes = Data.getDefaultBoolean( options.addAttributes, optionPropertyDefaults.addAttributes );
-        options.addCssProperties = Data.getDefaultBoolean( options.addCssProperties, optionPropertyDefaults.addCssProperties );
-        options.addText = Data.getDefaultBoolean( options.addText, optionPropertyDefaults.addText );
-        options.addChildren = Data.getDefaultBoolean( options.addChildren, optionPropertyDefaults.addChildren );
-
-        options = buildAttributeOptionCustomTriggers( options );
-
-        return options;
-    }
-
-    function buildAttributeOptionCustomTriggers( options: BindingOptions ) : BindingOptions {
-        options.events = Data.getDefaultObject( options.events, {} as BindingOptionEvents );
-        options.events!.onBeforeRender = Data.getDefaultFunction( options.events!.onBeforeRender, null! );
-        options.events!.onRenderComplete = Data.getDefaultFunction( options.events!.onRenderComplete, null! );
-
-        return options;
+        Trigger.customEvent( bindingOptions.events!.onRenderComplete!, bindingOptions._currentView.element );
     }
 
 
@@ -206,7 +147,8 @@ type ElementObject = {
             ignoreNodeTypes: [],
             ignoreCssProperties: [],
             ignoreAttributes: [],
-            generateUniqueMissingIds: false
+            generateUniqueMissingIds: false,
+            generateUniqueMissingNames: false
         } as JsonProperties;
     }
 
@@ -281,8 +223,12 @@ type ElementObject = {
             }
         }
 
-        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound) {
-            result[ `${JsonValue.attribute}id` ] = Data.String.newGuid();
+        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound ) {
+            result[ `${JsonValue.attribute}id` ] = crypto.randomUUID();
+        }
+
+        if ( properties.generateUniqueMissingNames && attributesAvailable.indexOf( "name" ) === Value.notFound && properties.ignoreAttributes.indexOf( "name" ) === Value.notFound ) {
+            result[ `${JsonValue.attribute}name` ] = crypto.randomUUID();
         }
     }
 
@@ -380,13 +326,14 @@ type ElementObject = {
             addAttributes: true,
             addCssProperties: true,
             addText: true,
-            addChildren: true
+            addChildren: true,
+            insertBefore: false
         } as HtmlProperties;
     }
 
     function writeHtml( element: HTMLElement, properties: HtmlProperties ) : PublicApi {
         if ( Is.definedObject( element ) && Is.definedString( properties.json ) ) {
-            const convertedJsonObject: StringToJson = getObjectFromString( properties.json );
+            const convertedJsonObject: StringToJson = Default.getObjectFromString( properties.json, _configuration );
             const writingScope: WritingScope = {
                 css: {},
                 templateDataKeys: [],
@@ -405,6 +352,8 @@ type ElementObject = {
 
                 for ( let key in convertedJsonObject.object ) {
                     if ( key === element.nodeName.toLowerCase() ) {
+                        let insertBefore: HTMLElement = null!;
+
                         if ( properties.removeOriginalAttributes ) {
                             while ( element.attributes.length > 0 ) {
                                 element.removeAttribute( element.attributes[ 0 ].name );
@@ -413,9 +362,12 @@ type ElementObject = {
 
                         if ( properties.clearOriginalHTML ) {
                             element.innerHTML = Char.empty;
+                        } else if ( properties.insertBefore && element.children.length > 0 ) {
+                            insertBefore = element.children[ 0 ] as HTMLElement;
                         }
 
-                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
+                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope, insertBefore );
+                        break;
                     }
                 }
 
@@ -448,11 +400,11 @@ type ElementObject = {
         writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
     }
 
-    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
+    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope, insertBefore: HTMLElement ) : void {
         const cssStyles: string[] = [];
 
         for ( let jsonKey in jsonObject ) {
-            if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
+            if ( Str.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
                 if ( properties.addAttributes ) {
                     const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
                     const attributeValue: string = jsonObject[ jsonKey ];
@@ -460,7 +412,7 @@ type ElementObject = {
                     element.setAttribute( attributeName, attributeValue );
                 }
 
-            } else if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.cssStyle ) ) {
+            } else if ( Str.startsWithAnyCase( jsonKey, JsonValue.cssStyle ) ) {
                 if ( properties.addCssProperties ) {
                     const cssStyleName: string = jsonKey.replace( JsonValue.cssStyle, Char.empty );
 
@@ -487,7 +439,7 @@ type ElementObject = {
                             if ( childJson.hasOwnProperty( childJsonKey ) ) {
                                 const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
     
-                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope, null! );
                             }
                         }
                     }
@@ -511,14 +463,14 @@ type ElementObject = {
                     const templateDataKeyReplacement: string = properties.templateData[ templateDataKey ];
 
                     if ( element.innerHTML.indexOf( templateDataKey ) > Value.notFound ) {
-                        element.innerHTML = Data.String.replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
+                        element.innerHTML = Str.replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
 
                         if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === Value.notFound ) {
                             writingScope.templateDataKeysProcessed.push( templateDataKey );
                         }
 
                     } else {
-                        templateDataKey = templateDataKey.replace( Char.variableEnd, Char.empty ) + Char.space + Char.variableDefault;
+                        templateDataKey = `${templateDataKey.replace( Char.variableEnd, Char.empty )}${Char.space}${Char.variableDefault}`;
 
                         const startIndex: number = element.innerHTML.indexOf( templateDataKey );
 
@@ -528,7 +480,7 @@ type ElementObject = {
                             if ( endIndex > Value.notFound ) {
                                 const variable: string = element.innerHTML.substring( startIndex, endIndex + Char.variableEnd.length );
                                 
-                                element.innerHTML = Data.String.replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
+                                element.innerHTML = Str.replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
                             }
                         }
                     }
@@ -547,7 +499,7 @@ type ElementObject = {
         } else {
 
             if ( !Is.definedString( element.id ) ) {
-                element.id = Data.String.newGuid();
+                element.id = crypto.randomUUID();
             }
 
             identifier = `#${element.id} {`;
@@ -599,7 +551,7 @@ type ElementObject = {
     }
 
     function processRemainingVariablesForDefaults( element: HTMLElement ) : void {
-        const remainingVariables: string[] = Data.String.getTemplateVariables( element.innerHTML );
+        const remainingVariables: string[] = Str.getTemplateVariables( element.innerHTML );
         const remainingVariablesLength: number = remainingVariables.length;
         
         for ( let remainingVariableIndex: number = 0; remainingVariableIndex < remainingVariablesLength; remainingVariableIndex++ ) {
@@ -616,93 +568,6 @@ type ElementObject = {
                 }
             }
         }
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Triggering Custom Events
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function fireCustomTriggerEvent( triggerFunction: Function, ...args : any[] ) : void {
-        if ( Is.definedFunction( triggerFunction ) ) {
-            triggerFunction.apply( null, [].slice.call( args, 0 ) );
-        }
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Default Parameter/Option Handling
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function getObjectFromString( objectString: any ) : StringToJson {
-        const result: StringToJson = {
-            parsed: true,
-            object: null
-        } as StringToJson;
-
-        try {
-            if ( Is.definedString( objectString ) ) {
-                result.object = JSON.parse( objectString );
-            }
-
-        } catch ( e1: any ) {
-            try {
-                result.object = eval( `(${objectString})` );
-
-                if ( Is.definedFunction( result.object ) ) {
-                    result.object = result.object();
-                }
-                
-            } catch ( e2: any ) {
-                if ( !_configuration.safeMode ) {
-                    console.error( _configuration.text!.objectErrorText!.replace( "{{error_1}}",  e1.message ).replace( "{{error_2}}",  e2.message ) );
-                    result.parsed = false;
-                }
-                
-                result.object = null;
-            }
-        }
-
-        return result;
-    }
-
-
-	/*
-	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 * Public API Functions:  Helpers:  Configuration
-	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 */
-
-    function buildDefaultConfiguration( newConfiguration: any = null ) : void {
-        _configuration = Data.getDefaultObject( newConfiguration, {} as Configuration );
-        _configuration.safeMode = Data.getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.domElementTypes = Data.getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
-        _configuration.formattingNodeTypes = Data.getDefaultStringOrArray( _configuration.formattingNodeTypes, [
-            "b",
-            "strong",
-            "i",
-            "em",
-            "mark",
-            "small",
-            "del",
-            "ins",
-            "sub",
-            "sup"
-        ] );
-
-        buildDefaultConfigurationStrings();
-    }
-
-    function buildDefaultConfigurationStrings() : void {
-        _configuration.text = Data.getDefaultObject( _configuration.text, {} as ConfigurationText );
-        _configuration.text!.variableWarningText = Data.getDefaultString( _configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
-        _configuration.text!.objectErrorText = Data.getDefaultString( _configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
-        _configuration.text!.attributeNotValidErrorText = Data.getDefaultString( _configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
-        _configuration.text!.attributeNotSetErrorText = Data.getDefaultString( _configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );        
     }
 
 
@@ -724,61 +589,67 @@ type ElementObject = {
 
             const scope: PublicApiJson = {
                 includeAttributes: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeAttributes = Data.getDefaultBoolean( flag, properties.includeAttributes );
+                    properties.includeAttributes = Default.getBoolean( flag, properties.includeAttributes );
 
                     return this;
                 },
 
                 includeCssProperties: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeCssProperties = Data.getDefaultBoolean( flag, properties.includeCssProperties );
+                    properties.includeCssProperties = Default.getBoolean( flag, properties.includeCssProperties );
 
                     return this;
                 },
 
                 includeText: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeText = Data.getDefaultBoolean( flag, properties.includeText );
+                    properties.includeText = Default.getBoolean( flag, properties.includeText );
 
                     return this;
                 },
 
                 includeChildren: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeChildren = Data.getDefaultBoolean( flag, properties.includeChildren );
+                    properties.includeChildren = Default.getBoolean( flag, properties.includeChildren );
 
                     return this;
                 },
 
                 friendlyFormat: function ( flag: boolean ) : PublicApiJson {
-                    properties.friendlyFormat = Data.getDefaultBoolean( flag, properties.friendlyFormat );
+                    properties.friendlyFormat = Default.getBoolean( flag, properties.friendlyFormat );
 
                     return this;
                 },
 
                 indentSpaces: function ( spaces: number ) : PublicApiJson {
-                    properties.indentSpaces = Data.getDefaultNumber( spaces, properties.indentSpaces );
+                    properties.indentSpaces = Default.getNumber( spaces, properties.indentSpaces );
 
                     return this;
                 },
 
                 ignoreNodeTypes: function ( types: string[] | string ) : PublicApiJson {
-                    properties.ignoreNodeTypes = Data.getDefaultStringOrArray( types, properties.ignoreNodeTypes );
+                    properties.ignoreNodeTypes = Default.getStringOrArray( types, properties.ignoreNodeTypes );
 
                     return this;
                 },
 
                 ignoreCssProperties: function ( cssProperties: string[] | string ) : PublicApiJson {
-                    properties.ignoreCssProperties = Data.getDefaultStringOrArray( cssProperties, properties.ignoreCssProperties );
+                    properties.ignoreCssProperties = Default.getStringOrArray( cssProperties, properties.ignoreCssProperties );
 
                     return this;
                 },
 
                 ignoreAttributes: function ( attributes: string[] | string ) : PublicApiJson {
-                    properties.ignoreAttributes = Data.getDefaultStringOrArray( attributes, properties.ignoreAttributes );
+                    properties.ignoreAttributes = Default.getStringOrArray( attributes, properties.ignoreAttributes );
 
                     return this;
                 },
 
                 generateUniqueMissingIds: function ( flag: boolean ) : PublicApiJson {
-                    properties.generateUniqueMissingIds = Data.getDefaultBoolean( flag, properties.generateUniqueMissingIds );
+                    properties.generateUniqueMissingIds = Default.getBoolean( flag, properties.generateUniqueMissingIds );
+
+                    return this;
+                },
+
+                generateUniqueMissingNames: function ( flag: boolean ) : PublicApiJson {
+                    properties.generateUniqueMissingNames = Default.getBoolean( flag, properties.generateUniqueMissingNames );
 
                     return this;
                 },
@@ -788,7 +659,7 @@ type ElementObject = {
                 },
 
                 getVariables: function ( json: string ) : string[] {
-                    return Data.String.getTemplateVariables( json );
+                    return Str.getTemplateVariables( json );
                 }
             };
 
@@ -807,67 +678,73 @@ type ElementObject = {
 
             const scope: PublicApiHtml = {
                 json: function ( json: string ) : PublicApiHtml {
-                    properties.json = Data.getDefaultString( json, properties.json );
+                    properties.json = Default.getString( json, properties.json );
 
                     return scope;
                 },
 
                 templateData: function ( templateData: Record<string, string> ) : PublicApiHtml {
-                    properties.templateData = Data.getDefaultObject( templateData, properties.templateData );
+                    properties.templateData = Default.getObject( templateData, properties.templateData );
 
                     return scope;
                 },
 
                 removeOriginalAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    properties.removeOriginalAttributes = Data.getDefaultBoolean( flag, properties.removeOriginalAttributes );
+                    properties.removeOriginalAttributes = Default.getBoolean( flag, properties.removeOriginalAttributes );
 
                     return scope;
                 },
 
                 clearOriginalHTML: function ( flag: boolean ) : PublicApiHtml {
-                    properties.clearOriginalHTML = Data.getDefaultBoolean( flag, properties.clearOriginalHTML );
+                    properties.clearOriginalHTML = Default.getBoolean( flag, properties.clearOriginalHTML );
 
                     return scope;
                 },
 
                 addCssToHead: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addCssToHead = Data.getDefaultBoolean( flag, properties.addCssToHead );
+                    properties.addCssToHead = Default.getBoolean( flag, properties.addCssToHead );
 
                     return scope;
                 },
 
                 clearCssFromHead: function ( flag: boolean ) : PublicApiHtml {
-                    properties.clearCssFromHead = Data.getDefaultBoolean( flag, properties.clearCssFromHead );
+                    properties.clearCssFromHead = Default.getBoolean( flag, properties.clearCssFromHead );
 
                     return scope;
                 },
 
                 logTemplateDataWarnings: function ( flag: boolean ) : PublicApiHtml {
-                    properties.logTemplateDataWarnings = Data.getDefaultBoolean( flag, properties.logTemplateDataWarnings );
+                    properties.logTemplateDataWarnings = Default.getBoolean( flag, properties.logTemplateDataWarnings );
 
                     return scope;
                 },
 
                 addAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addAttributes = Data.getDefaultBoolean( flag, properties.addAttributes );
+                    properties.addAttributes = Default.getBoolean( flag, properties.addAttributes );
 
                     return scope;
                 },
 
                 addCssProperties: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addCssProperties = Data.getDefaultBoolean( flag, properties.addCssProperties );
+                    properties.addCssProperties = Default.getBoolean( flag, properties.addCssProperties );
 
                     return scope;
                 },
 
                 addText: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addText = Data.getDefaultBoolean( flag, properties.addText );
+                    properties.addText = Default.getBoolean( flag, properties.addText );
 
                     return scope;
                 },
 
                 addChildren: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addChildren = Data.getDefaultBoolean( flag, properties.addChildren );
+                    properties.addChildren = Default.getBoolean( flag, properties.addChildren );
+
+                    return scope;
+                },
+
+                insertBefore: function ( flag: boolean ) : PublicApiHtml {
+                    properties.insertBefore = Default.getBoolean( flag, properties.insertBefore );
 
                     return scope;
                 },
@@ -880,7 +757,7 @@ type ElementObject = {
                     let result: string[] = [];
 
                     if ( Is.definedObject( element ) ) {
-                        result = Data.String.getTemplateVariables( element.innerHTML );
+                        result = Str.getTemplateVariables( element.innerHTML );
                     }
                     
                     return result;
@@ -910,7 +787,7 @@ type ElementObject = {
                 }
         
                 if ( configurationHasChanged ) {
-                    buildDefaultConfiguration( newInternalConfiguration );
+                    _configuration = Config.Options.get( newInternalConfiguration );
                 }
             }
     
@@ -925,7 +802,7 @@ type ElementObject = {
          */
 
         getVersion: function () : string {
-            return "2.0.0";
+            return "2.1.0";
         }
     };
 
@@ -937,11 +814,9 @@ type ElementObject = {
      */
 
     ( () => {
-        buildDefaultConfiguration();
+        _configuration = Config.Options.get();
 
-        document.addEventListener( "DOMContentLoaded", function() {
-            render();
-        } );
+        document.addEventListener( "DOMContentLoaded", () => render() );
 
         if ( !Is.defined( window.$jhson ) ) {
             window.$jhson = _public;

@@ -1,5 +1,32 @@
 # JHson.js - Change Log:
 
+## Version 2.1.0:
+
+#### **Public Functions:**
+- Added "insertBefore()" support for "html()", which states if the HTML should be written before the first detected child (if the HTML is not to be cleared, defaults to false).
+- Added "generateUniqueMissingNames()" support for "json()", which states if the JSON should contain unique names for elements that don't contain them (defaults to false).
+
+#### **General Improvements:**
+- Updated all of the NPM packages to the latest versions.
+- Moved from ES2016 to ES2020.
+- Added new rules to enforce stricter types across the code base.
+- Completely reorganized the files into separate folders, with some renames.
+- The GUIDs generated now used the "crypto.randomUUID()" instead of the custom-built one (this is now RFC4122-compliant).
+- Added some missing types.
+- Added an ignore path for ".DS_Store" files when packing the NuGet package.
+- Improved the way events are assigned.
+
+#### **Documentation:**
+- Updates to the README files to make the features stand out.
+
+#### **Fixes:**
+- Fixed some errors in the documentation headers for each file.
+- Fixed a fault that caused html() > write() to loop through the remaining keys once the main one has been found.
+- Fixed some errors in the documentation that stated the wrong defaults.
+
+<br>
+
+
 ## Version 2.0.0:
 
 #### **Language Shift:**

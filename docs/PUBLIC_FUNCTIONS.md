@@ -98,7 +98,15 @@ States the attributes that should not be included in the JSON.
 #### **json() > generateUniqueMissingIds( *flag* )**:
 States if the JSON should include unique IDs for DOM elements that don't have them set already.
 <br>
-***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > generateUniqueMissingIds( *flag* )**:
+States if the JSON should include unique IDs for DOM elements that don't have them set already.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -211,6 +219,14 @@ States if the text should be written for each element.
 
 #### **html() > addChildren( *flag* )**:
 States if the children should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > insertBefore( *flag* )**:
+States if the elements should be added before the first detected child (if clearing the HTML is turned off).
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>

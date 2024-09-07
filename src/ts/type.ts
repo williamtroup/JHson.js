@@ -3,13 +3,33 @@
  * 
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
- * @file        type.js
- * @version     v2.0.0
+ * @file        type.ts
+ * @version     v2.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
  */
 
+
+export type StringToJson = {
+    parsed: boolean;
+    object: any;
+};
+
+export type HtmlProperties = {
+    json: string;
+    templateData: Record<string, string>;
+    removeOriginalAttributes: boolean;
+    clearOriginalHTML: boolean;
+    addCssToHead: boolean;
+    clearCssFromHead: boolean;
+    logTemplateDataWarnings: boolean;
+    addAttributes: boolean;
+    addCssProperties: boolean;
+    addText: boolean;
+    addChildren: boolean;
+    insertBefore: boolean;
+};
 
 export type Configuration = {
     safeMode?: boolean;
@@ -26,7 +46,7 @@ export type ConfigurationText = {
 };
 
 export type BindingOptions = {
-    _currentView: CurrentView;
+    _currentView: BindingOptionsCurrentView;
     json?: string;
     templateData?: object;
     removeOriginalAttributes?: boolean;
@@ -38,14 +58,14 @@ export type BindingOptions = {
     addCssProperties?: boolean;
     addText?: boolean;
     addChildren?: boolean;
-    events?: BindingOptionEvents;
+    events?: BindingOptionsEvents;
 };
 
-export type BindingOptionEvents = {
+export type BindingOptionsEvents = {
     onBeforeRender?: ( element: HTMLElement ) => void;
     onRenderComplete?: ( element: HTMLElement ) => void;
-}
+};
 
-export type CurrentView = {
+export type BindingOptionsCurrentView = {
     element: HTMLElement;
 };

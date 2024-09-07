@@ -10,7 +10,8 @@ var _JSON_TEXTAREA = null,
     _IGNORE_NODE_TYPES = null,
     _IGNORE_CSS_PROPERTIES = null,
     _IGNORE_ATTRIBUTES = null,
-    _GENERATE_UNIQUE_MISSING_IDS = null;
+    _GENERATE_UNIQUE_MISSING_IDS = null,
+    _GENERATE_UNIQUE_MISSING_NAMES = null;
 
 var _SET_TEMPLATE_DATA = null,
     _REMOVE_ATTRIBUTES = null,
@@ -21,7 +22,8 @@ var _SET_TEMPLATE_DATA = null,
     _ADD_ATTRIBUTES = null,
     _ADD_CSS_PROPERTIES = null,
     _ADD_TEXT = null,
-    _ADD_CHILDREN = null;
+    _ADD_CHILDREN = null,
+    _INSERT_BEFORE = null;
 
 ( function() {
     document.addEventListener( "DOMContentLoaded", function() {
@@ -41,6 +43,7 @@ var _SET_TEMPLATE_DATA = null,
         _IGNORE_CSS_PROPERTIES = document.getElementById( "ignoreCssProperties" );
         _IGNORE_ATTRIBUTES = document.getElementById( "ignoreAttributes" );
         _GENERATE_UNIQUE_MISSING_IDS = document.getElementById( "generateUniqueMissingIds" );
+        _GENERATE_UNIQUE_MISSING_NAMES = document.getElementById( "generateUniqueMissingNames" );
 
         _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" );
         _REMOVE_ATTRIBUTES = document.getElementById( "removeOriginalAttributes" );
@@ -52,6 +55,7 @@ var _SET_TEMPLATE_DATA = null,
         _ADD_CSS_PROPERTIES = document.getElementById( "addCssProperties" );
         _ADD_TEXT = document.getElementById( "addText" );
         _ADD_CHILDREN = document.getElementById( "addChildren" );
+        _INSERT_BEFORE = document.getElementById( "insertBefore" );
     } );
 } )();
 
@@ -74,6 +78,7 @@ function getJSONData() {
         .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
         .ignoreAttributes( _IGNORE_ATTRIBUTES.value )
         .generateUniqueMissingIds( _GENERATE_UNIQUE_MISSING_IDS.checked )
+        .generateUniqueMissingNames( _GENERATE_UNIQUE_MISSING_NAMES.checked )
         .get( _BODY );
 }
 
@@ -114,5 +119,6 @@ function writeJSONData() {
         .addCssProperties( _ADD_CSS_PROPERTIES.checked )
         .addText( _ADD_TEXT.checked )
         .addChildren( _ADD_CHILDREN.checked )
+        .insertBefore( _INSERT_BEFORE.checked )
         .write( _BODY );
 }

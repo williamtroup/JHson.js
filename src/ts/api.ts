@@ -3,8 +3,8 @@
  * 
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
- * @file        api.js
- * @version     v2.0.0
+ * @file        api.ts
+ * @version     v2.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -136,11 +136,24 @@ export type PublicApiJson = {
      * 
      * @public
      * 
-     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
      * 
      * @returns     {Object}                                        The JSON properties object.
      */
     generateUniqueMissingIds: ( flag: boolean ) => PublicApiJson;
+
+    /**
+     * generateUniqueMissingNames().
+     * 
+     * States if the JSON should include unique names for DOM elements that don't have them set already.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    generateUniqueMissingNames: ( flag: boolean ) => PublicApiJson;
 
     /**
      * get().
@@ -312,6 +325,19 @@ export type PublicApiHtml = {
      * @returns     {Object}                                        The HTML properties object.
      */
     addChildren: ( flag: boolean ) => PublicApiHtml;
+
+    /**
+     * insertBefore().
+     * 
+     * States if the elements should be added before the first detected child (if clearing the HTML is turned off).
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+     * 
+     * @returns     {Object}                                        The HTML properties object.
+     */
+    insertBefore: ( flag: boolean ) => PublicApiHtml;
 
     /**
      * write().

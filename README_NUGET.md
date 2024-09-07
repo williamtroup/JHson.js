@@ -1,8 +1,8 @@
-# JHson.js v2.0.0
+# JHson.js v2.1.0
 
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=JHson.js%2C%20a%20free%20JavaScript%json%20converter&url=https://github.com/williamtroup/JHson.js&hashtags=javascript,json,html,converter)
-[![npm](https://img.shields.io/badge/npmjs-v2.0.0-blue)](https://www.npmjs.com/package/jhson.js)
-[![nuget](https://img.shields.io/badge/nuget-v2.0.0-purple)](https://www.nuget.org/packages/JHson.js/)
+[![npm](https://img.shields.io/badge/npmjs-v2.1.0-blue)](https://www.npmjs.com/package/jhson.js)
+[![nuget](https://img.shields.io/badge/nuget-v2.1.0-purple)](https://www.nuget.org/packages/JHson.js/)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/williamtroup/JHson.js/blob/main/LICENSE.txt)
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
@@ -12,15 +12,15 @@
 
 ## What features does JHson.js have?
 
-- Zero-dependencies and extremely lightweight!
-- Written in TypeScript, allowing greater support for React, Angular, and other libraries!
-- Full API available via public functions.
-- Full support for Attributes, CSS style properties, and formatted text!
-- Write your JSON directly to any DOM element for rendering.
-- Copy the layout for an entire page without additional files!
-- Data templating for text (with defaults support).
-- Write CSS directly back to the head for each element!
-- Bind JSON directly to DOM elements!
+- 😏 Zero-dependencies and extremely lightweight!
+- 🦾 Written in TypeScript, allowing greater support for React, Angular, and other libraries!
+- 💻 Full API available via public functions.
+- 🌈 Full support for Attributes, CSS style properties, and formatted text!
+- ⭐ Write your JSON directly to any DOM element for rendering.
+- 📋 Copy the layout for an entire page without additional files!
+- 🔠 Data templating for text (with defaults support).
+- 🎥 Write CSS directly back to the head for each element!
+- 💧 Bind JSON directly to DOM elements!
 
 
 ## What browsers are supported?
@@ -44,8 +44,8 @@ npm install jhson.js
 You can also use the following CDN links:
 
 ```markdown
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.0.0/dist/jhson.min.js
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.0.0/dist/jhson.export.js
+https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.1.0/dist/jhson.min.js
+https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.1.0/dist/jhson.export.js
 ```
 
 
@@ -90,6 +90,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
         .generateUniqueMissingIds( false )
+        .generateUniqueMissingNames( false )
         .get( header );
 
     $jhson
@@ -105,6 +106,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .addCssProperties( true )
         .addText( true )
         .addChildren( true )
+        .insertBefore( false )
         .write( header );
 </script>
 ```

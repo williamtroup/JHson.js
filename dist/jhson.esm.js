@@ -527,7 +527,7 @@ var Trigger;
                             r.templateDataKeysProcessed.push(i);
                         }
                     } else {
-                        i = i.replace("}}", "") + " " + "|";
+                        i = `${i.replace("}}", "")}${" "}${"|"}`;
                         const n = e.innerHTML.indexOf(i);
                         if (n > -1) {
                             const r = e.innerHTML.indexOf("}}", n);

@@ -458,7 +458,7 @@ type ElementObject = {
                         }
 
                     } else {
-                        templateDataKey = templateDataKey.replace( Char.variableEnd, Char.empty ) + Char.space + Char.variableDefault;
+                        templateDataKey = `${templateDataKey.replace( Char.variableEnd, Char.empty )}${Char.space}${Char.variableDefault}`;
 
                         const startIndex: number = element.innerHTML.indexOf( templateDataKey );
 

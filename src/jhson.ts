@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.ts
- * @version     v2.0.0
+ * @version     v2.1.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -925,7 +925,7 @@ type ElementObject = {
          */
 
         getVersion: function () : string {
-            return "2.0.0";
+            return "2.1.0";
         }
     };
 

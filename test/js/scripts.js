@@ -61,7 +61,7 @@ var _SET_TEMPLATE_DATA = null,
 
 function setupConfiguration() {
     $jhson.setConfiguration( {
-        nodeTypesToIgnore: [ "div" ]
+        safeMode: false
     } );
 }
 

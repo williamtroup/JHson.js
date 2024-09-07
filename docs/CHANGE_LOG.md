@@ -1,7 +1,9 @@
 # JHson.js - Change Log:
 
 ## Version 2.2.0:
-- 
+
+#### **Documentation:**
+- Updated the documentation to show the right properties for the objects.
 
 <br>
 

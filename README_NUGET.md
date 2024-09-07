@@ -147,7 +147,7 @@ Configuration options allow you to customize how JHson.js will function.  You ca
 ```markdown
 <script> 
   $jhson.setConfiguration( {
-      nodeTypesToIgnore: [ "script" ]
+      safeMode: false
   } );
 </script>
 ```

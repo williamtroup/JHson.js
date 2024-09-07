@@ -12,15 +12,15 @@
 
 ## What features does JHson.js have?
 
-- Zero-dependencies and extremely lightweight!
-- Written in TypeScript, allowing greater support for React, Angular, and other libraries!
-- Full API available via public functions.
-- Full support for Attributes, CSS style properties, and formatted text!
-- Write your JSON directly to any DOM element for rendering.
-- Copy the layout for an entire page without additional files!
-- Data templating for text (with defaults support).
-- Write CSS directly back to the head for each element!
-- Bind JSON directly to DOM elements!
+- 😏 Zero-dependencies and extremely lightweight!
+- 🦾 Written in TypeScript, allowing greater support for React, Angular, and other libraries!
+- 💻 Full API available via public functions.
+- 🌈 Full support for Attributes, CSS style properties, and formatted text!
+- ⭐ Write your JSON directly to any DOM element for rendering.
+- 📋 Copy the layout for an entire page without additional files!
+- 🔠 Data templating for text (with defaults support).
+- 🎥 Write CSS directly back to the head for each element!
+- 💧 Bind JSON directly to DOM elements!
 
 
 ## What browsers are supported?

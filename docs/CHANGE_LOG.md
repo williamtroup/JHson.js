@@ -12,6 +12,9 @@
 - Added an ignore path for ".DS_Store" files when packing the NuGet package.
 - Improved the way events are assigned.
 
+#### **Documentation:**
+- Updates to the README files to make the features stand out.
+
 <br>
 
 

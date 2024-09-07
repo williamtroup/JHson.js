@@ -1,7 +1,9 @@
 # JHson.js - Change Log:
 
 ## Version 2.1.0:
-- 
+
+#### **General Improvements:**
+- Updated all of the NPM packages to the latest versions.
 
 <br>
 

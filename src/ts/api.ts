@@ -314,6 +314,19 @@ export type PublicApiHtml = {
     addChildren: ( flag: boolean ) => PublicApiHtml;
 
     /**
+     * insertBefore().
+     * 
+     * States if the elements should be added before the first detected child (if clearing the HTML is turned off).
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The HTML properties object.
+     */
+    insertBefore: ( flag: boolean ) => PublicApiHtml;
+
+    /**
      * write().
      * 
      * Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.

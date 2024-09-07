@@ -2,6 +2,9 @@
 
 ## Version 2.1.0:
 
+#### **Public Functions:**
+- Added "insertBefore()" support for "html()", which states if the HTML should be written before the first detected child (if the HTML is not to be cleared).
+
 #### **General Improvements:**
 - Updated all of the NPM packages to the latest versions.
 - Moved from ES2016 to ES2020.

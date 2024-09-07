@@ -217,6 +217,14 @@ States if the children should be written for each element.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > insertBefore( *flag* )**:
+States if the elements should be added before the first detected child (if clearing the HTML is turned off).
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > write( *element* )**:
 Uses all the options selected via the chained functions to convert the JSON into HTML DOM elements.
 <br>

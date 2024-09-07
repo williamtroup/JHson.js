@@ -28,6 +28,7 @@ export type HtmlProperties = {
     addCssProperties: boolean;
     addText: boolean;
     addChildren: boolean;
+    insertBefore: boolean;
 };
 
 export type Configuration = {

@@ -21,7 +21,8 @@ var _SET_TEMPLATE_DATA = null,
     _ADD_ATTRIBUTES = null,
     _ADD_CSS_PROPERTIES = null,
     _ADD_TEXT = null,
-    _ADD_CHILDREN = null;
+    _ADD_CHILDREN = null,
+    _INSERT_BEFORE = null;
 
 ( function() {
     document.addEventListener( "DOMContentLoaded", function() {
@@ -52,6 +53,7 @@ var _SET_TEMPLATE_DATA = null,
         _ADD_CSS_PROPERTIES = document.getElementById( "addCssProperties" );
         _ADD_TEXT = document.getElementById( "addText" );
         _ADD_CHILDREN = document.getElementById( "addChildren" );
+        _INSERT_BEFORE = document.getElementById( "insertBefore" );
     } );
 } )();
 
@@ -114,5 +116,6 @@ function writeJSONData() {
         .addCssProperties( _ADD_CSS_PROPERTIES.checked )
         .addText( _ADD_TEXT.checked )
         .addChildren( _ADD_CHILDREN.checked )
+        .insertBefore( _INSERT_BEFORE.checked )
         .write( _BODY );
 }

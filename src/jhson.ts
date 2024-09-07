@@ -345,6 +345,8 @@ type ElementObject = {
 
                 for ( let key in convertedJsonObject.object ) {
                     if ( key === element.nodeName.toLowerCase() ) {
+                        let insertBefore: HTMLElement = null!;
+
                         if ( properties.removeOriginalAttributes ) {
                             while ( element.attributes.length > 0 ) {
                                 element.removeAttribute( element.attributes[ 0 ].name );
@@ -353,9 +355,11 @@ type ElementObject = {
 
                         if ( properties.clearOriginalHTML ) {
                             element.innerHTML = Char.empty;
+                        } else if ( properties.insertBefore && element.children.length > 0 ) {
+                            insertBefore = element.children[ 0 ] as HTMLElement;
                         }
 
-                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
+                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope, insertBefore );
                         break;
                     }
                 }
@@ -389,7 +393,7 @@ type ElementObject = {
         writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
     }
 
-    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
+    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope, insertBefore: HTMLElement ) : void {
         const cssStyles: string[] = [];
 
         for ( let jsonKey in jsonObject ) {
@@ -428,7 +432,7 @@ type ElementObject = {
                             if ( childJson.hasOwnProperty( childJsonKey ) ) {
                                 const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
     
-                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope, null! );
                             }
                         }
                     }
@@ -722,6 +726,12 @@ type ElementObject = {
 
                 addChildren: function ( flag: boolean ) : PublicApiHtml {
                     properties.addChildren = Default.getBoolean( flag, properties.addChildren );
+
+                    return scope;
+                },
+
+                insertBefore: function ( flag: boolean ) : PublicApiHtml {
+                    properties.insertBefore = Default.getBoolean( flag, properties.insertBefore );
 
                     return scope;
                 },

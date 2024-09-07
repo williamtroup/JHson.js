@@ -256,7 +256,7 @@ var Trigger;
             if (Is.definedString(i)) {
                 const a = Default2.getObjectFromString(i, e);
                 if (a.parsed && Is.definedObject(a.object)) {
-                    r(Binding.Options.getForNewInstance(a.object, t, f()));
+                    r(Binding.Options.getForNewInstance(a.object, t, c()));
                 } else {
                     if (!e.safeMode) {
                         console.error(e.text.attributeNotValidErrorText.replace("{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME));
@@ -274,7 +274,7 @@ var Trigger;
     }
     function r(e) {
         Trigger.customEvent(e.events.onBeforeRender, e._currentView.element);
-        const t = f();
+        const t = c();
         t.json = e.json;
         g(e._currentView.element, t);
         Trigger.customEvent(e.events.onRenderComplete, e._currentView.element);
@@ -371,7 +371,7 @@ var Trigger;
         n["&children"] = [];
         for (let l = 0; l < r; l++) {
             const r = t.children[l];
-            const u = o(r, i, c(a));
+            const u = o(r, i, f(a));
             let d = false;
             if (e.formattingNodeTypes.indexOf(u.nodeName) > -1) {
                 s++;
@@ -400,7 +400,7 @@ var Trigger;
             }
         }
     }
-    function c(e) {
+    function f(e) {
         const t = {};
         for (let n in e) {
             if (e.hasOwnProperty(n)) {
@@ -409,7 +409,7 @@ var Trigger;
         }
         return t;
     }
-    function f() {
+    function c() {
         return {
             json: "",
             templateData: {},
@@ -442,6 +442,7 @@ var Trigger;
                 }
                 for (let e in r.object) {
                     if (e === t.nodeName.toLowerCase()) {
+                        let a = null;
                         if (n.removeOriginalAttributes) {
                             while (t.attributes.length > 0) {
                                 t.removeAttribute(t.attributes[0].name);
@@ -449,8 +450,10 @@ var Trigger;
                         }
                         if (n.clearOriginalHTML) {
                             t.innerHTML = "";
+                        } else if (n.insertBefore && t.children.length > 0) {
+                            a = t.children[0];
                         }
-                        p(t, r.object[e], n, i);
+                        p(t, r.object[e], n, i, a);
                         break;
                     }
                 }
@@ -476,45 +479,45 @@ var Trigger;
         }));
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function p(e, t, n, r) {
-        const i = [];
-        for (let a in t) {
-            if (Str.startsWithAnyCase(a, "@")) {
+    function p(e, t, n, r, i) {
+        const a = [];
+        for (let i in t) {
+            if (Str.startsWithAnyCase(i, "@")) {
                 if (n.addAttributes) {
-                    const n = a.replace("@", "");
-                    const r = t[a];
+                    const n = i.replace("@", "");
+                    const r = t[i];
                     e.setAttribute(n, r);
                 }
-            } else if (Str.startsWithAnyCase(a, "$")) {
+            } else if (Str.startsWithAnyCase(i, "$")) {
                 if (n.addCssProperties) {
-                    const r = a.replace("$", "");
+                    const r = i.replace("$", "");
                     if (!n.addCssToHead) {
-                        e.style.setProperty(r, t[a]);
+                        e.style.setProperty(r, t[i]);
                     } else {
-                        i.push(`${r}:${t[a]};`);
+                        a.push(`${r}:${t[i]};`);
                     }
                 }
-            } else if (a === "#text") {
+            } else if (i === "#text") {
                 if (n.addText) {
-                    b(e, t[a], n, r);
+                    b(e, t[i], n, r);
                 }
-            } else if (a === "&children") {
+            } else if (i === "&children") {
                 if (n.addChildren) {
-                    const i = t[a].length;
-                    for (let o = 0; o < i; o++) {
-                        const i = t[a][o];
-                        for (let t in i) {
-                            if (i.hasOwnProperty(t)) {
-                                const a = DomElement.create(e, t.toLowerCase());
-                                p(a, i[t], n, r);
+                    const a = t[i].length;
+                    for (let o = 0; o < a; o++) {
+                        const a = t[i][o];
+                        for (let t in a) {
+                            if (a.hasOwnProperty(t)) {
+                                const i = DomElement.create(e, t.toLowerCase());
+                                p(i, a[t], n, r, null);
                             }
                         }
                     }
                 }
             }
         }
-        if (i.length > 0) {
-            T(e, i, r);
+        if (a.length > 0) {
+            T(e, a, r);
         }
     }
     function b(e, t, n, r) {
@@ -657,7 +660,7 @@ var Trigger;
             return t;
         },
         html: function() {
-            const e = f();
+            const e = c();
             const t = {
                 json: function(n) {
                     e.json = Default2.getString(n, e.json);
@@ -701,6 +704,10 @@ var Trigger;
                 },
                 addChildren: function(n) {
                     e.addChildren = Default2.getBoolean(n, e.addChildren);
+                    return t;
+                },
+                insertBefore: function(n) {
+                    e.insertBefore = Default2.getBoolean(n, e.insertBefore);
                     return t;
                 },
                 write: function(t) {

@@ -105,6 +105,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .addCssProperties( true )
         .addText( true )
         .addChildren( true )
+        .insertBefore( false )
         .write( header );
 </script>
 ```

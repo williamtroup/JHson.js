@@ -12,6 +12,7 @@
 
 
 import {
+    StringToJson,
     type BindingOptions,
     type Configuration, 
     type HtmlProperties } from "./ts/type";
@@ -29,12 +30,8 @@ import { Is } from "./ts/data/is";
 import { Str } from "./ts/data/str";
 import { Config } from "./ts/options/config";
 import { Binding } from "./ts/options/binding";
+import { Trigger } from "./ts/area/trigger";
 
-
-type StringToJson = {
-    parsed: boolean;
-    object: any;
-};
 
 type WritingScope = {
     css: Record<string, string[]>;
@@ -97,7 +94,7 @@ type ElementObject = {
             let bindingOptionsData: string = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME )!;
 
             if ( Is.definedString( bindingOptionsData ) ) {
-                const bindingOptions: StringToJson = getObjectFromString( bindingOptionsData );
+                const bindingOptions: StringToJson = Default.getObjectFromString( bindingOptionsData, _configuration );
 
                 if ( bindingOptions.parsed && Is.definedObject( bindingOptions.object ) ) {
                     renderElement( Binding.Options.getForNewInstance( bindingOptions.object, element, getDefaultHtmlProperties() ) );
@@ -121,14 +118,14 @@ type ElementObject = {
     }
 
     function renderElement( bindingOptions: BindingOptions ) : void {
-        fireCustomTriggerEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
+        Trigger.customEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
 
         const properties: HtmlProperties = getDefaultHtmlProperties();
         properties.json = bindingOptions.json!;
 
         writeHtml( bindingOptions._currentView.element, properties );
 
-        fireCustomTriggerEvent( bindingOptions.events!.onRenderComplete!, bindingOptions._currentView.element );
+        Trigger.customEvent( bindingOptions.events!.onRenderComplete!, bindingOptions._currentView.element );
     }
 
 
@@ -329,7 +326,7 @@ type ElementObject = {
 
     function writeHtml( element: HTMLElement, properties: HtmlProperties ) : PublicApi {
         if ( Is.definedObject( element ) && Is.definedString( properties.json ) ) {
-            const convertedJsonObject: StringToJson = getObjectFromString( properties.json );
+            const convertedJsonObject: StringToJson = Default.getObjectFromString( properties.json, _configuration );
             const writingScope: WritingScope = {
                 css: {},
                 templateDataKeys: [],
@@ -559,58 +556,6 @@ type ElementObject = {
                 }
             }
         }
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Triggering Custom Events
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function fireCustomTriggerEvent( triggerFunction: Function, ...args : any[] ) : void {
-        if ( Is.definedFunction( triggerFunction ) ) {
-            triggerFunction.apply( null, [].slice.call( args, 0 ) );
-        }
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Default Parameter/Option Handling
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function getObjectFromString( objectString: any ) : StringToJson {
-        const result: StringToJson = {
-            parsed: true,
-            object: null
-        } as StringToJson;
-
-        try {
-            if ( Is.definedString( objectString ) ) {
-                result.object = JSON.parse( objectString );
-            }
-
-        } catch ( e1: any ) {
-            try {
-                result.object = eval( `(${objectString})` );
-
-                if ( Is.definedFunction( result.object ) ) {
-                    result.object = result.object();
-                }
-                
-            } catch ( e2: any ) {
-                if ( !_configuration.safeMode ) {
-                    console.error( _configuration.text!.objectErrorText!.replace( "{{error_1}}",  e1.message ).replace( "{{error_2}}",  e2.message ) );
-                    result.parsed = false;
-                }
-                
-                result.object = null;
-            }
-        }
-
-        return result;
     }
 
 

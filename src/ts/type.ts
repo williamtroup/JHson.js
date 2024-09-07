@@ -11,6 +11,11 @@
  */
 
 
+export type StringToJson = {
+    parsed: boolean;
+    object: any;
+};
+
 export type HtmlProperties = {
     json: string;
     templateData: Record<string, string>;

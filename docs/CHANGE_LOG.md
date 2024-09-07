@@ -15,6 +15,9 @@
 #### **Documentation:**
 - Updates to the README files to make the features stand out.
 
+#### **Fixes:**
+- Fixed some errors in the documentation headers in each file.
+
 <br>
 
 

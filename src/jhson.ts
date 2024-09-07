@@ -632,61 +632,61 @@ type ElementObject = {
 
             const scope: PublicApiJson = {
                 includeAttributes: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeAttributes = Default.getDefaultBoolean( flag, properties.includeAttributes );
+                    properties.includeAttributes = Default.getBoolean( flag, properties.includeAttributes );
 
                     return this;
                 },
 
                 includeCssProperties: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeCssProperties = Default.getDefaultBoolean( flag, properties.includeCssProperties );
+                    properties.includeCssProperties = Default.getBoolean( flag, properties.includeCssProperties );
 
                     return this;
                 },
 
                 includeText: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeText = Default.getDefaultBoolean( flag, properties.includeText );
+                    properties.includeText = Default.getBoolean( flag, properties.includeText );
 
                     return this;
                 },
 
                 includeChildren: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeChildren = Default.getDefaultBoolean( flag, properties.includeChildren );
+                    properties.includeChildren = Default.getBoolean( flag, properties.includeChildren );
 
                     return this;
                 },
 
                 friendlyFormat: function ( flag: boolean ) : PublicApiJson {
-                    properties.friendlyFormat = Default.getDefaultBoolean( flag, properties.friendlyFormat );
+                    properties.friendlyFormat = Default.getBoolean( flag, properties.friendlyFormat );
 
                     return this;
                 },
 
                 indentSpaces: function ( spaces: number ) : PublicApiJson {
-                    properties.indentSpaces = Default.getDefaultNumber( spaces, properties.indentSpaces );
+                    properties.indentSpaces = Default.getNumber( spaces, properties.indentSpaces );
 
                     return this;
                 },
 
                 ignoreNodeTypes: function ( types: string[] | string ) : PublicApiJson {
-                    properties.ignoreNodeTypes = Default.getDefaultStringOrArray( types, properties.ignoreNodeTypes );
+                    properties.ignoreNodeTypes = Default.getStringOrArray( types, properties.ignoreNodeTypes );
 
                     return this;
                 },
 
                 ignoreCssProperties: function ( cssProperties: string[] | string ) : PublicApiJson {
-                    properties.ignoreCssProperties = Default.getDefaultStringOrArray( cssProperties, properties.ignoreCssProperties );
+                    properties.ignoreCssProperties = Default.getStringOrArray( cssProperties, properties.ignoreCssProperties );
 
                     return this;
                 },
 
                 ignoreAttributes: function ( attributes: string[] | string ) : PublicApiJson {
-                    properties.ignoreAttributes = Default.getDefaultStringOrArray( attributes, properties.ignoreAttributes );
+                    properties.ignoreAttributes = Default.getStringOrArray( attributes, properties.ignoreAttributes );
 
                     return this;
                 },
 
                 generateUniqueMissingIds: function ( flag: boolean ) : PublicApiJson {
-                    properties.generateUniqueMissingIds = Default.getDefaultBoolean( flag, properties.generateUniqueMissingIds );
+                    properties.generateUniqueMissingIds = Default.getBoolean( flag, properties.generateUniqueMissingIds );
 
                     return this;
                 },
@@ -715,67 +715,67 @@ type ElementObject = {
 
             const scope: PublicApiHtml = {
                 json: function ( json: string ) : PublicApiHtml {
-                    properties.json = Default.getDefaultString( json, properties.json );
+                    properties.json = Default.getString( json, properties.json );
 
                     return scope;
                 },
 
                 templateData: function ( templateData: Record<string, string> ) : PublicApiHtml {
-                    properties.templateData = Default.getDefaultObject( templateData, properties.templateData );
+                    properties.templateData = Default.getObject( templateData, properties.templateData );
 
                     return scope;
                 },
 
                 removeOriginalAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    properties.removeOriginalAttributes = Default.getDefaultBoolean( flag, properties.removeOriginalAttributes );
+                    properties.removeOriginalAttributes = Default.getBoolean( flag, properties.removeOriginalAttributes );
 
                     return scope;
                 },
 
                 clearOriginalHTML: function ( flag: boolean ) : PublicApiHtml {
-                    properties.clearOriginalHTML = Default.getDefaultBoolean( flag, properties.clearOriginalHTML );
+                    properties.clearOriginalHTML = Default.getBoolean( flag, properties.clearOriginalHTML );
 
                     return scope;
                 },
 
                 addCssToHead: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addCssToHead = Default.getDefaultBoolean( flag, properties.addCssToHead );
+                    properties.addCssToHead = Default.getBoolean( flag, properties.addCssToHead );
 
                     return scope;
                 },
 
                 clearCssFromHead: function ( flag: boolean ) : PublicApiHtml {
-                    properties.clearCssFromHead = Default.getDefaultBoolean( flag, properties.clearCssFromHead );
+                    properties.clearCssFromHead = Default.getBoolean( flag, properties.clearCssFromHead );
 
                     return scope;
                 },
 
                 logTemplateDataWarnings: function ( flag: boolean ) : PublicApiHtml {
-                    properties.logTemplateDataWarnings = Default.getDefaultBoolean( flag, properties.logTemplateDataWarnings );
+                    properties.logTemplateDataWarnings = Default.getBoolean( flag, properties.logTemplateDataWarnings );
 
                     return scope;
                 },
 
                 addAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addAttributes = Default.getDefaultBoolean( flag, properties.addAttributes );
+                    properties.addAttributes = Default.getBoolean( flag, properties.addAttributes );
 
                     return scope;
                 },
 
                 addCssProperties: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addCssProperties = Default.getDefaultBoolean( flag, properties.addCssProperties );
+                    properties.addCssProperties = Default.getBoolean( flag, properties.addCssProperties );
 
                     return scope;
                 },
 
                 addText: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addText = Default.getDefaultBoolean( flag, properties.addText );
+                    properties.addText = Default.getBoolean( flag, properties.addText );
 
                     return scope;
                 },
 
                 addChildren: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addChildren = Default.getDefaultBoolean( flag, properties.addChildren );
+                    properties.addChildren = Default.getBoolean( flag, properties.addChildren );
 
                     return scope;
                 },

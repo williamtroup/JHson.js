@@ -18,10 +18,10 @@ import { Default } from "../data/default";
 export namespace Config {
     export namespace Options {
         export function get( newConfiguration: any = null ) : Configuration {
-            let configuration: Configuration = Default.getDefaultObject( newConfiguration, {} as Configuration );
-            configuration.safeMode = Default.getDefaultBoolean( configuration.safeMode, true );
-            configuration.domElementTypes = Default.getDefaultStringOrArray( configuration.domElementTypes, [ "*" ] );
-            configuration.formattingNodeTypes = Default.getDefaultStringOrArray( configuration.formattingNodeTypes, [
+            let configuration: Configuration = Default.getObject( newConfiguration, {} as Configuration );
+            configuration.safeMode = Default.getBoolean( configuration.safeMode, true );
+            configuration.domElementTypes = Default.getStringOrArray( configuration.domElementTypes, [ "*" ] );
+            configuration.formattingNodeTypes = Default.getStringOrArray( configuration.formattingNodeTypes, [
                 "b",
                 "strong",
                 "i",
@@ -40,11 +40,11 @@ export namespace Config {
         }
     
         function getText( configuration: Configuration ) : Configuration {
-            configuration.text = Default.getDefaultObject( configuration.text, {} as ConfigurationText );
-            configuration.text!.variableWarningText = Default.getDefaultString( configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
-            configuration.text!.objectErrorText = Default.getDefaultString( configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
-            configuration.text!.attributeNotValidErrorText = Default.getDefaultString( configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
-            configuration.text!.attributeNotSetErrorText = Default.getDefaultString( configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );
+            configuration.text = Default.getObject( configuration.text, {} as ConfigurationText );
+            configuration.text!.variableWarningText = Default.getString( configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
+            configuration.text!.objectErrorText = Default.getString( configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
+            configuration.text!.attributeNotValidErrorText = Default.getString( configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
+            configuration.text!.attributeNotSetErrorText = Default.getString( configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );
             
             return configuration;
         }

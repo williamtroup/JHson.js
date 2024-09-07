@@ -32,18 +32,18 @@ export namespace Binding {
         }
 
         export function get( newOptions: any, propertyDefaults: HtmlProperties ) : BindingOptions {
-            let options: BindingOptions = Default.getDefaultObject( newOptions, {} as BindingOptions );
-            options.json = Default.getDefaultString( options.json, propertyDefaults.json );
-            options.templateData = Default.getDefaultObject( options.templateData, propertyDefaults.templateData );
-            options.removeOriginalAttributes = Default.getDefaultBoolean( options.removeOriginalAttributes, propertyDefaults.removeOriginalAttributes );
-            options.clearOriginalHTML = Default.getDefaultBoolean( options.clearOriginalHTML, propertyDefaults.clearOriginalHTML );
-            options.addCssToHead = Default.getDefaultBoolean( options.addCssToHead, propertyDefaults.addCssToHead );
-            options.clearCssFromHead = Default.getDefaultBoolean( options.clearCssFromHead, propertyDefaults.clearCssFromHead );
-            options.logTemplateDataWarnings = Default.getDefaultBoolean( options.logTemplateDataWarnings, propertyDefaults.logTemplateDataWarnings );
-            options.addAttributes = Default.getDefaultBoolean( options.addAttributes, propertyDefaults.addAttributes );
-            options.addCssProperties = Default.getDefaultBoolean( options.addCssProperties, propertyDefaults.addCssProperties );
-            options.addText = Default.getDefaultBoolean( options.addText, propertyDefaults.addText );
-            options.addChildren = Default.getDefaultBoolean( options.addChildren, propertyDefaults.addChildren );
+            let options: BindingOptions = Default.getObject( newOptions, {} as BindingOptions );
+            options.json = Default.getString( options.json, propertyDefaults.json );
+            options.templateData = Default.getObject( options.templateData, propertyDefaults.templateData );
+            options.removeOriginalAttributes = Default.getBoolean( options.removeOriginalAttributes, propertyDefaults.removeOriginalAttributes );
+            options.clearOriginalHTML = Default.getBoolean( options.clearOriginalHTML, propertyDefaults.clearOriginalHTML );
+            options.addCssToHead = Default.getBoolean( options.addCssToHead, propertyDefaults.addCssToHead );
+            options.clearCssFromHead = Default.getBoolean( options.clearCssFromHead, propertyDefaults.clearCssFromHead );
+            options.logTemplateDataWarnings = Default.getBoolean( options.logTemplateDataWarnings, propertyDefaults.logTemplateDataWarnings );
+            options.addAttributes = Default.getBoolean( options.addAttributes, propertyDefaults.addAttributes );
+            options.addCssProperties = Default.getBoolean( options.addCssProperties, propertyDefaults.addCssProperties );
+            options.addText = Default.getBoolean( options.addText, propertyDefaults.addText );
+            options.addChildren = Default.getBoolean( options.addChildren, propertyDefaults.addChildren );
 
             options = getCustomTriggers( options );
     
@@ -51,9 +51,9 @@ export namespace Binding {
         }
     
         function getCustomTriggers( options: BindingOptions ) : BindingOptions {
-            options.events = Default.getDefaultObject( options.events, {} as BindingOptionsEvents );
-            options.events!.onBeforeRender = Default.getDefaultFunction( options.events!.onBeforeRender, null! );
-            options.events!.onRenderComplete = Default.getDefaultFunction( options.events!.onRenderComplete, null! );
+            options.events = Default.getObject( options.events, {} as BindingOptionsEvents );
+            options.events!.onBeforeRender = Default.getFunction( options.events!.onBeforeRender, null! );
+            options.events!.onRenderComplete = Default.getFunction( options.events!.onRenderComplete, null! );
 
             return options;
         }

@@ -77,31 +77,31 @@ var init_default = __esm({
             function t(e, t) {
                 return typeof e === "string" ? e : t;
             }
-            e.getDefaultAnyString = t;
+            e.getAnyString = t;
             function n(e, t) {
                 return Is.definedString(e) ? e : t;
             }
-            e.getDefaultString = n;
+            e.getString = n;
             function r(e, t) {
                 return Is.definedBoolean(e) ? e : t;
             }
-            e.getDefaultBoolean = r;
+            e.getBoolean = r;
             function i(e, t) {
                 return Is.definedNumber(e) ? e : t;
             }
-            e.getDefaultNumber = i;
+            e.getNumber = i;
             function a(e, t) {
                 return Is.definedFunction(e) ? e : t;
             }
-            e.getDefaultFunction = a;
+            e.getFunction = a;
             function s(e, t) {
                 return Is.definedArray(e) ? e : t;
             }
-            e.getDefaultArray = s;
+            e.getArray = s;
             function o(e, t) {
                 return Is.definedObject(e) ? e : t;
             }
-            e.getDefaultObject = o;
+            e.getObject = o;
             function l(e, t) {
                 let n = t;
                 if (Is.definedString(e)) {
@@ -116,7 +116,7 @@ var init_default = __esm({
                 }
                 return n;
             }
-            e.getDefaultStringOrArray = l;
+            e.getStringOrArray = l;
         })(Default || (Default = {}));
     }
 });
@@ -190,20 +190,20 @@ var init_config = __esm({
             let t;
             (e => {
                 function t(e = null) {
-                    let t = Default.getDefaultObject(e, {});
-                    t.safeMode = Default.getDefaultBoolean(t.safeMode, true);
-                    t.domElementTypes = Default.getDefaultStringOrArray(t.domElementTypes, [ "*" ]);
-                    t.formattingNodeTypes = Default.getDefaultStringOrArray(t.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
+                    let t = Default.getObject(e, {});
+                    t.safeMode = Default.getBoolean(t.safeMode, true);
+                    t.domElementTypes = Default.getStringOrArray(t.domElementTypes, [ "*" ]);
+                    t.formattingNodeTypes = Default.getStringOrArray(t.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
                     t = n(t);
                     return t;
                 }
                 e.get = t;
                 function n(e) {
-                    e.text = Default.getDefaultObject(e.text, {});
-                    e.text.variableWarningText = Default.getDefaultString(e.text.variableWarningText, "Template variable {{variable_name}} not found.");
-                    e.text.objectErrorText = Default.getDefaultString(e.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
-                    e.text.attributeNotValidErrorText = Default.getDefaultString(e.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
-                    e.text.attributeNotSetErrorText = Default.getDefaultString(e.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
+                    e.text = Default.getObject(e.text, {});
+                    e.text.variableWarningText = Default.getString(e.text.variableWarningText, "Template variable {{variable_name}} not found.");
+                    e.text.objectErrorText = Default.getString(e.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+                    e.text.attributeNotValidErrorText = Default.getString(e.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+                    e.text.attributeNotSetErrorText = Default.getString(e.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
                     return e;
                 }
             })(t = e.Options || (e.Options = {}));
@@ -228,26 +228,26 @@ var init_binding = __esm({
                 }
                 e.getForNewInstance = t;
                 function n(e, t) {
-                    let n = Default.getDefaultObject(e, {});
-                    n.json = Default.getDefaultString(n.json, t.json);
-                    n.templateData = Default.getDefaultObject(n.templateData, t.templateData);
-                    n.removeOriginalAttributes = Default.getDefaultBoolean(n.removeOriginalAttributes, t.removeOriginalAttributes);
-                    n.clearOriginalHTML = Default.getDefaultBoolean(n.clearOriginalHTML, t.clearOriginalHTML);
-                    n.addCssToHead = Default.getDefaultBoolean(n.addCssToHead, t.addCssToHead);
-                    n.clearCssFromHead = Default.getDefaultBoolean(n.clearCssFromHead, t.clearCssFromHead);
-                    n.logTemplateDataWarnings = Default.getDefaultBoolean(n.logTemplateDataWarnings, t.logTemplateDataWarnings);
-                    n.addAttributes = Default.getDefaultBoolean(n.addAttributes, t.addAttributes);
-                    n.addCssProperties = Default.getDefaultBoolean(n.addCssProperties, t.addCssProperties);
-                    n.addText = Default.getDefaultBoolean(n.addText, t.addText);
-                    n.addChildren = Default.getDefaultBoolean(n.addChildren, t.addChildren);
+                    let n = Default.getObject(e, {});
+                    n.json = Default.getString(n.json, t.json);
+                    n.templateData = Default.getObject(n.templateData, t.templateData);
+                    n.removeOriginalAttributes = Default.getBoolean(n.removeOriginalAttributes, t.removeOriginalAttributes);
+                    n.clearOriginalHTML = Default.getBoolean(n.clearOriginalHTML, t.clearOriginalHTML);
+                    n.addCssToHead = Default.getBoolean(n.addCssToHead, t.addCssToHead);
+                    n.clearCssFromHead = Default.getBoolean(n.clearCssFromHead, t.clearCssFromHead);
+                    n.logTemplateDataWarnings = Default.getBoolean(n.logTemplateDataWarnings, t.logTemplateDataWarnings);
+                    n.addAttributes = Default.getBoolean(n.addAttributes, t.addAttributes);
+                    n.addCssProperties = Default.getBoolean(n.addCssProperties, t.addCssProperties);
+                    n.addText = Default.getBoolean(n.addText, t.addText);
+                    n.addChildren = Default.getBoolean(n.addChildren, t.addChildren);
                     n = r(n);
                     return n;
                 }
                 e.get = n;
                 function r(e) {
-                    e.events = Default.getDefaultObject(e.events, {});
-                    e.events.onBeforeRender = Default.getDefaultFunction(e.events.onBeforeRender, null);
-                    e.events.onRenderComplete = Default.getDefaultFunction(e.events.onRenderComplete, null);
+                    e.events = Default.getObject(e.events, {});
+                    e.events.onBeforeRender = Default.getFunction(e.events.onBeforeRender, null);
+                    e.events.onRenderComplete = Default.getFunction(e.events.onRenderComplete, null);
                     return e;
                 }
             })(t = e.Options || (e.Options = {}));
@@ -669,43 +669,43 @@ var require_jhson = __commonJS({
                     const e = getDefaultJsonProperties();
                     const t = {
                         includeAttributes: function(t) {
-                            e.includeAttributes = Default.getDefaultBoolean(t, e.includeAttributes);
+                            e.includeAttributes = Default.getBoolean(t, e.includeAttributes);
                             return this;
                         },
                         includeCssProperties: function(t) {
-                            e.includeCssProperties = Default.getDefaultBoolean(t, e.includeCssProperties);
+                            e.includeCssProperties = Default.getBoolean(t, e.includeCssProperties);
                             return this;
                         },
                         includeText: function(t) {
-                            e.includeText = Default.getDefaultBoolean(t, e.includeText);
+                            e.includeText = Default.getBoolean(t, e.includeText);
                             return this;
                         },
                         includeChildren: function(t) {
-                            e.includeChildren = Default.getDefaultBoolean(t, e.includeChildren);
+                            e.includeChildren = Default.getBoolean(t, e.includeChildren);
                             return this;
                         },
                         friendlyFormat: function(t) {
-                            e.friendlyFormat = Default.getDefaultBoolean(t, e.friendlyFormat);
+                            e.friendlyFormat = Default.getBoolean(t, e.friendlyFormat);
                             return this;
                         },
                         indentSpaces: function(t) {
-                            e.indentSpaces = Default.getDefaultNumber(t, e.indentSpaces);
+                            e.indentSpaces = Default.getNumber(t, e.indentSpaces);
                             return this;
                         },
                         ignoreNodeTypes: function(t) {
-                            e.ignoreNodeTypes = Default.getDefaultStringOrArray(t, e.ignoreNodeTypes);
+                            e.ignoreNodeTypes = Default.getStringOrArray(t, e.ignoreNodeTypes);
                             return this;
                         },
                         ignoreCssProperties: function(t) {
-                            e.ignoreCssProperties = Default.getDefaultStringOrArray(t, e.ignoreCssProperties);
+                            e.ignoreCssProperties = Default.getStringOrArray(t, e.ignoreCssProperties);
                             return this;
                         },
                         ignoreAttributes: function(t) {
-                            e.ignoreAttributes = Default.getDefaultStringOrArray(t, e.ignoreAttributes);
+                            e.ignoreAttributes = Default.getStringOrArray(t, e.ignoreAttributes);
                             return this;
                         },
                         generateUniqueMissingIds: function(t) {
-                            e.generateUniqueMissingIds = Default.getDefaultBoolean(t, e.generateUniqueMissingIds);
+                            e.generateUniqueMissingIds = Default.getBoolean(t, e.generateUniqueMissingIds);
                             return this;
                         },
                         get: function(t) {
@@ -721,47 +721,47 @@ var require_jhson = __commonJS({
                     const e = getDefaultHtmlProperties();
                     const t = {
                         json: function(n) {
-                            e.json = Default.getDefaultString(n, e.json);
+                            e.json = Default.getString(n, e.json);
                             return t;
                         },
                         templateData: function(n) {
-                            e.templateData = Default.getDefaultObject(n, e.templateData);
+                            e.templateData = Default.getObject(n, e.templateData);
                             return t;
                         },
                         removeOriginalAttributes: function(n) {
-                            e.removeOriginalAttributes = Default.getDefaultBoolean(n, e.removeOriginalAttributes);
+                            e.removeOriginalAttributes = Default.getBoolean(n, e.removeOriginalAttributes);
                             return t;
                         },
                         clearOriginalHTML: function(n) {
-                            e.clearOriginalHTML = Default.getDefaultBoolean(n, e.clearOriginalHTML);
+                            e.clearOriginalHTML = Default.getBoolean(n, e.clearOriginalHTML);
                             return t;
                         },
                         addCssToHead: function(n) {
-                            e.addCssToHead = Default.getDefaultBoolean(n, e.addCssToHead);
+                            e.addCssToHead = Default.getBoolean(n, e.addCssToHead);
                             return t;
                         },
                         clearCssFromHead: function(n) {
-                            e.clearCssFromHead = Default.getDefaultBoolean(n, e.clearCssFromHead);
+                            e.clearCssFromHead = Default.getBoolean(n, e.clearCssFromHead);
                             return t;
                         },
                         logTemplateDataWarnings: function(n) {
-                            e.logTemplateDataWarnings = Default.getDefaultBoolean(n, e.logTemplateDataWarnings);
+                            e.logTemplateDataWarnings = Default.getBoolean(n, e.logTemplateDataWarnings);
                             return t;
                         },
                         addAttributes: function(n) {
-                            e.addAttributes = Default.getDefaultBoolean(n, e.addAttributes);
+                            e.addAttributes = Default.getBoolean(n, e.addAttributes);
                             return t;
                         },
                         addCssProperties: function(n) {
-                            e.addCssProperties = Default.getDefaultBoolean(n, e.addCssProperties);
+                            e.addCssProperties = Default.getBoolean(n, e.addCssProperties);
                             return t;
                         },
                         addText: function(n) {
-                            e.addText = Default.getDefaultBoolean(n, e.addText);
+                            e.addText = Default.getBoolean(n, e.addText);
                             return t;
                         },
                         addChildren: function(n) {
-                            e.addChildren = Default.getDefaultBoolean(n, e.addChildren);
+                            e.addChildren = Default.getBoolean(n, e.addChildren);
                             return t;
                         },
                         write: function(t) {

@@ -24,10 +24,11 @@ import {
     type PublicApiJson } from "./ts/api";
     
 import { Constant } from "./ts/constant"
-import { Data } from "./ts/data";
-import { DomElement } from "./ts/dom";
-import { Char, JsonValue, Value } from "./ts/enum";
-import { Is } from "./ts/is";
+import { Default } from "./ts/data/default";
+import { DomElement } from "./ts/dom/dom";
+import { Char, JsonValue, Value } from "./ts/data/enum";
+import { Is } from "./ts/data/is";
+import { Str } from "./ts/data/str";
 
 
 type StringToJson = {
@@ -160,20 +161,20 @@ type ElementObject = {
      */
 
     function buildAttributeOptions( newOptions: any ) : BindingOptions {
-        let options: BindingOptions = Data.getDefaultObject( newOptions, {} as BindingOptions );
+        let options: BindingOptions = Default.getDefaultObject( newOptions, {} as BindingOptions );
         const optionPropertyDefaults: HtmlProperties = getDefaultHtmlProperties();
 
-        options.json = Data.getDefaultString( options.json, optionPropertyDefaults.json );
-        options.templateData = Data.getDefaultObject( options.templateData, optionPropertyDefaults.templateData );
-        options.removeOriginalAttributes = Data.getDefaultBoolean( options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes );
-        options.clearOriginalHTML = Data.getDefaultBoolean( options.clearOriginalHTML, optionPropertyDefaults.clearOriginalHTML );
-        options.addCssToHead = Data.getDefaultBoolean( options.addCssToHead, optionPropertyDefaults.addCssToHead );
-        options.clearCssFromHead = Data.getDefaultBoolean( options.clearCssFromHead, optionPropertyDefaults.clearCssFromHead );
-        options.logTemplateDataWarnings = Data.getDefaultBoolean( options.logTemplateDataWarnings, optionPropertyDefaults.logTemplateDataWarnings );
-        options.addAttributes = Data.getDefaultBoolean( options.addAttributes, optionPropertyDefaults.addAttributes );
-        options.addCssProperties = Data.getDefaultBoolean( options.addCssProperties, optionPropertyDefaults.addCssProperties );
-        options.addText = Data.getDefaultBoolean( options.addText, optionPropertyDefaults.addText );
-        options.addChildren = Data.getDefaultBoolean( options.addChildren, optionPropertyDefaults.addChildren );
+        options.json = Default.getDefaultString( options.json, optionPropertyDefaults.json );
+        options.templateData = Default.getDefaultObject( options.templateData, optionPropertyDefaults.templateData );
+        options.removeOriginalAttributes = Default.getDefaultBoolean( options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes );
+        options.clearOriginalHTML = Default.getDefaultBoolean( options.clearOriginalHTML, optionPropertyDefaults.clearOriginalHTML );
+        options.addCssToHead = Default.getDefaultBoolean( options.addCssToHead, optionPropertyDefaults.addCssToHead );
+        options.clearCssFromHead = Default.getDefaultBoolean( options.clearCssFromHead, optionPropertyDefaults.clearCssFromHead );
+        options.logTemplateDataWarnings = Default.getDefaultBoolean( options.logTemplateDataWarnings, optionPropertyDefaults.logTemplateDataWarnings );
+        options.addAttributes = Default.getDefaultBoolean( options.addAttributes, optionPropertyDefaults.addAttributes );
+        options.addCssProperties = Default.getDefaultBoolean( options.addCssProperties, optionPropertyDefaults.addCssProperties );
+        options.addText = Default.getDefaultBoolean( options.addText, optionPropertyDefaults.addText );
+        options.addChildren = Default.getDefaultBoolean( options.addChildren, optionPropertyDefaults.addChildren );
 
         options = buildAttributeOptionCustomTriggers( options );
 
@@ -181,9 +182,9 @@ type ElementObject = {
     }
 
     function buildAttributeOptionCustomTriggers( options: BindingOptions ) : BindingOptions {
-        options.events = Data.getDefaultObject( options.events, {} as BindingOptionEvents );
-        options.events!.onBeforeRender = Data.getDefaultFunction( options.events!.onBeforeRender, null! );
-        options.events!.onRenderComplete = Data.getDefaultFunction( options.events!.onRenderComplete, null! );
+        options.events = Default.getDefaultObject( options.events, {} as BindingOptionEvents );
+        options.events!.onBeforeRender = Default.getDefaultFunction( options.events!.onBeforeRender, null! );
+        options.events!.onRenderComplete = Default.getDefaultFunction( options.events!.onRenderComplete, null! );
 
         return options;
     }
@@ -282,7 +283,7 @@ type ElementObject = {
         }
 
         if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound) {
-            result[ `${JsonValue.attribute}id` ] = Data.String.newGuid();
+            result[ `${JsonValue.attribute}id` ] = crypto.randomUUID();
         }
     }
 
@@ -452,7 +453,7 @@ type ElementObject = {
         const cssStyles: string[] = [];
 
         for ( let jsonKey in jsonObject ) {
-            if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
+            if ( Str.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
                 if ( properties.addAttributes ) {
                     const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
                     const attributeValue: string = jsonObject[ jsonKey ];
@@ -460,7 +461,7 @@ type ElementObject = {
                     element.setAttribute( attributeName, attributeValue );
                 }
 
-            } else if ( Data.String.startsWithAnyCase( jsonKey, JsonValue.cssStyle ) ) {
+            } else if ( Str.startsWithAnyCase( jsonKey, JsonValue.cssStyle ) ) {
                 if ( properties.addCssProperties ) {
                     const cssStyleName: string = jsonKey.replace( JsonValue.cssStyle, Char.empty );
 
@@ -511,7 +512,7 @@ type ElementObject = {
                     const templateDataKeyReplacement: string = properties.templateData[ templateDataKey ];
 
                     if ( element.innerHTML.indexOf( templateDataKey ) > Value.notFound ) {
-                        element.innerHTML = Data.String.replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
+                        element.innerHTML = Str.replaceAll( element.innerHTML, templateDataKey, templateDataKeyReplacement );
 
                         if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === Value.notFound ) {
                             writingScope.templateDataKeysProcessed.push( templateDataKey );
@@ -528,7 +529,7 @@ type ElementObject = {
                             if ( endIndex > Value.notFound ) {
                                 const variable: string = element.innerHTML.substring( startIndex, endIndex + Char.variableEnd.length );
                                 
-                                element.innerHTML = Data.String.replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
+                                element.innerHTML = Str.replaceAll( element.innerHTML, variable, templateDataKeyReplacement );
                             }
                         }
                     }
@@ -547,7 +548,7 @@ type ElementObject = {
         } else {
 
             if ( !Is.definedString( element.id ) ) {
-                element.id = Data.String.newGuid();
+                element.id = crypto.randomUUID();
             }
 
             identifier = `#${element.id} {`;
@@ -599,7 +600,7 @@ type ElementObject = {
     }
 
     function processRemainingVariablesForDefaults( element: HTMLElement ) : void {
-        const remainingVariables: string[] = Data.String.getTemplateVariables( element.innerHTML );
+        const remainingVariables: string[] = Str.getTemplateVariables( element.innerHTML );
         const remainingVariablesLength: number = remainingVariables.length;
         
         for ( let remainingVariableIndex: number = 0; remainingVariableIndex < remainingVariablesLength; remainingVariableIndex++ ) {
@@ -678,10 +679,10 @@ type ElementObject = {
 	 */
 
     function buildDefaultConfiguration( newConfiguration: any = null ) : void {
-        _configuration = Data.getDefaultObject( newConfiguration, {} as Configuration );
-        _configuration.safeMode = Data.getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.domElementTypes = Data.getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
-        _configuration.formattingNodeTypes = Data.getDefaultStringOrArray( _configuration.formattingNodeTypes, [
+        _configuration = Default.getDefaultObject( newConfiguration, {} as Configuration );
+        _configuration.safeMode = Default.getDefaultBoolean( _configuration.safeMode, true );
+        _configuration.domElementTypes = Default.getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
+        _configuration.formattingNodeTypes = Default.getDefaultStringOrArray( _configuration.formattingNodeTypes, [
             "b",
             "strong",
             "i",
@@ -698,11 +699,11 @@ type ElementObject = {
     }
 
     function buildDefaultConfigurationStrings() : void {
-        _configuration.text = Data.getDefaultObject( _configuration.text, {} as ConfigurationText );
-        _configuration.text!.variableWarningText = Data.getDefaultString( _configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
-        _configuration.text!.objectErrorText = Data.getDefaultString( _configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
-        _configuration.text!.attributeNotValidErrorText = Data.getDefaultString( _configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
-        _configuration.text!.attributeNotSetErrorText = Data.getDefaultString( _configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );        
+        _configuration.text = Default.getDefaultObject( _configuration.text, {} as ConfigurationText );
+        _configuration.text!.variableWarningText = Default.getDefaultString( _configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
+        _configuration.text!.objectErrorText = Default.getDefaultString( _configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
+        _configuration.text!.attributeNotValidErrorText = Default.getDefaultString( _configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
+        _configuration.text!.attributeNotSetErrorText = Default.getDefaultString( _configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );        
     }
 
 
@@ -724,61 +725,61 @@ type ElementObject = {
 
             const scope: PublicApiJson = {
                 includeAttributes: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeAttributes = Data.getDefaultBoolean( flag, properties.includeAttributes );
+                    properties.includeAttributes = Default.getDefaultBoolean( flag, properties.includeAttributes );
 
                     return this;
                 },
 
                 includeCssProperties: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeCssProperties = Data.getDefaultBoolean( flag, properties.includeCssProperties );
+                    properties.includeCssProperties = Default.getDefaultBoolean( flag, properties.includeCssProperties );
 
                     return this;
                 },
 
                 includeText: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeText = Data.getDefaultBoolean( flag, properties.includeText );
+                    properties.includeText = Default.getDefaultBoolean( flag, properties.includeText );
 
                     return this;
                 },
 
                 includeChildren: function ( flag: boolean ) : PublicApiJson {
-                    properties.includeChildren = Data.getDefaultBoolean( flag, properties.includeChildren );
+                    properties.includeChildren = Default.getDefaultBoolean( flag, properties.includeChildren );
 
                     return this;
                 },
 
                 friendlyFormat: function ( flag: boolean ) : PublicApiJson {
-                    properties.friendlyFormat = Data.getDefaultBoolean( flag, properties.friendlyFormat );
+                    properties.friendlyFormat = Default.getDefaultBoolean( flag, properties.friendlyFormat );
 
                     return this;
                 },
 
                 indentSpaces: function ( spaces: number ) : PublicApiJson {
-                    properties.indentSpaces = Data.getDefaultNumber( spaces, properties.indentSpaces );
+                    properties.indentSpaces = Default.getDefaultNumber( spaces, properties.indentSpaces );
 
                     return this;
                 },
 
                 ignoreNodeTypes: function ( types: string[] | string ) : PublicApiJson {
-                    properties.ignoreNodeTypes = Data.getDefaultStringOrArray( types, properties.ignoreNodeTypes );
+                    properties.ignoreNodeTypes = Default.getDefaultStringOrArray( types, properties.ignoreNodeTypes );
 
                     return this;
                 },
 
                 ignoreCssProperties: function ( cssProperties: string[] | string ) : PublicApiJson {
-                    properties.ignoreCssProperties = Data.getDefaultStringOrArray( cssProperties, properties.ignoreCssProperties );
+                    properties.ignoreCssProperties = Default.getDefaultStringOrArray( cssProperties, properties.ignoreCssProperties );
 
                     return this;
                 },
 
                 ignoreAttributes: function ( attributes: string[] | string ) : PublicApiJson {
-                    properties.ignoreAttributes = Data.getDefaultStringOrArray( attributes, properties.ignoreAttributes );
+                    properties.ignoreAttributes = Default.getDefaultStringOrArray( attributes, properties.ignoreAttributes );
 
                     return this;
                 },
 
                 generateUniqueMissingIds: function ( flag: boolean ) : PublicApiJson {
-                    properties.generateUniqueMissingIds = Data.getDefaultBoolean( flag, properties.generateUniqueMissingIds );
+                    properties.generateUniqueMissingIds = Default.getDefaultBoolean( flag, properties.generateUniqueMissingIds );
 
                     return this;
                 },
@@ -788,7 +789,7 @@ type ElementObject = {
                 },
 
                 getVariables: function ( json: string ) : string[] {
-                    return Data.String.getTemplateVariables( json );
+                    return Str.getTemplateVariables( json );
                 }
             };
 
@@ -807,67 +808,67 @@ type ElementObject = {
 
             const scope: PublicApiHtml = {
                 json: function ( json: string ) : PublicApiHtml {
-                    properties.json = Data.getDefaultString( json, properties.json );
+                    properties.json = Default.getDefaultString( json, properties.json );
 
                     return scope;
                 },
 
                 templateData: function ( templateData: Record<string, string> ) : PublicApiHtml {
-                    properties.templateData = Data.getDefaultObject( templateData, properties.templateData );
+                    properties.templateData = Default.getDefaultObject( templateData, properties.templateData );
 
                     return scope;
                 },
 
                 removeOriginalAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    properties.removeOriginalAttributes = Data.getDefaultBoolean( flag, properties.removeOriginalAttributes );
+                    properties.removeOriginalAttributes = Default.getDefaultBoolean( flag, properties.removeOriginalAttributes );
 
                     return scope;
                 },
 
                 clearOriginalHTML: function ( flag: boolean ) : PublicApiHtml {
-                    properties.clearOriginalHTML = Data.getDefaultBoolean( flag, properties.clearOriginalHTML );
+                    properties.clearOriginalHTML = Default.getDefaultBoolean( flag, properties.clearOriginalHTML );
 
                     return scope;
                 },
 
                 addCssToHead: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addCssToHead = Data.getDefaultBoolean( flag, properties.addCssToHead );
+                    properties.addCssToHead = Default.getDefaultBoolean( flag, properties.addCssToHead );
 
                     return scope;
                 },
 
                 clearCssFromHead: function ( flag: boolean ) : PublicApiHtml {
-                    properties.clearCssFromHead = Data.getDefaultBoolean( flag, properties.clearCssFromHead );
+                    properties.clearCssFromHead = Default.getDefaultBoolean( flag, properties.clearCssFromHead );
 
                     return scope;
                 },
 
                 logTemplateDataWarnings: function ( flag: boolean ) : PublicApiHtml {
-                    properties.logTemplateDataWarnings = Data.getDefaultBoolean( flag, properties.logTemplateDataWarnings );
+                    properties.logTemplateDataWarnings = Default.getDefaultBoolean( flag, properties.logTemplateDataWarnings );
 
                     return scope;
                 },
 
                 addAttributes: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addAttributes = Data.getDefaultBoolean( flag, properties.addAttributes );
+                    properties.addAttributes = Default.getDefaultBoolean( flag, properties.addAttributes );
 
                     return scope;
                 },
 
                 addCssProperties: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addCssProperties = Data.getDefaultBoolean( flag, properties.addCssProperties );
+                    properties.addCssProperties = Default.getDefaultBoolean( flag, properties.addCssProperties );
 
                     return scope;
                 },
 
                 addText: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addText = Data.getDefaultBoolean( flag, properties.addText );
+                    properties.addText = Default.getDefaultBoolean( flag, properties.addText );
 
                     return scope;
                 },
 
                 addChildren: function ( flag: boolean ) : PublicApiHtml {
-                    properties.addChildren = Data.getDefaultBoolean( flag, properties.addChildren );
+                    properties.addChildren = Default.getDefaultBoolean( flag, properties.addChildren );
 
                     return scope;
                 },
@@ -880,7 +881,7 @@ type ElementObject = {
                     let result: string[] = [];
 
                     if ( Is.definedObject( element ) ) {
-                        result = Data.String.getTemplateVariables( element.innerHTML );
+                        result = Str.getTemplateVariables( element.innerHTML );
                     }
                     
                     return result;

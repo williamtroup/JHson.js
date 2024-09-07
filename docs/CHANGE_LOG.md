@@ -6,6 +6,8 @@
 - Updated all of the NPM packages to the latest versions.
 - Moved from ES2016 to ES2020.
 - Added new rules to enforce stricter types across the code base.
+- Complete reorganized the files into separate folders, with some renames.
+- The GUIDs generated now used the "crypto.randomUUID()" instead of the custom-built one (this is now RFC4122-compliant).
 
 <br>
 

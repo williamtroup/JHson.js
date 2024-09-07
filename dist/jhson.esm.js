@@ -22,7 +22,7 @@ var init_constant = __esm({
 });
 
 var init_enum = __esm({
-    "src/ts/enum.ts"() {
+    "src/ts/data/enum.ts"() {
         "use strict";
     }
 });
@@ -30,7 +30,7 @@ var init_enum = __esm({
 var Is;
 
 var init_is = __esm({
-    "src/ts/is.ts"() {
+    "src/ts/data/is.ts"() {
         "use strict";
         init_enum();
         (e => {
@@ -66,86 +66,43 @@ var init_is = __esm({
     }
 });
 
-var Data;
+var Default;
 
-var init_data = __esm({
-    "src/ts/data.ts"() {
+var init_default = __esm({
+    "src/ts/data/default.ts"() {
         "use strict";
         init_enum();
         init_is();
         (e => {
-            let t;
-            (e => {
-                function t() {
-                    const e = [];
-                    for (let t = 0; t < 32; t++) {
-                        if (t === 8 || t === 12 || t === 16 || t === 20) {
-                            e.push("-");
-                        }
-                        const n = Math.floor(Math.random() * 16).toString(16);
-                        e.push(n);
-                    }
-                    return e.join("");
-                }
-                e.newGuid = t;
-                function n(e, t) {
-                    return e.substring(0, t.length).toLowerCase() === t.toLowerCase();
-                }
-                e.startsWithAnyCase = n;
-                function r(e, t, n) {
-                    return e.replace(new RegExp(t.replace("|", `[${"|"}]`), "g"), n);
-                }
-                e.replaceAll = r;
-                function i(e) {
-                    const t = [];
-                    if (Is.definedString(e)) {
-                        let n = 0;
-                        let r = 0;
-                        while (n > -1) {
-                            n = e.indexOf("{{", r);
-                            if (n > -1) {
-                                r = e.indexOf("}}", n);
-                                if (r > -1) {
-                                    const i = e.substring(n, r + "}}".length);
-                                    t.push(i);
-                                    r += 2;
-                                }
-                            }
-                        }
-                    }
-                    return t;
-                }
-                e.getTemplateVariables = i;
-            })(t = e.String || (e.String = {}));
-            function n(e, t) {
+            function t(e, t) {
                 return typeof e === "string" ? e : t;
             }
-            e.getDefaultAnyString = n;
-            function r(e, t) {
+            e.getDefaultAnyString = t;
+            function n(e, t) {
                 return Is.definedString(e) ? e : t;
             }
-            e.getDefaultString = r;
-            function i(e, t) {
+            e.getDefaultString = n;
+            function r(e, t) {
                 return Is.definedBoolean(e) ? e : t;
             }
-            e.getDefaultBoolean = i;
-            function a(e, t) {
+            e.getDefaultBoolean = r;
+            function i(e, t) {
                 return Is.definedNumber(e) ? e : t;
             }
-            e.getDefaultNumber = a;
-            function o(e, t) {
+            e.getDefaultNumber = i;
+            function a(e, t) {
                 return Is.definedFunction(e) ? e : t;
             }
-            e.getDefaultFunction = o;
-            function s(e, t) {
+            e.getDefaultFunction = a;
+            function o(e, t) {
                 return Is.definedArray(e) ? e : t;
             }
-            e.getDefaultArray = s;
-            function l(e, t) {
+            e.getDefaultArray = o;
+            function s(e, t) {
                 return Is.definedObject(e) ? e : t;
             }
-            e.getDefaultObject = l;
-            function u(e, t) {
+            e.getDefaultObject = s;
+            function l(e, t) {
                 let n = t;
                 if (Is.definedString(e)) {
                     const r = e.toString().split(" ");
@@ -155,19 +112,19 @@ var init_data = __esm({
                         n = r;
                     }
                 } else {
-                    n = s(e, t);
+                    n = o(e, t);
                 }
                 return n;
             }
-            e.getDefaultStringOrArray = u;
-        })(Data || (Data = {}));
+            e.getDefaultStringOrArray = l;
+        })(Default || (Default = {}));
     }
 });
 
 var DomElement;
 
 var init_dom = __esm({
-    "src/ts/dom.ts"() {
+    "src/ts/dom/dom.ts"() {
         "use strict";
         init_enum();
         (e => {
@@ -183,13 +140,54 @@ var init_dom = __esm({
     }
 });
 
+var Str;
+
+var init_str = __esm({
+    "src/ts/data/str.ts"() {
+        "use strict";
+        init_enum();
+        init_is();
+        (e => {
+            function t(e, t) {
+                return e.substring(0, t.length).toLowerCase() === t.toLowerCase();
+            }
+            e.startsWithAnyCase = t;
+            function n(e, t, n) {
+                return e.replace(new RegExp(t.replace("|", `[${"|"}]`), "g"), n);
+            }
+            e.replaceAll = n;
+            function r(e) {
+                const t = [];
+                if (Is.definedString(e)) {
+                    let n = 0;
+                    let r = 0;
+                    while (n > -1) {
+                        n = e.indexOf("{{", r);
+                        if (n > -1) {
+                            r = e.indexOf("}}", n);
+                            if (r > -1) {
+                                const i = e.substring(n, r + "}}".length);
+                                t.push(i);
+                                r += 2;
+                            }
+                        }
+                    }
+                }
+                return t;
+            }
+            e.getTemplateVariables = r;
+        })(Str || (Str = {}));
+    }
+});
+
 var require_jhson = __commonJS({
     "src/jhson.ts"(exports, module) {
         init_constant();
-        init_data();
+        init_default();
         init_dom();
         init_enum();
         init_is();
+        init_str();
         (() => {
             let _configuration = {};
             function render() {
@@ -243,26 +241,26 @@ var require_jhson = __commonJS({
                 fireCustomTriggerEvent(e.events.onRenderComplete, e._currentView.element);
             }
             function buildAttributeOptions(e) {
-                let t = Data.getDefaultObject(e, {});
+                let t = Default.getDefaultObject(e, {});
                 const n = getDefaultHtmlProperties();
-                t.json = Data.getDefaultString(t.json, n.json);
-                t.templateData = Data.getDefaultObject(t.templateData, n.templateData);
-                t.removeOriginalAttributes = Data.getDefaultBoolean(t.removeOriginalAttributes, n.removeOriginalAttributes);
-                t.clearOriginalHTML = Data.getDefaultBoolean(t.clearOriginalHTML, n.clearOriginalHTML);
-                t.addCssToHead = Data.getDefaultBoolean(t.addCssToHead, n.addCssToHead);
-                t.clearCssFromHead = Data.getDefaultBoolean(t.clearCssFromHead, n.clearCssFromHead);
-                t.logTemplateDataWarnings = Data.getDefaultBoolean(t.logTemplateDataWarnings, n.logTemplateDataWarnings);
-                t.addAttributes = Data.getDefaultBoolean(t.addAttributes, n.addAttributes);
-                t.addCssProperties = Data.getDefaultBoolean(t.addCssProperties, n.addCssProperties);
-                t.addText = Data.getDefaultBoolean(t.addText, n.addText);
-                t.addChildren = Data.getDefaultBoolean(t.addChildren, n.addChildren);
+                t.json = Default.getDefaultString(t.json, n.json);
+                t.templateData = Default.getDefaultObject(t.templateData, n.templateData);
+                t.removeOriginalAttributes = Default.getDefaultBoolean(t.removeOriginalAttributes, n.removeOriginalAttributes);
+                t.clearOriginalHTML = Default.getDefaultBoolean(t.clearOriginalHTML, n.clearOriginalHTML);
+                t.addCssToHead = Default.getDefaultBoolean(t.addCssToHead, n.addCssToHead);
+                t.clearCssFromHead = Default.getDefaultBoolean(t.clearCssFromHead, n.clearCssFromHead);
+                t.logTemplateDataWarnings = Default.getDefaultBoolean(t.logTemplateDataWarnings, n.logTemplateDataWarnings);
+                t.addAttributes = Default.getDefaultBoolean(t.addAttributes, n.addAttributes);
+                t.addCssProperties = Default.getDefaultBoolean(t.addCssProperties, n.addCssProperties);
+                t.addText = Default.getDefaultBoolean(t.addText, n.addText);
+                t.addChildren = Default.getDefaultBoolean(t.addChildren, n.addChildren);
                 t = buildAttributeOptionCustomTriggers(t);
                 return t;
             }
             function buildAttributeOptionCustomTriggers(e) {
-                e.events = Data.getDefaultObject(e.events, {});
-                e.events.onBeforeRender = Data.getDefaultFunction(e.events.onBeforeRender, null);
-                e.events.onRenderComplete = Data.getDefaultFunction(e.events.onRenderComplete, null);
+                e.events = Default.getDefaultObject(e.events, {});
+                e.events.onBeforeRender = Default.getDefaultFunction(e.events.onBeforeRender, null);
+                e.events.onRenderComplete = Default.getDefaultFunction(e.events.onRenderComplete, null);
                 return e;
             }
             function getDefaultJsonProperties() {
@@ -334,7 +332,7 @@ var require_jhson = __commonJS({
                     }
                 }
                 if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
-                    t[`${"@"}id`] = Data.String.newGuid();
+                    t[`${"@"}id`] = crypto.randomUUID();
                 }
             }
             function getElementCssProperties(e, t, n, r) {
@@ -464,13 +462,13 @@ var require_jhson = __commonJS({
             function writeNode(e, t, n, r) {
                 const i = [];
                 for (let a in t) {
-                    if (Data.String.startsWithAnyCase(a, "@")) {
+                    if (Str.startsWithAnyCase(a, "@")) {
                         if (n.addAttributes) {
                             const n = a.replace("@", "");
                             const r = t[a];
                             e.setAttribute(n, r);
                         }
-                    } else if (Data.String.startsWithAnyCase(a, "$")) {
+                    } else if (Str.startsWithAnyCase(a, "$")) {
                         if (n.addCssProperties) {
                             const r = a.replace("$", "");
                             if (!n.addCssToHead) {
@@ -510,7 +508,7 @@ var require_jhson = __commonJS({
                         if (n.templateData.hasOwnProperty(i)) {
                             const t = n.templateData[i];
                             if (e.innerHTML.indexOf(i) > -1) {
-                                e.innerHTML = Data.String.replaceAll(e.innerHTML, i, t);
+                                e.innerHTML = Str.replaceAll(e.innerHTML, i, t);
                                 if (r.templateDataKeysProcessed.indexOf(i) === -1) {
                                     r.templateDataKeysProcessed.push(i);
                                 }
@@ -521,7 +519,7 @@ var require_jhson = __commonJS({
                                     const r = e.innerHTML.indexOf("}}", n);
                                     if (r > -1) {
                                         const i = e.innerHTML.substring(n, r + "}}".length);
-                                        e.innerHTML = Data.String.replaceAll(e.innerHTML, i, t);
+                                        e.innerHTML = Str.replaceAll(e.innerHTML, i, t);
                                     }
                                 }
                             }
@@ -536,7 +534,7 @@ var require_jhson = __commonJS({
                     r = `${e.nodeName.toLowerCase()}.${t[0]} {`;
                 } else {
                     if (!Is.definedString(e.id)) {
-                        e.id = Data.String.newGuid();
+                        e.id = crypto.randomUUID();
                     }
                     r = `#${e.id} {`;
                 }
@@ -576,7 +574,7 @@ var require_jhson = __commonJS({
                 }
             }
             function processRemainingVariablesForDefaults(e) {
-                const t = Data.String.getTemplateVariables(e.innerHTML);
+                const t = Str.getTemplateVariables(e.innerHTML);
                 const n = t.length;
                 for (let r = 0; r < n; r++) {
                     const n = t[r];
@@ -619,68 +617,68 @@ var require_jhson = __commonJS({
                 return result;
             }
             function buildDefaultConfiguration(e = null) {
-                _configuration = Data.getDefaultObject(e, {});
-                _configuration.safeMode = Data.getDefaultBoolean(_configuration.safeMode, true);
-                _configuration.domElementTypes = Data.getDefaultStringOrArray(_configuration.domElementTypes, [ "*" ]);
-                _configuration.formattingNodeTypes = Data.getDefaultStringOrArray(_configuration.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
+                _configuration = Default.getDefaultObject(e, {});
+                _configuration.safeMode = Default.getDefaultBoolean(_configuration.safeMode, true);
+                _configuration.domElementTypes = Default.getDefaultStringOrArray(_configuration.domElementTypes, [ "*" ]);
+                _configuration.formattingNodeTypes = Default.getDefaultStringOrArray(_configuration.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
                 buildDefaultConfigurationStrings();
             }
             function buildDefaultConfigurationStrings() {
-                _configuration.text = Data.getDefaultObject(_configuration.text, {});
-                _configuration.text.variableWarningText = Data.getDefaultString(_configuration.text.variableWarningText, "Template variable {{variable_name}} not found.");
-                _configuration.text.objectErrorText = Data.getDefaultString(_configuration.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
-                _configuration.text.attributeNotValidErrorText = Data.getDefaultString(_configuration.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
-                _configuration.text.attributeNotSetErrorText = Data.getDefaultString(_configuration.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
+                _configuration.text = Default.getDefaultObject(_configuration.text, {});
+                _configuration.text.variableWarningText = Default.getDefaultString(_configuration.text.variableWarningText, "Template variable {{variable_name}} not found.");
+                _configuration.text.objectErrorText = Default.getDefaultString(_configuration.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+                _configuration.text.attributeNotValidErrorText = Default.getDefaultString(_configuration.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+                _configuration.text.attributeNotSetErrorText = Default.getDefaultString(_configuration.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
             }
             const _public = {
                 json: function() {
                     const e = getDefaultJsonProperties();
                     const t = {
                         includeAttributes: function(t) {
-                            e.includeAttributes = Data.getDefaultBoolean(t, e.includeAttributes);
+                            e.includeAttributes = Default.getDefaultBoolean(t, e.includeAttributes);
                             return this;
                         },
                         includeCssProperties: function(t) {
-                            e.includeCssProperties = Data.getDefaultBoolean(t, e.includeCssProperties);
+                            e.includeCssProperties = Default.getDefaultBoolean(t, e.includeCssProperties);
                             return this;
                         },
                         includeText: function(t) {
-                            e.includeText = Data.getDefaultBoolean(t, e.includeText);
+                            e.includeText = Default.getDefaultBoolean(t, e.includeText);
                             return this;
                         },
                         includeChildren: function(t) {
-                            e.includeChildren = Data.getDefaultBoolean(t, e.includeChildren);
+                            e.includeChildren = Default.getDefaultBoolean(t, e.includeChildren);
                             return this;
                         },
                         friendlyFormat: function(t) {
-                            e.friendlyFormat = Data.getDefaultBoolean(t, e.friendlyFormat);
+                            e.friendlyFormat = Default.getDefaultBoolean(t, e.friendlyFormat);
                             return this;
                         },
                         indentSpaces: function(t) {
-                            e.indentSpaces = Data.getDefaultNumber(t, e.indentSpaces);
+                            e.indentSpaces = Default.getDefaultNumber(t, e.indentSpaces);
                             return this;
                         },
                         ignoreNodeTypes: function(t) {
-                            e.ignoreNodeTypes = Data.getDefaultStringOrArray(t, e.ignoreNodeTypes);
+                            e.ignoreNodeTypes = Default.getDefaultStringOrArray(t, e.ignoreNodeTypes);
                             return this;
                         },
                         ignoreCssProperties: function(t) {
-                            e.ignoreCssProperties = Data.getDefaultStringOrArray(t, e.ignoreCssProperties);
+                            e.ignoreCssProperties = Default.getDefaultStringOrArray(t, e.ignoreCssProperties);
                             return this;
                         },
                         ignoreAttributes: function(t) {
-                            e.ignoreAttributes = Data.getDefaultStringOrArray(t, e.ignoreAttributes);
+                            e.ignoreAttributes = Default.getDefaultStringOrArray(t, e.ignoreAttributes);
                             return this;
                         },
                         generateUniqueMissingIds: function(t) {
-                            e.generateUniqueMissingIds = Data.getDefaultBoolean(t, e.generateUniqueMissingIds);
+                            e.generateUniqueMissingIds = Default.getDefaultBoolean(t, e.generateUniqueMissingIds);
                             return this;
                         },
                         get: function(t) {
                             return getJSON(t, e);
                         },
                         getVariables: function(e) {
-                            return Data.String.getTemplateVariables(e);
+                            return Str.getTemplateVariables(e);
                         }
                     };
                     return t;
@@ -689,47 +687,47 @@ var require_jhson = __commonJS({
                     const e = getDefaultHtmlProperties();
                     const t = {
                         json: function(n) {
-                            e.json = Data.getDefaultString(n, e.json);
+                            e.json = Default.getDefaultString(n, e.json);
                             return t;
                         },
                         templateData: function(n) {
-                            e.templateData = Data.getDefaultObject(n, e.templateData);
+                            e.templateData = Default.getDefaultObject(n, e.templateData);
                             return t;
                         },
                         removeOriginalAttributes: function(n) {
-                            e.removeOriginalAttributes = Data.getDefaultBoolean(n, e.removeOriginalAttributes);
+                            e.removeOriginalAttributes = Default.getDefaultBoolean(n, e.removeOriginalAttributes);
                             return t;
                         },
                         clearOriginalHTML: function(n) {
-                            e.clearOriginalHTML = Data.getDefaultBoolean(n, e.clearOriginalHTML);
+                            e.clearOriginalHTML = Default.getDefaultBoolean(n, e.clearOriginalHTML);
                             return t;
                         },
                         addCssToHead: function(n) {
-                            e.addCssToHead = Data.getDefaultBoolean(n, e.addCssToHead);
+                            e.addCssToHead = Default.getDefaultBoolean(n, e.addCssToHead);
                             return t;
                         },
                         clearCssFromHead: function(n) {
-                            e.clearCssFromHead = Data.getDefaultBoolean(n, e.clearCssFromHead);
+                            e.clearCssFromHead = Default.getDefaultBoolean(n, e.clearCssFromHead);
                             return t;
                         },
                         logTemplateDataWarnings: function(n) {
-                            e.logTemplateDataWarnings = Data.getDefaultBoolean(n, e.logTemplateDataWarnings);
+                            e.logTemplateDataWarnings = Default.getDefaultBoolean(n, e.logTemplateDataWarnings);
                             return t;
                         },
                         addAttributes: function(n) {
-                            e.addAttributes = Data.getDefaultBoolean(n, e.addAttributes);
+                            e.addAttributes = Default.getDefaultBoolean(n, e.addAttributes);
                             return t;
                         },
                         addCssProperties: function(n) {
-                            e.addCssProperties = Data.getDefaultBoolean(n, e.addCssProperties);
+                            e.addCssProperties = Default.getDefaultBoolean(n, e.addCssProperties);
                             return t;
                         },
                         addText: function(n) {
-                            e.addText = Data.getDefaultBoolean(n, e.addText);
+                            e.addText = Default.getDefaultBoolean(n, e.addText);
                             return t;
                         },
                         addChildren: function(n) {
-                            e.addChildren = Data.getDefaultBoolean(n, e.addChildren);
+                            e.addChildren = Default.getDefaultBoolean(n, e.addChildren);
                             return t;
                         },
                         write: function(t) {
@@ -738,7 +736,7 @@ var require_jhson = __commonJS({
                         getVariables: function(e) {
                             let t = [];
                             if (Is.definedObject(e)) {
-                                t = Data.String.getTemplateVariables(e.innerHTML);
+                                t = Str.getTemplateVariables(e.innerHTML);
                             }
                             return t;
                         }

@@ -136,11 +136,24 @@ export type PublicApiJson = {
      * 
      * @public
      * 
-     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
      * 
      * @returns     {Object}                                        The JSON properties object.
      */
     generateUniqueMissingIds: ( flag: boolean ) => PublicApiJson;
+
+    /**
+     * generateUniqueMissingNames().
+     * 
+     * States if the JSON should include unique names for DOM elements that don't have them set already.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    generateUniqueMissingNames: ( flag: boolean ) => PublicApiJson;
 
     /**
      * get().
@@ -320,7 +333,7 @@ export type PublicApiHtml = {
      * 
      * @public
      * 
-     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
      * 
      * @returns     {Object}                                        The HTML properties object.
      */

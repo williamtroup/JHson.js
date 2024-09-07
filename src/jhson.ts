@@ -51,6 +51,7 @@ type JsonProperties = {
     ignoreCssProperties: string[];
     ignoreAttributes: string[];
     generateUniqueMissingIds: boolean;
+    generateUniqueMissingNames: boolean;
 };
 
 type ElementObject = {
@@ -146,7 +147,8 @@ type ElementObject = {
             ignoreNodeTypes: [],
             ignoreCssProperties: [],
             ignoreAttributes: [],
-            generateUniqueMissingIds: false
+            generateUniqueMissingIds: false,
+            generateUniqueMissingNames: false
         } as JsonProperties;
     }
 
@@ -223,6 +225,10 @@ type ElementObject = {
 
         if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound ) {
             result[ `${JsonValue.attribute}id` ] = crypto.randomUUID();
+        }
+
+        if ( properties.generateUniqueMissingNames && attributesAvailable.indexOf( "name" ) === Value.notFound && properties.ignoreAttributes.indexOf( "name" ) === Value.notFound ) {
+            result[ `${JsonValue.attribute}name` ] = crypto.randomUUID();
         }
     }
 
@@ -320,7 +326,8 @@ type ElementObject = {
             addAttributes: true,
             addCssProperties: true,
             addText: true,
-            addChildren: true
+            addChildren: true,
+            insertBefore: false
         } as HtmlProperties;
     }
 
@@ -637,6 +644,12 @@ type ElementObject = {
 
                 generateUniqueMissingIds: function ( flag: boolean ) : PublicApiJson {
                     properties.generateUniqueMissingIds = Default.getBoolean( flag, properties.generateUniqueMissingIds );
+
+                    return this;
+                },
+
+                generateUniqueMissingNames: function ( flag: boolean ) : PublicApiJson {
+                    properties.generateUniqueMissingNames = Default.getBoolean( flag, properties.generateUniqueMissingNames );
 
                     return this;
                 },

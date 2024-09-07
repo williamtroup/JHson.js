@@ -288,7 +288,8 @@ var Trigger;
             ignoreNodeTypes: [],
             ignoreCssProperties: [],
             ignoreAttributes: [],
-            generateUniqueMissingIds: false
+            generateUniqueMissingIds: false,
+            generateUniqueMissingNames: false
         };
     }
     function a(e, t) {
@@ -347,6 +348,9 @@ var Trigger;
         }
         if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
             t[`${"@"}id`] = crypto.randomUUID();
+        }
+        if (n.generateUniqueMissingNames && i.indexOf("name") === -1 && n.ignoreAttributes.indexOf("name") === -1) {
+            t[`${"@"}name`] = crypto.randomUUID();
         }
     }
     function l(e, t, n, r) {
@@ -419,7 +423,8 @@ var Trigger;
             addAttributes: true,
             addCssProperties: true,
             addText: true,
-            addChildren: true
+            addChildren: true,
+            insertBefore: false
         };
     }
     function g(t, n) {
@@ -646,6 +651,10 @@ var Trigger;
                 },
                 generateUniqueMissingIds: function(t) {
                     e.generateUniqueMissingIds = Default2.getBoolean(t, e.generateUniqueMissingIds);
+                    return this;
+                },
+                generateUniqueMissingNames: function(t) {
+                    e.generateUniqueMissingNames = Default2.getBoolean(t, e.generateUniqueMissingNames);
                     return this;
                 },
                 get: function(t) {

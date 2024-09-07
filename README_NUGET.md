@@ -90,6 +90,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
         .generateUniqueMissingIds( false )
+        .generateUniqueMissingNames( false )
         .get( header );
 
     $jhson

@@ -3,7 +3,8 @@
 ## Version 2.1.0:
 
 #### **Public Functions:**
-- Added "insertBefore()" support for "html()", which states if the HTML should be written before the first detected child (if the HTML is not to be cleared).
+- Added "insertBefore()" support for "html()", which states if the HTML should be written before the first detected child (if the HTML is not to be cleared, defaults to false).
+- Added "generateUniqueMissingNames()" support for "json()", which states if the JSON should contain unique names for elements that don't contain them (defaults to false).
 
 #### **General Improvements:**
 - Updated all of the NPM packages to the latest versions.
@@ -21,6 +22,7 @@
 #### **Fixes:**
 - Fixed some errors in the documentation headers in each file.
 - Fixed a fault that caused html() > write() to loop through the remaining keys once the main one has been found.
+- Fixed some errors in the documentation that states the wrong defaults.
 
 <br>
 

@@ -5,6 +5,7 @@
 #### **General Improvements:**
 - Updated all of the NPM packages to the latest versions.
 - Moved from ES2016 to ES2020.
+- Added new rules to enforce stricter types across the code base.
 
 <br>
 

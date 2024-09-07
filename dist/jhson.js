@@ -133,6 +133,69 @@ var Str;
     e.getTemplateVariables = r;
 })(Str || (Str = {}));
 
+var Config;
+
+(e => {
+    let t;
+    (e => {
+        function t(e = null) {
+            let t = Default.getDefaultObject(e, {});
+            t.safeMode = Default.getDefaultBoolean(t.safeMode, true);
+            t.domElementTypes = Default.getDefaultStringOrArray(t.domElementTypes, [ "*" ]);
+            t.formattingNodeTypes = Default.getDefaultStringOrArray(t.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
+            t = n(t);
+            return t;
+        }
+        e.get = t;
+        function n(e) {
+            e.text = Default.getDefaultObject(e.text, {});
+            e.text.variableWarningText = Default.getDefaultString(e.text.variableWarningText, "Template variable {{variable_name}} not found.");
+            e.text.objectErrorText = Default.getDefaultString(e.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
+            e.text.attributeNotValidErrorText = Default.getDefaultString(e.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
+            e.text.attributeNotSetErrorText = Default.getDefaultString(e.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
+            return e;
+        }
+    })(t = e.Options || (e.Options = {}));
+})(Config || (Config = {}));
+
+var Binding;
+
+(e => {
+    let t;
+    (e => {
+        function t(e, t, r) {
+            const i = n(e, r);
+            i._currentView = {};
+            i._currentView.element = t;
+            return i;
+        }
+        e.getForNewInstance = t;
+        function n(e, t) {
+            let n = Default.getDefaultObject(e, {});
+            n.json = Default.getDefaultString(n.json, t.json);
+            n.templateData = Default.getDefaultObject(n.templateData, t.templateData);
+            n.removeOriginalAttributes = Default.getDefaultBoolean(n.removeOriginalAttributes, t.removeOriginalAttributes);
+            n.clearOriginalHTML = Default.getDefaultBoolean(n.clearOriginalHTML, t.clearOriginalHTML);
+            n.addCssToHead = Default.getDefaultBoolean(n.addCssToHead, t.addCssToHead);
+            n.clearCssFromHead = Default.getDefaultBoolean(n.clearCssFromHead, t.clearCssFromHead);
+            n.logTemplateDataWarnings = Default.getDefaultBoolean(n.logTemplateDataWarnings, t.logTemplateDataWarnings);
+            n.addAttributes = Default.getDefaultBoolean(n.addAttributes, t.addAttributes);
+            n.addCssProperties = Default.getDefaultBoolean(n.addCssProperties, t.addCssProperties);
+            n.addText = Default.getDefaultBoolean(n.addText, t.addText);
+            n.addChildren = Default.getDefaultBoolean(n.addChildren, t.addChildren);
+            n = r(n);
+            return n;
+        }
+        e.get = n;
+        function r(e) {
+            e.events = Default.getDefaultObject(e.events, {});
+            e.events.onBeforeRender = Default.getDefaultFunction(e.events.onBeforeRender, null);
+            e.events.onRenderComplete = Default.getDefaultFunction(e.events.onRenderComplete, null);
+            return e;
+        }
+    })(t = e.Options || (e.Options = {}));
+})(Binding || (Binding = {}));
+
 (() => {
     let _configuration = {};
     function render() {
@@ -156,7 +219,7 @@ var Str;
             if (Is.definedString(n)) {
                 const r = getObjectFromString(n);
                 if (r.parsed && Is.definedObject(r.object)) {
-                    renderElement(renderBindingOptions(r.object, e));
+                    renderElement(Binding.Options.getForNewInstance(r.object, e, getDefaultHtmlProperties()));
                 } else {
                     if (!_configuration.safeMode) {
                         console.error(_configuration.text.attributeNotValidErrorText.replace("{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME));
@@ -172,41 +235,12 @@ var Str;
         }
         return t;
     }
-    function renderBindingOptions(e, t) {
-        const n = buildAttributeOptions(e);
-        n._currentView = {};
-        n._currentView.element = t;
-        return n;
-    }
     function renderElement(e) {
         fireCustomTriggerEvent(e.events.onBeforeRender, e._currentView.element);
         const t = getDefaultHtmlProperties();
         t.json = e.json;
         writeHtml(e._currentView.element, t);
         fireCustomTriggerEvent(e.events.onRenderComplete, e._currentView.element);
-    }
-    function buildAttributeOptions(e) {
-        let t = Default.getDefaultObject(e, {});
-        const n = getDefaultHtmlProperties();
-        t.json = Default.getDefaultString(t.json, n.json);
-        t.templateData = Default.getDefaultObject(t.templateData, n.templateData);
-        t.removeOriginalAttributes = Default.getDefaultBoolean(t.removeOriginalAttributes, n.removeOriginalAttributes);
-        t.clearOriginalHTML = Default.getDefaultBoolean(t.clearOriginalHTML, n.clearOriginalHTML);
-        t.addCssToHead = Default.getDefaultBoolean(t.addCssToHead, n.addCssToHead);
-        t.clearCssFromHead = Default.getDefaultBoolean(t.clearCssFromHead, n.clearCssFromHead);
-        t.logTemplateDataWarnings = Default.getDefaultBoolean(t.logTemplateDataWarnings, n.logTemplateDataWarnings);
-        t.addAttributes = Default.getDefaultBoolean(t.addAttributes, n.addAttributes);
-        t.addCssProperties = Default.getDefaultBoolean(t.addCssProperties, n.addCssProperties);
-        t.addText = Default.getDefaultBoolean(t.addText, n.addText);
-        t.addChildren = Default.getDefaultBoolean(t.addChildren, n.addChildren);
-        t = buildAttributeOptionCustomTriggers(t);
-        return t;
-    }
-    function buildAttributeOptionCustomTriggers(e) {
-        e.events = Default.getDefaultObject(e.events, {});
-        e.events.onBeforeRender = Default.getDefaultFunction(e.events.onBeforeRender, null);
-        e.events.onRenderComplete = Default.getDefaultFunction(e.events.onRenderComplete, null);
-        return e;
     }
     function getDefaultJsonProperties() {
         return {
@@ -561,20 +595,6 @@ var Str;
         }
         return result;
     }
-    function buildDefaultConfiguration(e = null) {
-        _configuration = Default.getDefaultObject(e, {});
-        _configuration.safeMode = Default.getDefaultBoolean(_configuration.safeMode, true);
-        _configuration.domElementTypes = Default.getDefaultStringOrArray(_configuration.domElementTypes, [ "*" ]);
-        _configuration.formattingNodeTypes = Default.getDefaultStringOrArray(_configuration.formattingNodeTypes, [ "b", "strong", "i", "em", "mark", "small", "del", "ins", "sub", "sup" ]);
-        buildDefaultConfigurationStrings();
-    }
-    function buildDefaultConfigurationStrings() {
-        _configuration.text = Default.getDefaultObject(_configuration.text, {});
-        _configuration.text.variableWarningText = Default.getDefaultString(_configuration.text.variableWarningText, "Template variable {{variable_name}} not found.");
-        _configuration.text.objectErrorText = Default.getDefaultString(_configuration.text.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}");
-        _configuration.text.attributeNotValidErrorText = Default.getDefaultString(_configuration.text.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object.");
-        _configuration.text.attributeNotSetErrorText = Default.getDefaultString(_configuration.text.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly.");
-    }
     const _public = {
         json: function() {
             const e = getDefaultJsonProperties();
@@ -699,7 +719,7 @@ var Str;
                     }
                 }
                 if (t) {
-                    buildDefaultConfiguration(n);
+                    _configuration = Config.Options.get(n);
                 }
             }
             return _public;
@@ -709,7 +729,7 @@ var Str;
         }
     };
     (() => {
-        buildDefaultConfiguration();
+        _configuration = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (function() {
             render();
         }));

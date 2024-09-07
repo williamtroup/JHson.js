@@ -12,11 +12,9 @@
 
 
 import {
-    type BindingOptionEvents,
-    type ConfigurationText,
-    type BindingOptionsCurrentView,
     type BindingOptions,
-    type Configuration } from "./ts/type";
+    type Configuration, 
+    type HtmlProperties } from "./ts/type";
 
 import {
     type PublicApi,
@@ -29,6 +27,8 @@ import { DomElement } from "./ts/dom/dom";
 import { Char, JsonValue, Value } from "./ts/data/enum";
 import { Is } from "./ts/data/is";
 import { Str } from "./ts/data/str";
+import { Config } from "./ts/options/config";
+import { Binding } from "./ts/options/binding";
 
 
 type StringToJson = {
@@ -41,20 +41,6 @@ type WritingScope = {
     templateDataKeys: string[];
     templateDataKeysLength: number;
     templateDataKeysProcessed: string[];
-};
-
-type HtmlProperties = {
-    json: string;
-    templateData: Record<string, string>;
-    removeOriginalAttributes: boolean;
-    clearOriginalHTML: boolean;
-    addCssToHead: boolean;
-    clearCssFromHead: boolean;
-    logTemplateDataWarnings: boolean;
-    addAttributes: boolean;
-    addCssProperties: boolean;
-    addText: boolean;
-    addChildren: boolean;
 };
 
 type JsonProperties = {
@@ -114,7 +100,7 @@ type ElementObject = {
                 const bindingOptions: StringToJson = getObjectFromString( bindingOptionsData );
 
                 if ( bindingOptions.parsed && Is.definedObject( bindingOptions.object ) ) {
-                    renderElement( renderBindingOptions( bindingOptions.object, element ) );
+                    renderElement( Binding.Options.getForNewInstance( bindingOptions.object, element, getDefaultHtmlProperties() ) );
 
                 } else {
                     if ( !_configuration.safeMode ) {
@@ -134,14 +120,6 @@ type ElementObject = {
         return result;
     }
 
-    function renderBindingOptions( data: any, element: HTMLElement ) : BindingOptions {
-        const bindingOptions: BindingOptions = buildAttributeOptions( data );
-        bindingOptions._currentView = {} as BindingOptionsCurrentView;
-        bindingOptions._currentView.element = element;
-
-        return bindingOptions;
-    }
-
     function renderElement( bindingOptions: BindingOptions ) : void {
         fireCustomTriggerEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
 
@@ -151,42 +129,6 @@ type ElementObject = {
         writeHtml( bindingOptions._currentView.element, properties );
 
         fireCustomTriggerEvent( bindingOptions.events!.onRenderComplete!, bindingOptions._currentView.element );
-    }
-
-
-    /*
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     * Binding Options
-     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-     */
-
-    function buildAttributeOptions( newOptions: any ) : BindingOptions {
-        let options: BindingOptions = Default.getDefaultObject( newOptions, {} as BindingOptions );
-        const optionPropertyDefaults: HtmlProperties = getDefaultHtmlProperties();
-
-        options.json = Default.getDefaultString( options.json, optionPropertyDefaults.json );
-        options.templateData = Default.getDefaultObject( options.templateData, optionPropertyDefaults.templateData );
-        options.removeOriginalAttributes = Default.getDefaultBoolean( options.removeOriginalAttributes, optionPropertyDefaults.removeOriginalAttributes );
-        options.clearOriginalHTML = Default.getDefaultBoolean( options.clearOriginalHTML, optionPropertyDefaults.clearOriginalHTML );
-        options.addCssToHead = Default.getDefaultBoolean( options.addCssToHead, optionPropertyDefaults.addCssToHead );
-        options.clearCssFromHead = Default.getDefaultBoolean( options.clearCssFromHead, optionPropertyDefaults.clearCssFromHead );
-        options.logTemplateDataWarnings = Default.getDefaultBoolean( options.logTemplateDataWarnings, optionPropertyDefaults.logTemplateDataWarnings );
-        options.addAttributes = Default.getDefaultBoolean( options.addAttributes, optionPropertyDefaults.addAttributes );
-        options.addCssProperties = Default.getDefaultBoolean( options.addCssProperties, optionPropertyDefaults.addCssProperties );
-        options.addText = Default.getDefaultBoolean( options.addText, optionPropertyDefaults.addText );
-        options.addChildren = Default.getDefaultBoolean( options.addChildren, optionPropertyDefaults.addChildren );
-
-        options = buildAttributeOptionCustomTriggers( options );
-
-        return options;
-    }
-
-    function buildAttributeOptionCustomTriggers( options: BindingOptions ) : BindingOptions {
-        options.events = Default.getDefaultObject( options.events, {} as BindingOptionEvents );
-        options.events!.onBeforeRender = Default.getDefaultFunction( options.events!.onBeforeRender, null! );
-        options.events!.onRenderComplete = Default.getDefaultFunction( options.events!.onRenderComplete, null! );
-
-        return options;
     }
 
 
@@ -674,41 +616,6 @@ type ElementObject = {
 
 	/*
 	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 * Public API Functions:  Helpers:  Configuration
-	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	 */
-
-    function buildDefaultConfiguration( newConfiguration: any = null ) : void {
-        _configuration = Default.getDefaultObject( newConfiguration, {} as Configuration );
-        _configuration.safeMode = Default.getDefaultBoolean( _configuration.safeMode, true );
-        _configuration.domElementTypes = Default.getDefaultStringOrArray( _configuration.domElementTypes, [ "*" ] );
-        _configuration.formattingNodeTypes = Default.getDefaultStringOrArray( _configuration.formattingNodeTypes, [
-            "b",
-            "strong",
-            "i",
-            "em",
-            "mark",
-            "small",
-            "del",
-            "ins",
-            "sub",
-            "sup"
-        ] );
-
-        buildDefaultConfigurationStrings();
-    }
-
-    function buildDefaultConfigurationStrings() : void {
-        _configuration.text = Default.getDefaultObject( _configuration.text, {} as ConfigurationText );
-        _configuration.text!.variableWarningText = Default.getDefaultString( _configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
-        _configuration.text!.objectErrorText = Default.getDefaultString( _configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
-        _configuration.text!.attributeNotValidErrorText = Default.getDefaultString( _configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
-        _configuration.text!.attributeNotSetErrorText = Default.getDefaultString( _configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );        
-    }
-
-
-	/*
-	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 * Public API Functions:
 	 * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	 */
@@ -911,7 +818,7 @@ type ElementObject = {
                 }
         
                 if ( configurationHasChanged ) {
-                    buildDefaultConfiguration( newInternalConfiguration );
+                    _configuration = Config.Options.get( newInternalConfiguration );
                 }
             }
     
@@ -938,7 +845,7 @@ type ElementObject = {
      */
 
     ( () => {
-        buildDefaultConfiguration();
+        _configuration = Config.Options.get();
 
         document.addEventListener( "DOMContentLoaded", function() {
             render();

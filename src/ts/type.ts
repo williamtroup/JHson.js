@@ -11,6 +11,20 @@
  */
 
 
+export type HtmlProperties = {
+    json: string;
+    templateData: Record<string, string>;
+    removeOriginalAttributes: boolean;
+    clearOriginalHTML: boolean;
+    addCssToHead: boolean;
+    clearCssFromHead: boolean;
+    logTemplateDataWarnings: boolean;
+    addAttributes: boolean;
+    addCssProperties: boolean;
+    addText: boolean;
+    addChildren: boolean;
+};
+
 export type Configuration = {
     safeMode?: boolean;
     domElementTypes?: string[] | string;
@@ -38,10 +52,10 @@ export type BindingOptions = {
     addCssProperties?: boolean;
     addText?: boolean;
     addChildren?: boolean;
-    events?: BindingOptionEvents;
+    events?: BindingOptionsEvents;
 };
 
-export type BindingOptionEvents = {
+export type BindingOptionsEvents = {
     onBeforeRender?: ( element: HTMLElement ) => void;
     onRenderComplete?: ( element: HTMLElement ) => void;
 };

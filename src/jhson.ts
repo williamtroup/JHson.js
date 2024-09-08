@@ -228,11 +228,12 @@ type ElementObject = {
 
             if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
                 if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( Char.dataAttributeStart ) ) {
+                    const resultName: string = `${JsonValue.attribute}${attribute.nodeName}`;
 
                     if ( element.nodeName.toLowerCase() === "img" && attribute.nodeName === "src" && properties.includeImagesAsBase64 ) {
-                        result[ `${JsonValue.attribute}${attribute.nodeName}` ] = getBase64FromImageUrl( element as HTMLImageElement );
+                        result[ resultName ] = getBase64FromImageUrl( element as HTMLImageElement );
                     } else {
-                        result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
+                        result[ resultName ] = attribute.nodeValue;
                     }
 
                     attributesAvailable.push( attribute.nodeName );

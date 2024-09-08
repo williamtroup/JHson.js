@@ -350,10 +350,11 @@ var Trigger;
             const r = e.attributes[a];
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
                 if (n.includeDataAttributes || !r.nodeName.startsWith("data-")) {
+                    const a = `${"@"}${r.nodeName}`;
                     if (e.nodeName.toLowerCase() === "img" && r.nodeName === "src" && n.includeImagesAsBase64) {
-                        t[`${"@"}${r.nodeName}`] = l(e);
+                        t[a] = l(e);
                     } else {
-                        t[`${"@"}${r.nodeName}`] = r.nodeValue;
+                        t[a] = r.nodeValue;
                     }
                     i.push(r.nodeName);
                 }
@@ -518,7 +519,7 @@ var Trigger;
                 }
             }
         }
-        return N;
+        return S;
     }
     function b(e, t) {
         for (let n in e.templateData) {
@@ -660,7 +661,7 @@ var Trigger;
             }
         }
     }
-    const N = {
+    const S = {
         json: function() {
             const e = i();
             const t = {
@@ -822,7 +823,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return N;
+            return S;
         },
         getVersion: function() {
             return "2.3.0";
@@ -832,7 +833,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = N;
+            window.$jhson = S;
         }
     })();
 })();//# sourceMappingURL=jhson.esm.js.map

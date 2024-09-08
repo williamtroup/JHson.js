@@ -19,6 +19,9 @@ export const enum Char {
     variableEnd = "}}",
     variableDefault = "|",
     dash = "-",
+    dataAttributeStart = "data-",
+    id = "id",
+    name = "name",
 }
 
 export const enum Value {

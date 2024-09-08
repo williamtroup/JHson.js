@@ -220,19 +220,19 @@ type ElementObject = {
             const attribute: Attr = element.attributes[ attributeIndex ];
 
             if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
-                if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( "data-" ) ) {
+                if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( Char.dataAttributeStart ) ) {
                     result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
                     attributesAvailable.push( attribute.nodeName );
                 }
             }
         }
 
-        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( "id" ) === Value.notFound && properties.ignoreAttributes.indexOf( "id" ) === Value.notFound ) {
-            result[ `${JsonValue.attribute}id` ] = crypto.randomUUID();
+        if ( properties.generateUniqueMissingIds && attributesAvailable.indexOf( Char.id ) === Value.notFound && properties.ignoreAttributes.indexOf( Char.id ) === Value.notFound ) {
+            result[ `${JsonValue.attribute}${Char.id}` ] = crypto.randomUUID();
         }
 
-        if ( properties.generateUniqueMissingNames && attributesAvailable.indexOf( "name" ) === Value.notFound && properties.ignoreAttributes.indexOf( "name" ) === Value.notFound ) {
-            result[ `${JsonValue.attribute}name` ] = crypto.randomUUID();
+        if ( properties.generateUniqueMissingNames && attributesAvailable.indexOf( Char.name ) === Value.notFound && properties.ignoreAttributes.indexOf( Char.name ) === Value.notFound ) {
+            result[ `${JsonValue.attribute}${Char.name}` ] = crypto.randomUUID();
         }
     }
 
@@ -365,7 +365,7 @@ type ElementObject = {
                             while ( attributesLength > 0 ) {
                                 const attributeName: string = element.attributes[ 0 ].name;
 
-                                if ( properties.removeOriginalDataAttributes || !attributeName.startsWith( "data-" ) ) {
+                                if ( properties.removeOriginalDataAttributes || !attributeName.startsWith( Char.dataAttributeStart ) ) {
                                     element.removeAttribute( attributeName );
                                 }
 
@@ -421,7 +421,7 @@ type ElementObject = {
                 if ( properties.addAttributes ) {
                     const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
 
-                    if ( properties.addDataAttributes || !attributeName.startsWith( "data-" ) ) {
+                    if ( properties.addDataAttributes || !attributeName.startsWith( Char.dataAttributeStart ) ) {
                         const attributeValue: string = jsonObject[ jsonKey ];
 
                         element.setAttribute( attributeName, attributeValue );

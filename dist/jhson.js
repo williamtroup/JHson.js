@@ -348,10 +348,10 @@ var Trigger;
             }
         }
         if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
-            t[`${"@"}id`] = crypto.randomUUID();
+            t[`${"@"}${"id"}`] = crypto.randomUUID();
         }
         if (n.generateUniqueMissingNames && i.indexOf("name") === -1 && n.ignoreAttributes.indexOf("name") === -1) {
-            t[`${"@"}name`] = crypto.randomUUID();
+            t[`${"@"}${"name"}`] = crypto.randomUUID();
         }
     }
     function l(e, t, n, r) {

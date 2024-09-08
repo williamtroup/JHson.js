@@ -81,6 +81,19 @@ export type PublicApiJson = {
     includeChildren: ( flag: boolean ) => PublicApiJson;
 
     /**
+     * includeImagesAsBase64().
+     * 
+     * States if the image source attribute should be included as Base 64 URLs.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    includeImagesAsBase64: ( flag: boolean ) => PublicApiJson;
+
+    /**
      * friendlyFormat().
      * 
      * States if the JSON should be formatted in an easy-to-read layout.

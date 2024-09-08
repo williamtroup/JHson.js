@@ -22,6 +22,7 @@
 - 🔠 Data templating for text (with defaults support).
 - 🎥 Write CSS directly back to the head for each element!
 - 💧 Bind JSON directly to DOM elements!
+- 📷 Include images as Base 64 URLs.
 
 
 ## What browsers are supported?
@@ -86,6 +87,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .includeCssProperties( true )
         .includeText( true )
         .includeChildren( true )
+        .includeImagesAsBase64( false )
         .friendlyFormat( true )
         .indentSpaces( 2 )
         .ignoreNodeTypes( "q" )

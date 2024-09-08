@@ -260,7 +260,7 @@ var Trigger;
             if (Is.definedString(i)) {
                 const a = Default2.getObjectFromString(i, e);
                 if (a.parsed && Is.definedObject(a.object)) {
-                    r(Binding.Options.getForNewInstance(a.object, t, c()));
+                    r(Binding.Options.getForNewInstance(a.object, t, g()));
                 } else {
                     if (!e.safeMode) {
                         console.error(e.text.attributeNotValidErrorText.replace("{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME));
@@ -278,8 +278,8 @@ var Trigger;
     }
     function r(e) {
         Trigger.customEvent(e.events.onBeforeRender, e._currentView.element);
-        const t = c(e);
-        m(e._currentView.element, t);
+        const t = g(e);
+        p(e._currentView.element, t);
         Trigger.customEvent(e.events.onRenderComplete, e._currentView.element);
     }
     function i() {
@@ -289,6 +289,7 @@ var Trigger;
             includeCssProperties: false,
             includeText: true,
             includeChildren: true,
+            includeImagesAsBase64: false,
             friendlyFormat: true,
             indentSpaces: 2,
             ignoreNodeTypes: [],
@@ -322,13 +323,13 @@ var Trigger;
             s(e, r, t);
         }
         if (t.includeCssProperties) {
-            l(e, r, t, n);
+            u(e, r, t, n);
         }
         if (t.includeChildren && i > 0) {
-            a = u(e, r, i, t, n);
+            a = d(e, r, i, t, n);
         }
         if (t.includeText) {
-            d(e, r, a);
+            f(e, r, a);
         }
         if (r.hasOwnProperty("&children") && r["&children"].length === 0) {
             delete r["&children"];
@@ -351,7 +352,11 @@ var Trigger;
             const r = e.attributes[a];
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
                 if (n.includeDataAttributes || !r.nodeName.startsWith("data-")) {
-                    t[`${"@"}${r.nodeName}`] = r.nodeValue;
+                    if (e.nodeName.toLowerCase() === "img" && r.nodeName === "src" && n.includeImagesAsBase64) {
+                        t[`${"@"}${r.nodeName}`] = l(e);
+                    } else {
+                        t[`${"@"}${r.nodeName}`] = r.nodeValue;
+                    }
                     i.push(r.nodeName);
                 }
             }
@@ -363,7 +368,16 @@ var Trigger;
             t[`${"@"}${"name"}`] = crypto.randomUUID();
         }
     }
-    function l(e, t, n, r) {
+    function l(e) {
+        const t = DomElement.createWithNoContainer("canvas");
+        t.width = e.width;
+        t.height = e.height;
+        const n = t.getContext("2d");
+        n.drawImage(e, 0, 0);
+        const r = t.toDataURL();
+        return r;
+    }
+    function u(e, t, n, r) {
         const i = getComputedStyle(e);
         const a = i.length;
         for (let e = 0; e < a; e++) {
@@ -378,12 +392,12 @@ var Trigger;
             }
         }
     }
-    function u(t, n, r, i, a) {
+    function d(t, n, r, i, a) {
         let s = 0;
         n["&children"] = [];
         for (let l = 0; l < r; l++) {
             const r = t.children[l];
-            const u = o(r, i, f(a));
+            const u = o(r, i, c(a));
             let d = false;
             if (e.formattingNodeTypes.indexOf(u.nodeName) > -1) {
                 s++;
@@ -403,7 +417,7 @@ var Trigger;
         }
         return s;
     }
-    function d(e, t, n) {
+    function f(e, t, n) {
         if (Is.definedString(e.innerText)) {
             if (n > 0 && t.hasOwnProperty("&children") && t["&children"].length === 0) {
                 t["#text"] = e.innerHTML;
@@ -414,7 +428,7 @@ var Trigger;
             }
         }
     }
-    function f(e) {
+    function c(e) {
         const t = {};
         for (let n in e) {
             if (e.hasOwnProperty(n)) {
@@ -423,7 +437,7 @@ var Trigger;
         }
         return t;
     }
-    function c(e = null) {
+    function g(e = null) {
         const t = Is.definedObject(e);
         return {
             json: t ? e.json : "",
@@ -442,7 +456,7 @@ var Trigger;
             insertBefore: t ? e.insertBefore : false
         };
     }
-    function g(t) {
+    function m(t) {
         let n = null;
         if (Is.definedString(t.json)) {
             const r = Default2.getObjectFromString(t.json, e);
@@ -451,12 +465,12 @@ var Trigger;
                 break;
             }
             if (Is.defined(n)) {
-                m(n, t, r);
+                p(n, t, r);
             }
         }
         return n;
     }
-    function m(t, n, r = null) {
+    function p(t, n, r = null) {
         if (Is.definedObject(t) && Is.definedString(n.json)) {
             let i = r;
             if (!Is.definedObject(i)) {
@@ -470,10 +484,10 @@ var Trigger;
             };
             if (i.parsed && Is.definedObject(i.object)) {
                 if (n.clearCssFromHead) {
-                    O();
+                    C();
                 }
                 if (Is.definedObject(n.templateData)) {
-                    p(n, a);
+                    b(n, a);
                 }
                 for (let e in i.object) {
                     if (e === t.nodeName.toLowerCase()) {
@@ -493,22 +507,22 @@ var Trigger;
                         } else if (n.insertBefore && t.children.length > 0) {
                             r = t.children[0];
                         }
-                        b(t, i.object[e], n, a, r);
+                        D(t, i.object[e], n, a, r);
                         break;
                     }
                 }
                 y(t);
                 if (n.addCssToHead) {
-                    h(a);
+                    O(a);
                 }
                 if (n.logTemplateDataWarnings) {
-                    C(a);
+                    A(a);
                 }
             }
         }
-        return A;
+        return N;
     }
-    function p(e, t) {
+    function b(e, t) {
         for (let n in e.templateData) {
             if (e.templateData.hasOwnProperty(n)) {
                 t.templateDataKeys.push(n);
@@ -519,7 +533,7 @@ var Trigger;
         }));
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function b(e, t, n, r, i) {
+    function D(e, t, n, r, i) {
         const a = [];
         for (let i in t) {
             if (Str.startsWithAnyCase(i, "@")) {
@@ -541,7 +555,7 @@ var Trigger;
                 }
             } else if (i === "#text") {
                 if (n.addText) {
-                    D(e, t[i], n, r);
+                    h(e, t[i], n, r);
                 }
             } else if (i === "&children") {
                 if (n.addChildren) {
@@ -551,7 +565,7 @@ var Trigger;
                         for (let t in a) {
                             if (a.hasOwnProperty(t)) {
                                 const i = DomElement.create(e, t.toLowerCase());
-                                b(i, a[t], n, r, null);
+                                D(i, a[t], n, r, null);
                             }
                         }
                     }
@@ -562,7 +576,7 @@ var Trigger;
             T(e, a, r);
         }
     }
-    function D(e, t, n, r) {
+    function h(e, t, n, r) {
         e.innerHTML = t;
         if (r.templateDataKeysLength > 0) {
             for (let t = 0; t < r.templateDataKeysLength; t++) {
@@ -606,7 +620,7 @@ var Trigger;
         i.push("}");
         n.css[e.id] = i;
     }
-    function h(e) {
+    function O(e) {
         const t = document.getElementsByTagName("head")[0];
         let n = [];
         for (let t in e.css) {
@@ -617,14 +631,14 @@ var Trigger;
         const r = DomElement.create(t, "style");
         r.appendChild(document.createTextNode(n.join("\n")));
     }
-    function O() {
+    function C() {
         const e = [].slice.call(document.getElementsByTagName("styles"));
         const t = e.length;
         for (let n = 0; n < t; n++) {
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function C(t) {
+    function A(t) {
         const n = t.templateDataKeysProcessed.length;
         if (t.templateDataKeysLength > n) {
             for (let n = 0; n < t.templateDataKeysLength; n++) {
@@ -648,7 +662,7 @@ var Trigger;
             }
         }
     }
-    const A = {
+    const N = {
         json: function() {
             const e = i();
             const t = {
@@ -670,6 +684,10 @@ var Trigger;
                 },
                 includeChildren: function(t) {
                     e.includeChildren = Default2.getBoolean(t, e.includeChildren);
+                    return this;
+                },
+                includeImagesAsBase64: function(t) {
+                    e.includeImagesAsBase64 = Default2.getBoolean(t, e.includeImagesAsBase64);
                     return this;
                 },
                 friendlyFormat: function(t) {
@@ -718,7 +736,7 @@ var Trigger;
             return t;
         },
         html: function() {
-            const e = c();
+            const e = g();
             const t = {
                 json: function(n) {
                     e.json = Default2.getString(n, e.json);
@@ -777,10 +795,10 @@ var Trigger;
                     return t;
                 },
                 write: function(t) {
-                    return m(t, e);
+                    return p(t, e);
                 },
                 get: function() {
-                    return g(e);
+                    return m(e);
                 },
                 getVariables: function(e) {
                     let t = [];
@@ -806,7 +824,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return A;
+            return N;
         },
         getVersion: function() {
             return "2.3.0";
@@ -816,7 +834,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = A;
+            window.$jhson = N;
         }
     })();
 })();//# sourceMappingURL=jhson.js.map

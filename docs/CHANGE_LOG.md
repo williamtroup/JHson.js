@@ -1,7 +1,9 @@
 # JHson.js - Change Log:
 
 ## Version 2.3.0:
-- 
+
+#### **Public Functions:**
+- Added "includeImagesAsBase64()" support for "json()", which states if the image source attributes should be included as a Base 64 URLs (defaults to false).
 
 <br>
 

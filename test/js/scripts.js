@@ -6,6 +6,7 @@ var _JSON_TEXTAREA = null,
     _INCLUDE_CSS_STYLES = null,
     _INCLUDE_TEXT = null,
     _INCLUDE_CHILDREN = null,
+    _INCLUDE_IMAGES_AS_BASE_64 = null,
     _FRIENDLY_FORMAT = null,
     _INDENT_SPACES = null,
     _IGNORE_NODE_TYPES = null,
@@ -41,6 +42,7 @@ var _SET_TEMPLATE_DATA = null,
         _INCLUDE_CSS_STYLES = document.getElementById( "includeCssProperties" );
         _INCLUDE_TEXT = document.getElementById( "includeText" );
         _INCLUDE_CHILDREN = document.getElementById( "includeChildren" );
+        _INCLUDE_IMAGES_AS_BASE_64 = document.getElementById( "includeImagesAsBase64" );
         _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" );
         _INDENT_SPACES = document.getElementById( "indentSpaces" );
         _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" );
@@ -79,6 +81,7 @@ function getJSONData() {
         .includeCssProperties( _INCLUDE_CSS_STYLES.checked )
         .includeText( _INCLUDE_TEXT.checked )
         .includeChildren( _INCLUDE_CHILDREN.checked )
+        .includeImagesAsBase64( _INCLUDE_IMAGES_AS_BASE_64.checked )
         .friendlyFormat( _FRIENDLY_FORMAT.checked )
         .indentSpaces( parseInt( _INDENT_SPACES.value ) )
         .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )

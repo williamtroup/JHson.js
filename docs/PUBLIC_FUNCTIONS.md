@@ -63,6 +63,14 @@ States if the children should be included.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > includeImagesAsBase64( *flag* )**:
+States if the image source attribute should be included as Base 64 URLs.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > friendlyFormat( *flag* )**:
 States if the JSON should be formatted in an easy-to-read layout.
 <br>

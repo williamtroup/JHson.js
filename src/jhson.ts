@@ -48,6 +48,7 @@ type JsonProperties = {
     includeCssProperties: boolean;
     includeText: boolean;
     includeChildren: boolean;
+    includeImagesAsBase64: boolean;
     friendlyFormat: boolean;
     indentSpaces: number;
     ignoreNodeTypes: string[];
@@ -147,6 +148,7 @@ type ElementObject = {
             includeCssProperties: false,
             includeText: true,
             includeChildren: true,
+            includeImagesAsBase64: false,
             friendlyFormat: true,
             indentSpaces: 2,
             ignoreNodeTypes: [],
@@ -226,7 +228,13 @@ type ElementObject = {
 
             if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
                 if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( Char.dataAttributeStart ) ) {
-                    result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
+
+                    if ( element.nodeName.toLowerCase() === "img" && attribute.nodeName === "src" && properties.includeImagesAsBase64 ) {
+                        result[ `${JsonValue.attribute}${attribute.nodeName}` ] = getBase64FromImageUrl( element as HTMLImageElement );
+                    } else {
+                        result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
+                    }
+
                     attributesAvailable.push( attribute.nodeName );
                 }
             }
@@ -239,6 +247,19 @@ type ElementObject = {
         if ( properties.generateUniqueMissingNames && attributesAvailable.indexOf( Char.name ) === Value.notFound && properties.ignoreAttributes.indexOf( Char.name ) === Value.notFound ) {
             result[ `${JsonValue.attribute}${Char.name}` ] = crypto.randomUUID();
         }
+    }
+
+    function getBase64FromImageUrl( image: HTMLImageElement ) : string {
+        const canvas: HTMLCanvasElement = DomElement.createWithNoContainer( "canvas" ) as HTMLCanvasElement;
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        const context: CanvasRenderingContext2D = canvas.getContext( "2d" )!;
+        context.drawImage( image, 0, 0 );
+
+        const dataURL: string = canvas.toDataURL();
+
+        return dataURL;
     }
 
     function getElementCssProperties( element: HTMLElement, result: Record<string, any>, properties: JsonProperties, parentCssStyles: Record<string, string> ) : void {
@@ -664,6 +685,12 @@ type ElementObject = {
 
                 includeChildren: function ( flag: boolean ) : PublicApiJson {
                     properties.includeChildren = Default.getBoolean( flag, properties.includeChildren );
+
+                    return this;
+                },
+
+                includeImagesAsBase64: function ( flag: boolean ) : PublicApiJson {
+                    properties.includeImagesAsBase64 = Default.getBoolean( flag, properties.includeImagesAsBase64 );
 
                     return this;
                 },

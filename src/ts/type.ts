@@ -11,6 +11,9 @@
  */
 
 
+export type JsonPropertyReplacer = ( key: string, value: any ) => any;
+export type IgnoreNodeCondition = ( element: HTMLElement ) => boolean;
+
 export type StringToJson = {
     parsed: boolean;
     object: any;
@@ -32,8 +35,6 @@ export type HtmlProperties = {
     addChildren: boolean;
     insertBefore: boolean;
 };
-
-export type JsonPropertyReplacer = ( key: string, value: any ) => any;
 
 export type Configuration = {
     safeMode?: boolean;

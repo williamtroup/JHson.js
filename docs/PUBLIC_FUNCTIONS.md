@@ -87,6 +87,14 @@ States the node types that should not be included in the JSON.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > ignoreNodeCondition( *func* )**:
+States the condition function (parameters being element:HtmlElement, and return value being a boolean) to use to state if an element should be included in the JSON.
+<br>
+***Parameter: func***: '*function*' - The condition function to use to check if a element should be included (defaults to null).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > ignoreCssProperties( *cssProperties* )**:
 States the CSS properties that should not be included in the JSON.
 <br>
@@ -122,7 +130,7 @@ States if the JSON should include unique name for DOM elements that don't have t
 #### **json() > propertyReplacer( *func* )**:
 States the property replacer function (parameters being Key:string, Value:any) to use for Keys and Values written for the JSON.
 <br>
-***Parameter: flag***: '*function*' - The replacer function to use when writing the JSON (defaults to null).
+***Parameter: func***: '*function*' - The replacer function to use when writing the JSON (defaults to null).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>

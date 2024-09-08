@@ -283,6 +283,7 @@ var Trigger;
             friendlyFormat: true,
             indentSpaces: 2,
             ignoreNodeTypes: [],
+            ignoreNodeCondition: null,
             ignoreCssProperties: [],
             ignoreAttributes: [],
             generateUniqueMissingIds: false,
@@ -379,8 +380,10 @@ var Trigger;
                 s++;
             } else {
                 if (i.ignoreNodeTypes.indexOf(u.nodeName) === -1) {
-                    d = true;
-                    s++;
+                    if (!Is.definedFunction(i.ignoreNodeCondition) || !i.ignoreNodeCondition(r)) {
+                        d = true;
+                        s++;
+                    }
                 }
             }
             if (d) {
@@ -651,6 +654,10 @@ var Trigger;
                 },
                 ignoreNodeTypes: function(t) {
                     e.ignoreNodeTypes = Default2.getStringOrArray(t, e.ignoreNodeTypes);
+                    return this;
+                },
+                ignoreNodeCondition: function(t) {
+                    e.ignoreNodeCondition = Default2.getFunction(t, e.ignoreNodeCondition);
                     return this;
                 },
                 ignoreCssProperties: function(t) {

@@ -16,7 +16,8 @@ import {
     type BindingOptions,
     type Configuration, 
     type HtmlProperties, 
-    type JsonPropertyReplacer } from "./ts/type";
+    type JsonPropertyReplacer, 
+    type IgnoreNodeCondition } from "./ts/type";
 
 import {
     type PublicApi,
@@ -50,6 +51,7 @@ type JsonProperties = {
     friendlyFormat: boolean;
     indentSpaces: number;
     ignoreNodeTypes: string[];
+    ignoreNodeCondition: IgnoreNodeCondition;
     ignoreCssProperties: string[];
     ignoreAttributes: string[];
     generateUniqueMissingIds: boolean;
@@ -149,6 +151,7 @@ type ElementObject = {
             friendlyFormat: true,
             indentSpaces: 2,
             ignoreNodeTypes: [],
+            ignoreNodeCondition: null!,
             ignoreCssProperties: [],
             ignoreAttributes: [],
             generateUniqueMissingIds: false,
@@ -273,8 +276,10 @@ type ElementObject = {
             } else {
 
                 if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === Value.notFound ) {
-                    addChild = true;
-                    totalChildren++;
+                    if ( !Is.definedFunction( properties.ignoreNodeCondition ) || !properties.ignoreNodeCondition( child ) ) {
+                        addChild = true;
+                        totalChildren++;
+                    }
                 }
             }
 
@@ -651,6 +656,12 @@ type ElementObject = {
 
                 ignoreNodeTypes: function ( types: string[] | string ) : PublicApiJson {
                     properties.ignoreNodeTypes = Default.getStringOrArray( types, properties.ignoreNodeTypes );
+
+                    return this;
+                },
+
+                ignoreNodeCondition: function ( func: IgnoreNodeCondition ) : PublicApiJson {
+                    properties.ignoreNodeCondition = Default.getFunction( func, properties.ignoreNodeCondition );
 
                     return this;
                 },

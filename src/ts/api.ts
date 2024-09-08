@@ -11,7 +11,7 @@
  */
 
 
-import { type JsonPropertyReplacer } from "./type";
+import { type IgnoreNodeCondition, type JsonPropertyReplacer } from "./type";
 
 
 export type PublicApiJson = {
@@ -118,6 +118,19 @@ export type PublicApiJson = {
      * @returns     {Object}                                        The JSON properties object.
      */
     ignoreNodeTypes: ( types: string[] | string ) => PublicApiJson;
+
+    /**
+     * ignoreNodeCondition().
+     * 
+     * States the condition function (parameters being element:HtmlElement, and return value being a boolean) to use to state if an element should be included in the JSON.
+     * 
+     * @public
+     * 
+     * @param       {function}  func                                The condition function to use to check if a element should be included (defaults to null).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    ignoreNodeCondition: ( func: IgnoreNodeCondition ) => PublicApiJson;
 
     /**
      * ignoreCssProperties().

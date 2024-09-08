@@ -344,9 +344,33 @@ type ElementObject = {
         } as HtmlProperties;
     }
 
-    function writeHtml( element: HTMLElement, properties: HtmlProperties ) : PublicApi {
-        if ( Is.definedObject( element ) && Is.definedString( properties.json ) ) {
+    function getHtml( properties: HtmlProperties ) : HTMLElement {
+        let result: HTMLElement = null!;
+
+        if ( Is.definedString( properties.json ) ) {
             const convertedJsonObject: StringToJson = Default.getObjectFromString( properties.json, _configuration );
+
+            for ( let key in convertedJsonObject.object ) {
+                result = DomElement.createWithNoContainer( key );
+                break;
+            }
+
+            if ( Is.defined( result ) ) {
+                writeHtml( result, properties, convertedJsonObject );
+            }
+        }
+
+        return result;
+    }
+
+    function writeHtml( element: HTMLElement, properties: HtmlProperties, overrideConvertedJsonObject: StringToJson = null! ) : PublicApi {
+        if ( Is.definedObject( element ) && Is.definedString( properties.json ) ) {
+            let convertedJsonObject: StringToJson = overrideConvertedJsonObject;
+
+            if ( !Is.definedObject( convertedJsonObject ) ) {
+                convertedJsonObject = Default.getObjectFromString( properties.json, _configuration )
+            }
+
             const writingScope: WritingScope = {
                 css: {},
                 templateDataKeys: [],
@@ -805,6 +829,10 @@ type ElementObject = {
 
                 write: function ( element: HTMLElement ) : PublicApi {
                     return writeHtml( element, properties );
+                },
+
+                get: function () : HTMLElement {
+                    return getHtml( properties );
                 },
 
                 getVariables: function ( element: HTMLElement ) : string[] {

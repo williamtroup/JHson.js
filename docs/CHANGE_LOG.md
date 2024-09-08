@@ -8,6 +8,7 @@
 - Added "removeOriginalDataAttributes()" support for "html()" (including binding support), which states if the original data attributes should be removed (defaults to true).
 - Added "propertyReplacer()" support for "json()", which states a JSON property replacer function to use when writing the JSON (defaults to null).
 - Added "ignoreNodeCondition()" support for "json()", which states a condition function (that accepts a DOM element) that states if a node should be included in the JSON (defaults to null).
+- Added "get()" support for "html()", which returns the HTML DOM element created from the JSON.
 
 #### **Documentation:**
 - Updated the documentation to show the right properties for the objects, and add missing documentation for the binding attribute.

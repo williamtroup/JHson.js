@@ -103,7 +103,15 @@ function getHTMLVariables() {
     console.log( variablesString );
 }
 
-function writeJSONData() {
+function writeJsonToHtmlData() {
+    getHtmlScope().write( _BODY );
+}
+
+function getJsonToHtmlElement() {
+    console.log( getHtmlScope().get() );
+}
+
+function getHtmlScope() {
     var htmlScope = $jhson
         .html()
         .json( _JSON_TEXTAREA.value );
@@ -128,6 +136,7 @@ function writeJSONData() {
         .addCssProperties( _ADD_CSS_PROPERTIES.checked )
         .addText( _ADD_TEXT.checked )
         .addChildren( _ADD_CHILDREN.checked )
-        .insertBefore( _INSERT_BEFORE.checked )
-        .write( _BODY );
+        .insertBefore( _INSERT_BEFORE.checked );
+
+    return htmlScope;
 }

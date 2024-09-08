@@ -16,12 +16,17 @@ import { Char } from "../data/enum";
 
 export namespace DomElement {
     export function create( container: HTMLElement, type: string ) : HTMLElement {
+        let result: any = createWithNoContainer( type );
+        container.appendChild( result );
+
+        return result;
+    }
+
+    export function createWithNoContainer( type: string ) : HTMLElement {
         const nodeType: string = type.toLowerCase();
         const isText: boolean = nodeType === "text";
 
         let result: any = isText ? document.createTextNode( Char.empty ) : document.createElement( nodeType );
-
-        container.appendChild( result );
 
         return result;
     }

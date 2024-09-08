@@ -416,9 +416,20 @@ export type PublicApiHtml = {
      * 
      * @param       {Object}    element                             The DOM element to add the new JSON HTML nodes to.
      * 
-     * @returns     {string}                                        The JHson.js class instance.
+     * @returns     {Object}                                        The JHson.js class instance.
      */
     write: ( element: HTMLElement ) => PublicApi;
+
+    /**
+     * get().
+     * 
+     * Uses all the options selected via the chained functions to convert the JSON into HTML DOM element.
+     * 
+     * @public
+     * 
+     * @returns     {Object}                                        The HTML DOM element created from the JSON.
+     */
+    get: () => HTMLElement;
 
     /**
      * getVariables().

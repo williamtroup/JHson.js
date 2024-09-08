@@ -55,14 +55,17 @@ export type BindingOptions = {
     json?: string;
     templateData?: object;
     removeOriginalAttributes?: boolean;
+    removeOriginalDataAttributes?: boolean;
     clearOriginalHTML?: boolean;
     addCssToHead?: boolean;
     clearCssFromHead?: boolean;
     logTemplateDataWarnings?: boolean;
     addAttributes?: boolean;
+    addDataAttributes?: boolean;
     addCssProperties?: boolean;
     addText?: boolean;
     addChildren?: boolean;
+    insertBefore?: boolean;
     events?: BindingOptionsEvents;
 };
 

@@ -114,6 +114,23 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .addChildren( true )
         .insertBefore( false )
         .write( header );
+
+    var element = $jhson
+        .html()
+        .json( json )
+        .templateData( { "{{template_data}}": "this template data" } )
+        .removeOriginalAttributes( true )
+        .removeOriginalDataAttributes( true )
+        .clearOriginalHTML( true )
+        .addCssToHead( false )
+        .clearCssFromHead( false )
+        .logTemplateDataWarnings( false )
+        .addAttributes( true )
+        .addDataAttributes( true )
+        .addCssProperties( true )
+        .addText( true )
+        .addChildren( true )
+        .get();
 </script>
 ```
 

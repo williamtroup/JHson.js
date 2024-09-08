@@ -281,6 +281,12 @@ Uses all the options selected via the chained functions to convert the JSON into
 ***Returns***: '*Object*' - The JHson.js class instance.
 <br>
 
+#### **html() > get()**:
+Uses all the options selected via the chained functions to convert the JSON into HTML DOM element.
+<br>
+***Returns***: '*Object*' - The HTML DOM element created from the JSON.
+<br>
+
 #### **html() > getVariables( *element* )**:
 Uses all the options selected via the chained functions to get the template variables from a HTML DOM element.
 <br>

@@ -113,13 +113,18 @@ var DomElement;
 
 (e => {
     function t(e, t) {
-        const n = t.toLowerCase();
-        const r = n === "text";
-        let i = r ? document.createTextNode("") : document.createElement(n);
-        e.appendChild(i);
-        return i;
+        let r = n(t);
+        e.appendChild(r);
+        return r;
     }
     e.create = t;
+    function n(e) {
+        const t = e.toLowerCase();
+        const n = t === "text";
+        let r = n ? document.createTextNode("") : document.createElement(t);
+        return r;
+    }
+    e.createWithNoContainer = n;
 })(DomElement || (DomElement = {}));
 
 var Str;
@@ -197,14 +202,17 @@ var Binding;
             n.json = Default2.getString(n.json, t.json);
             n.templateData = Default2.getObject(n.templateData, t.templateData);
             n.removeOriginalAttributes = Default2.getBoolean(n.removeOriginalAttributes, t.removeOriginalAttributes);
+            n.removeOriginalDataAttributes = Default2.getBoolean(n.removeOriginalDataAttributes, t.removeOriginalDataAttributes);
             n.clearOriginalHTML = Default2.getBoolean(n.clearOriginalHTML, t.clearOriginalHTML);
             n.addCssToHead = Default2.getBoolean(n.addCssToHead, t.addCssToHead);
             n.clearCssFromHead = Default2.getBoolean(n.clearCssFromHead, t.clearCssFromHead);
             n.logTemplateDataWarnings = Default2.getBoolean(n.logTemplateDataWarnings, t.logTemplateDataWarnings);
             n.addAttributes = Default2.getBoolean(n.addAttributes, t.addAttributes);
+            n.addDataAttributes = Default2.getBoolean(n.addDataAttributes, t.addDataAttributes);
             n.addCssProperties = Default2.getBoolean(n.addCssProperties, t.addCssProperties);
             n.addText = Default2.getBoolean(n.addText, t.addText);
             n.addChildren = Default2.getBoolean(n.addChildren, t.addChildren);
+            n.insertBefore = Default2.getBoolean(n.insertBefore, t.insertBefore);
             n = r(n);
             return n;
         }
@@ -272,7 +280,7 @@ var Trigger;
         Trigger.customEvent(e.events.onBeforeRender, e._currentView.element);
         const t = c();
         t.json = e.json;
-        g(e._currentView.element, t);
+        m(e._currentView.element, t);
         Trigger.customEvent(e.events.onRenderComplete, e._currentView.element);
     }
     function i() {
@@ -433,25 +441,42 @@ var Trigger;
             insertBefore: false
         };
     }
-    function g(t, n) {
+    function g(t) {
+        let n = null;
+        if (Is.definedString(t.json)) {
+            const r = Default2.getObjectFromString(t.json, e);
+            for (let e in r.object) {
+                n = DomElement.createWithNoContainer(e);
+                break;
+            }
+            if (Is.defined(n)) {
+                m(n, t, r);
+            }
+        }
+        return n;
+    }
+    function m(t, n, r = null) {
         if (Is.definedObject(t) && Is.definedString(n.json)) {
-            const r = Default2.getObjectFromString(n.json, e);
-            const i = {
+            let i = r;
+            if (!Is.definedObject(i)) {
+                i = Default2.getObjectFromString(n.json, e);
+            }
+            const a = {
                 css: {},
                 templateDataKeys: [],
                 templateDataKeysLength: 0,
                 templateDataKeysProcessed: []
             };
-            if (r.parsed && Is.definedObject(r.object)) {
+            if (i.parsed && Is.definedObject(i.object)) {
                 if (n.clearCssFromHead) {
-                    h();
+                    O();
                 }
                 if (Is.definedObject(n.templateData)) {
-                    m(n, i);
+                    p(n, a);
                 }
-                for (let e in r.object) {
+                for (let e in i.object) {
                     if (e === t.nodeName.toLowerCase()) {
-                        let a = null;
+                        let r = null;
                         if (n.removeOriginalAttributes) {
                             let e = t.attributes.length;
                             while (e > 0) {
@@ -465,24 +490,24 @@ var Trigger;
                         if (n.clearOriginalHTML) {
                             t.innerHTML = "";
                         } else if (n.insertBefore && t.children.length > 0) {
-                            a = t.children[0];
+                            r = t.children[0];
                         }
-                        p(t, r.object[e], n, i, a);
+                        b(t, i.object[e], n, a, r);
                         break;
                     }
                 }
-                y(t);
+                C(t);
                 if (n.addCssToHead) {
-                    T(i);
+                    h(a);
                 }
                 if (n.logTemplateDataWarnings) {
-                    O(i);
+                    y(a);
                 }
             }
         }
-        return C;
+        return A;
     }
-    function m(e, t) {
+    function p(e, t) {
         for (let n in e.templateData) {
             if (e.templateData.hasOwnProperty(n)) {
                 t.templateDataKeys.push(n);
@@ -493,7 +518,7 @@ var Trigger;
         }));
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function p(e, t, n, r, i) {
+    function b(e, t, n, r, i) {
         const a = [];
         for (let i in t) {
             if (Str.startsWithAnyCase(i, "@")) {
@@ -515,7 +540,7 @@ var Trigger;
                 }
             } else if (i === "#text") {
                 if (n.addText) {
-                    b(e, t[i], n, r);
+                    D(e, t[i], n, r);
                 }
             } else if (i === "&children") {
                 if (n.addChildren) {
@@ -525,7 +550,7 @@ var Trigger;
                         for (let t in a) {
                             if (a.hasOwnProperty(t)) {
                                 const i = DomElement.create(e, t.toLowerCase());
-                                p(i, a[t], n, r, null);
+                                b(i, a[t], n, r, null);
                             }
                         }
                     }
@@ -533,10 +558,10 @@ var Trigger;
             }
         }
         if (a.length > 0) {
-            D(e, a, r);
+            T(e, a, r);
         }
     }
-    function b(e, t, n, r) {
+    function D(e, t, n, r) {
         e.innerHTML = t;
         if (r.templateDataKeysLength > 0) {
             for (let t = 0; t < r.templateDataKeysLength; t++) {
@@ -563,7 +588,7 @@ var Trigger;
             }
         }
     }
-    function D(e, t, n) {
+    function T(e, t, n) {
         let r = null;
         if (Is.definedString(e.className)) {
             const t = e.className.split(" ");
@@ -580,7 +605,7 @@ var Trigger;
         i.push("}");
         n.css[e.id] = i;
     }
-    function T(e) {
+    function h(e) {
         const t = document.getElementsByTagName("head")[0];
         let n = [];
         for (let t in e.css) {
@@ -591,14 +616,14 @@ var Trigger;
         const r = DomElement.create(t, "style");
         r.appendChild(document.createTextNode(n.join("\n")));
     }
-    function h() {
+    function O() {
         const e = [].slice.call(document.getElementsByTagName("styles"));
         const t = e.length;
         for (let n = 0; n < t; n++) {
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function O(t) {
+    function y(t) {
         const n = t.templateDataKeysProcessed.length;
         if (t.templateDataKeysLength > n) {
             for (let n = 0; n < t.templateDataKeysLength; n++) {
@@ -609,7 +634,7 @@ var Trigger;
             }
         }
     }
-    function y(e) {
+    function C(e) {
         const t = Str.getTemplateVariables(e.innerHTML);
         const n = t.length;
         for (let r = 0; r < n; r++) {
@@ -622,7 +647,7 @@ var Trigger;
             }
         }
     }
-    const C = {
+    const A = {
         json: function() {
             const e = i();
             const t = {
@@ -751,7 +776,10 @@ var Trigger;
                     return t;
                 },
                 write: function(t) {
-                    return g(t, e);
+                    return m(t, e);
+                },
+                get: function() {
+                    return g(e);
                 },
                 getVariables: function(e) {
                     let t = [];
@@ -777,7 +805,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return C;
+            return A;
         },
         getVersion: function() {
             return "2.2.0";
@@ -787,7 +815,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = C;
+            window.$jhson = A;
         }
     })();
 })();//# sourceMappingURL=jhson.js.map

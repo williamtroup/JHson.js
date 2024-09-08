@@ -174,9 +174,9 @@ Configuration options allow you to customize how JHson.js will function.  You ca
 
 ```markdown
 <script> 
-  $jhson.setConfiguration( {
-      safeMode: false
-  } );
+    $jhson.setConfiguration( {
+        safeMode: false
+    } );
 </script>
 ```
 

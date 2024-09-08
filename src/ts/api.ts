@@ -26,6 +26,19 @@ export type PublicApiJson = {
     includeAttributes: ( flag: boolean ) => PublicApiJson;
 
     /**
+     * includeDataAttributes().
+     * 
+     * States if the data attributes should be included.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    includeDataAttributes: ( flag: boolean ) => PublicApiJson;
+
+    /**
      * includeCssProperties().
      * 
      * States if the CSS style properties should be included.

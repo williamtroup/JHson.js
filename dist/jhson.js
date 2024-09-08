@@ -282,6 +282,7 @@ var Trigger;
     function i() {
         return {
             includeAttributes: true,
+            includeDataAttributes: true,
             includeCssProperties: false,
             includeText: true,
             includeChildren: true,
@@ -344,8 +345,10 @@ var Trigger;
         for (let a = 0; a < r; a++) {
             const r = e.attributes[a];
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
-                t[`${"@"}${r.nodeName}`] = r.nodeValue;
-                i.push(r.nodeName);
+                if (n.includeDataAttributes || !r.nodeName.startsWith("data-")) {
+                    t[`${"@"}${r.nodeName}`] = r.nodeValue;
+                    i.push(r.nodeName);
+                }
             }
         }
         if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
@@ -464,7 +467,7 @@ var Trigger;
                 }
                 O(t);
                 if (n.addCssToHead) {
-                    D(i);
+                    T(i);
                 }
                 if (n.logTemplateDataWarnings) {
                     y(i);
@@ -522,7 +525,7 @@ var Trigger;
             }
         }
         if (a.length > 0) {
-            T(e, a, r);
+            D(e, a, r);
         }
     }
     function b(e, t, n, r) {
@@ -552,7 +555,7 @@ var Trigger;
             }
         }
     }
-    function T(e, t, n) {
+    function D(e, t, n) {
         let r = null;
         if (Is.definedString(e.className)) {
             const t = e.className.split(" ");
@@ -569,7 +572,7 @@ var Trigger;
         i.push("}");
         n.css[e.id] = i;
     }
-    function D(e) {
+    function T(e) {
         const t = document.getElementsByTagName("head")[0];
         let n = [];
         for (let t in e.css) {
@@ -617,6 +620,10 @@ var Trigger;
             const t = {
                 includeAttributes: function(t) {
                     e.includeAttributes = Default2.getBoolean(t, e.includeAttributes);
+                    return this;
+                },
+                includeDataAttributes: function(t) {
+                    e.includeDataAttributes = Default2.getBoolean(t, e.includeDataAttributes);
                     return this;
                 },
                 includeCssProperties: function(t) {

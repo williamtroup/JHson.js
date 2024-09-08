@@ -42,6 +42,7 @@ type WritingScope = {
 
 type JsonProperties = {
     includeAttributes: boolean;
+    includeDataAttributes: boolean;
     includeCssProperties: boolean;
     includeText: boolean;
     includeChildren: boolean;
@@ -139,6 +140,7 @@ type ElementObject = {
     function getDefaultJsonProperties() : JsonProperties {
         return {
             includeAttributes: true,
+            includeDataAttributes: true,
             includeCssProperties: false,
             includeText: true,
             includeChildren: true,
@@ -218,8 +220,10 @@ type ElementObject = {
             const attribute: Attr = element.attributes[ attributeIndex ];
 
             if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
-                result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
-                attributesAvailable.push( attribute.nodeName );
+                if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( "data-" ) ) {
+                    result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
+                    attributesAvailable.push( attribute.nodeName );
+                }
             }
         }
 
@@ -590,6 +594,12 @@ type ElementObject = {
             const scope: PublicApiJson = {
                 includeAttributes: function ( flag: boolean ) : PublicApiJson {
                     properties.includeAttributes = Default.getBoolean( flag, properties.includeAttributes );
+
+                    return this;
+                },
+
+                includeDataAttributes: function ( flag: boolean ) : PublicApiJson {
+                    properties.includeDataAttributes = Default.getBoolean( flag, properties.includeDataAttributes );
 
                     return this;
                 },

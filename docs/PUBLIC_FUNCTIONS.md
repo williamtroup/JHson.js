@@ -31,6 +31,14 @@ States if the attributes should be included.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > includeDataAttributes( *flag* )**:
+States if the data attributes should be included.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > includeCssProperties( *flag* )**:
 States if the CSS style properties should be included.
 <br>

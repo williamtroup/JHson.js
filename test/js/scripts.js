@@ -2,6 +2,7 @@ var _BODY = null;
 
 var _JSON_TEXTAREA = null,
     _INCLUDE_ATTRIBUTES = null,
+    _INCLUDE_DATA_ATTRIBUTES = null,
     _INCLUDE_CSS_STYLES = null,
     _INCLUDE_TEXT = null,
     _INCLUDE_CHILDREN = null,
@@ -34,6 +35,7 @@ var _SET_TEMPLATE_DATA = null,
 
         _JSON_TEXTAREA = document.getElementById( "json" );
         _INCLUDE_ATTRIBUTES = document.getElementById( "includeAttributes" );
+        _INCLUDE_DATA_ATTRIBUTES = document.getElementById( "includeDataAttributes" );
         _INCLUDE_CSS_STYLES = document.getElementById( "includeCssProperties" );
         _INCLUDE_TEXT = document.getElementById( "includeText" );
         _INCLUDE_CHILDREN = document.getElementById( "includeChildren" );
@@ -69,6 +71,7 @@ function getJSONData() {
     _JSON_TEXTAREA.value = $jhson
         .json()
         .includeAttributes( _INCLUDE_ATTRIBUTES.checked )
+        .includeDataAttributes( _INCLUDE_DATA_ATTRIBUTES.checked )
         .includeCssProperties( _INCLUDE_CSS_STYLES.checked )
         .includeText( _INCLUDE_TEXT.checked )
         .includeChildren( _INCLUDE_CHILDREN.checked )

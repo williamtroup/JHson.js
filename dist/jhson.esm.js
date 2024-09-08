@@ -40,10 +40,6 @@ var Is;
 var Default2;
 
 (Default => {
-    function getAnyString(e, t) {
-        return typeof e === "string" ? e : t;
-    }
-    Default.getAnyString = getAnyString;
     function getString(e, t) {
         return Is.definedString(e) ? e : t;
     }
@@ -115,13 +111,18 @@ var DomElement;
 
 (e => {
     function t(e, t) {
-        const n = t.toLowerCase();
-        const r = n === "text";
-        let i = r ? document.createTextNode("") : document.createElement(n);
-        e.appendChild(i);
-        return i;
+        let r = n(t);
+        e.appendChild(r);
+        return r;
     }
     e.create = t;
+    function n(e) {
+        const t = e.toLowerCase();
+        const n = t === "text";
+        let r = n ? document.createTextNode("") : document.createElement(t);
+        return r;
+    }
+    e.createWithNoContainer = n;
 })(DomElement || (DomElement = {}));
 
 var Str;
@@ -199,14 +200,17 @@ var Binding;
             n.json = Default2.getString(n.json, t.json);
             n.templateData = Default2.getObject(n.templateData, t.templateData);
             n.removeOriginalAttributes = Default2.getBoolean(n.removeOriginalAttributes, t.removeOriginalAttributes);
+            n.removeOriginalDataAttributes = Default2.getBoolean(n.removeOriginalDataAttributes, t.removeOriginalDataAttributes);
             n.clearOriginalHTML = Default2.getBoolean(n.clearOriginalHTML, t.clearOriginalHTML);
             n.addCssToHead = Default2.getBoolean(n.addCssToHead, t.addCssToHead);
             n.clearCssFromHead = Default2.getBoolean(n.clearCssFromHead, t.clearCssFromHead);
             n.logTemplateDataWarnings = Default2.getBoolean(n.logTemplateDataWarnings, t.logTemplateDataWarnings);
             n.addAttributes = Default2.getBoolean(n.addAttributes, t.addAttributes);
+            n.addDataAttributes = Default2.getBoolean(n.addDataAttributes, t.addDataAttributes);
             n.addCssProperties = Default2.getBoolean(n.addCssProperties, t.addCssProperties);
             n.addText = Default2.getBoolean(n.addText, t.addText);
             n.addChildren = Default2.getBoolean(n.addChildren, t.addChildren);
+            n.insertBefore = Default2.getBoolean(n.insertBefore, t.insertBefore);
             n = r(n);
             return n;
         }
@@ -272,24 +276,26 @@ var Trigger;
     }
     function r(e) {
         Trigger.customEvent(e.events.onBeforeRender, e._currentView.element);
-        const t = c();
-        t.json = e.json;
-        g(e._currentView.element, t);
+        const t = c(e);
+        m(e._currentView.element, t);
         Trigger.customEvent(e.events.onRenderComplete, e._currentView.element);
     }
     function i() {
         return {
             includeAttributes: true,
+            includeDataAttributes: true,
             includeCssProperties: false,
             includeText: true,
             includeChildren: true,
             friendlyFormat: true,
             indentSpaces: 2,
             ignoreNodeTypes: [],
+            ignoreNodeCondition: null,
             ignoreCssProperties: [],
             ignoreAttributes: [],
             generateUniqueMissingIds: false,
-            generateUniqueMissingNames: false
+            generateUniqueMissingNames: false,
+            propertyReplacer: null
         };
     }
     function a(e, t) {
@@ -299,9 +305,9 @@ var Trigger;
             const i = o(e, t, {});
             r[i.nodeName] = i.nodeValues;
             if (t.friendlyFormat) {
-                n = JSON.stringify(r, null, t.indentSpaces);
+                n = JSON.stringify(r, t.propertyReplacer, t.indentSpaces);
             } else {
-                n = JSON.stringify(r);
+                n = JSON.stringify(r, t.propertyReplacer);
             }
         }
         return n;
@@ -342,15 +348,17 @@ var Trigger;
         for (let a = 0; a < r; a++) {
             const r = e.attributes[a];
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
-                t["@" + r.nodeName] = r.nodeValue;
-                i.push(r.nodeName);
+                if (n.includeDataAttributes || !r.nodeName.startsWith("data-")) {
+                    t[`${"@"}${r.nodeName}`] = r.nodeValue;
+                    i.push(r.nodeName);
+                }
             }
         }
         if (n.generateUniqueMissingIds && i.indexOf("id") === -1 && n.ignoreAttributes.indexOf("id") === -1) {
-            t[`${"@"}id`] = crypto.randomUUID();
+            t[`${"@"}${"id"}`] = crypto.randomUUID();
         }
         if (n.generateUniqueMissingNames && i.indexOf("name") === -1 && n.ignoreAttributes.indexOf("name") === -1) {
-            t[`${"@"}name`] = crypto.randomUUID();
+            t[`${"@"}${"name"}`] = crypto.randomUUID();
         }
     }
     function l(e, t, n, r) {
@@ -359,7 +367,7 @@ var Trigger;
         for (let e = 0; e < a; e++) {
             const a = i[e];
             if (n.ignoreCssProperties.indexOf(a) === -1) {
-                const e = "$" + a;
+                const e = `${"$"}${a}`;
                 const n = i.getPropertyValue(a);
                 if (!r.hasOwnProperty(e) || r[e] !== n) {
                     t[e] = n;
@@ -379,8 +387,10 @@ var Trigger;
                 s++;
             } else {
                 if (i.ignoreNodeTypes.indexOf(u.nodeName) === -1) {
-                    d = true;
-                    s++;
+                    if (!Is.definedFunction(i.ignoreNodeCondition) || !i.ignoreNodeCondition(r)) {
+                        d = true;
+                        s++;
+                    }
                 }
             }
             if (d) {
@@ -411,67 +421,92 @@ var Trigger;
         }
         return t;
     }
-    function c() {
+    function c(e = null) {
+        const t = Is.definedObject(e);
         return {
-            json: "",
-            templateData: {},
-            removeOriginalAttributes: true,
-            clearOriginalHTML: true,
-            addCssToHead: false,
-            clearCssFromHead: false,
-            logTemplateDataWarnings: false,
-            addAttributes: true,
-            addCssProperties: true,
-            addText: true,
-            addChildren: true,
-            insertBefore: false
+            json: t ? e.json : "",
+            templateData: t ? e.templateData : {},
+            removeOriginalAttributes: t ? e.removeOriginalAttributes : true,
+            removeOriginalDataAttributes: t ? e.removeOriginalDataAttributes : true,
+            clearOriginalHTML: t ? e.clearOriginalHTML : true,
+            addCssToHead: t ? e.addCssToHead : false,
+            clearCssFromHead: t ? e.clearCssFromHead : false,
+            logTemplateDataWarnings: t ? e.logTemplateDataWarnings : false,
+            addAttributes: t ? e.addAttributes : true,
+            addDataAttributes: t ? e.addDataAttributes : true,
+            addCssProperties: t ? e.addCssProperties : true,
+            addText: t ? e.addText : true,
+            addChildren: t ? e.addChildren : true,
+            insertBefore: t ? e.insertBefore : false
         };
     }
-    function g(t, n) {
+    function g(t) {
+        let n = null;
+        if (Is.definedString(t.json)) {
+            const r = Default2.getObjectFromString(t.json, e);
+            for (let e in r.object) {
+                n = DomElement.createWithNoContainer(e);
+                break;
+            }
+            if (Is.defined(n)) {
+                m(n, t, r);
+            }
+        }
+        return n;
+    }
+    function m(t, n, r = null) {
         if (Is.definedObject(t) && Is.definedString(n.json)) {
-            const r = Default2.getObjectFromString(n.json, e);
-            const i = {
+            let i = r;
+            if (!Is.definedObject(i)) {
+                i = Default2.getObjectFromString(n.json, e);
+            }
+            const a = {
                 css: {},
                 templateDataKeys: [],
                 templateDataKeysLength: 0,
                 templateDataKeysProcessed: []
             };
-            if (r.parsed && Is.definedObject(r.object)) {
+            if (i.parsed && Is.definedObject(i.object)) {
                 if (n.clearCssFromHead) {
-                    h();
+                    O();
                 }
                 if (Is.definedObject(n.templateData)) {
-                    m(n, i);
+                    p(n, a);
                 }
-                for (let e in r.object) {
+                for (let e in i.object) {
                     if (e === t.nodeName.toLowerCase()) {
-                        let a = null;
+                        let r = null;
                         if (n.removeOriginalAttributes) {
-                            while (t.attributes.length > 0) {
-                                t.removeAttribute(t.attributes[0].name);
+                            let e = t.attributes.length;
+                            while (e > 0) {
+                                const r = t.attributes[0].name;
+                                if (n.removeOriginalDataAttributes || !r.startsWith("data-")) {
+                                    t.removeAttribute(r);
+                                }
+                                e--;
                             }
                         }
                         if (n.clearOriginalHTML) {
                             t.innerHTML = "";
                         } else if (n.insertBefore && t.children.length > 0) {
-                            a = t.children[0];
+                            r = t.children[0];
                         }
-                        p(t, r.object[e], n, i, a);
+                        b(t, i.object[e], n, a, r);
                         break;
                     }
                 }
-                O(t);
+                y(t);
                 if (n.addCssToHead) {
-                    D(i);
+                    h(a);
                 }
                 if (n.logTemplateDataWarnings) {
-                    y(i);
+                    C(a);
                 }
             }
         }
-        return C;
+        return A;
     }
-    function m(e, t) {
+    function p(e, t) {
         for (let n in e.templateData) {
             if (e.templateData.hasOwnProperty(n)) {
                 t.templateDataKeys.push(n);
@@ -482,14 +517,16 @@ var Trigger;
         }));
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function p(e, t, n, r, i) {
+    function b(e, t, n, r, i) {
         const a = [];
         for (let i in t) {
             if (Str.startsWithAnyCase(i, "@")) {
                 if (n.addAttributes) {
-                    const n = i.replace("@", "");
-                    const r = t[i];
-                    e.setAttribute(n, r);
+                    const r = i.replace("@", "");
+                    if (n.addDataAttributes || !r.startsWith("data-")) {
+                        const n = t[i];
+                        e.setAttribute(r, n);
+                    }
                 }
             } else if (Str.startsWithAnyCase(i, "$")) {
                 if (n.addCssProperties) {
@@ -502,7 +539,7 @@ var Trigger;
                 }
             } else if (i === "#text") {
                 if (n.addText) {
-                    b(e, t[i], n, r);
+                    D(e, t[i], n, r);
                 }
             } else if (i === "&children") {
                 if (n.addChildren) {
@@ -512,7 +549,7 @@ var Trigger;
                         for (let t in a) {
                             if (a.hasOwnProperty(t)) {
                                 const i = DomElement.create(e, t.toLowerCase());
-                                p(i, a[t], n, r, null);
+                                b(i, a[t], n, r, null);
                             }
                         }
                     }
@@ -523,7 +560,7 @@ var Trigger;
             T(e, a, r);
         }
     }
-    function b(e, t, n, r) {
+    function D(e, t, n, r) {
         e.innerHTML = t;
         if (r.templateDataKeysLength > 0) {
             for (let t = 0; t < r.templateDataKeysLength; t++) {
@@ -567,7 +604,7 @@ var Trigger;
         i.push("}");
         n.css[e.id] = i;
     }
-    function D(e) {
+    function h(e) {
         const t = document.getElementsByTagName("head")[0];
         let n = [];
         for (let t in e.css) {
@@ -578,14 +615,14 @@ var Trigger;
         const r = DomElement.create(t, "style");
         r.appendChild(document.createTextNode(n.join("\n")));
     }
-    function h() {
+    function O() {
         const e = [].slice.call(document.getElementsByTagName("styles"));
         const t = e.length;
         for (let n = 0; n < t; n++) {
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function y(t) {
+    function C(t) {
         const n = t.templateDataKeysProcessed.length;
         if (t.templateDataKeysLength > n) {
             for (let n = 0; n < t.templateDataKeysLength; n++) {
@@ -596,7 +633,7 @@ var Trigger;
             }
         }
     }
-    function O(e) {
+    function y(e) {
         const t = Str.getTemplateVariables(e.innerHTML);
         const n = t.length;
         for (let r = 0; r < n; r++) {
@@ -609,12 +646,16 @@ var Trigger;
             }
         }
     }
-    const C = {
+    const A = {
         json: function() {
             const e = i();
             const t = {
                 includeAttributes: function(t) {
                     e.includeAttributes = Default2.getBoolean(t, e.includeAttributes);
+                    return this;
+                },
+                includeDataAttributes: function(t) {
+                    e.includeDataAttributes = Default2.getBoolean(t, e.includeDataAttributes);
                     return this;
                 },
                 includeCssProperties: function(t) {
@@ -641,6 +682,10 @@ var Trigger;
                     e.ignoreNodeTypes = Default2.getStringOrArray(t, e.ignoreNodeTypes);
                     return this;
                 },
+                ignoreNodeCondition: function(t) {
+                    e.ignoreNodeCondition = Default2.getFunction(t, e.ignoreNodeCondition);
+                    return this;
+                },
                 ignoreCssProperties: function(t) {
                     e.ignoreCssProperties = Default2.getStringOrArray(t, e.ignoreCssProperties);
                     return this;
@@ -655,6 +700,10 @@ var Trigger;
                 },
                 generateUniqueMissingNames: function(t) {
                     e.generateUniqueMissingNames = Default2.getBoolean(t, e.generateUniqueMissingNames);
+                    return this;
+                },
+                propertyReplacer: function(t) {
+                    e.propertyReplacer = Default2.getFunction(t, e.propertyReplacer);
                     return this;
                 },
                 get: function(t) {
@@ -681,6 +730,10 @@ var Trigger;
                     e.removeOriginalAttributes = Default2.getBoolean(n, e.removeOriginalAttributes);
                     return t;
                 },
+                removeOriginalDataAttributes: function(n) {
+                    e.removeOriginalDataAttributes = Default2.getBoolean(n, e.removeOriginalDataAttributes);
+                    return t;
+                },
                 clearOriginalHTML: function(n) {
                     e.clearOriginalHTML = Default2.getBoolean(n, e.clearOriginalHTML);
                     return t;
@@ -701,6 +754,10 @@ var Trigger;
                     e.addAttributes = Default2.getBoolean(n, e.addAttributes);
                     return t;
                 },
+                addDataAttributes: function(n) {
+                    e.addDataAttributes = Default2.getBoolean(n, e.addDataAttributes);
+                    return t;
+                },
                 addCssProperties: function(n) {
                     e.addCssProperties = Default2.getBoolean(n, e.addCssProperties);
                     return t;
@@ -718,7 +775,10 @@ var Trigger;
                     return t;
                 },
                 write: function(t) {
-                    return g(t, e);
+                    return m(t, e);
+                },
+                get: function() {
+                    return g(e);
                 },
                 getVariables: function(e) {
                     let t = [];
@@ -744,17 +804,17 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return C;
+            return A;
         },
         getVersion: function() {
-            return "2.1.0";
+            return "2.2.0";
         }
     };
     (() => {
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = C;
+            window.$jhson = A;
         }
     })();
 })();//# sourceMappingURL=jhson.esm.js.map

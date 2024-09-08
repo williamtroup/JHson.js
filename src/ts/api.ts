@@ -4,11 +4,14 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        api.ts
- * @version     v2.1.0
+ * @version     v2.2.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
  */
+
+
+import { type IgnoreNodeCondition, type JsonPropertyReplacer } from "./type";
 
 
 export type PublicApiJson = {
@@ -24,6 +27,19 @@ export type PublicApiJson = {
      * @returns     {Object}                                        The JSON properties object.
      */
     includeAttributes: ( flag: boolean ) => PublicApiJson;
+
+    /**
+     * includeDataAttributes().
+     * 
+     * States if the data attributes should be included.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    includeDataAttributes: ( flag: boolean ) => PublicApiJson;
 
     /**
      * includeCssProperties().
@@ -104,6 +120,19 @@ export type PublicApiJson = {
     ignoreNodeTypes: ( types: string[] | string ) => PublicApiJson;
 
     /**
+     * ignoreNodeCondition().
+     * 
+     * States the condition function (parameters being element:HtmlElement, and return value being a boolean) to use to state if an element should be included in the JSON.
+     * 
+     * @public
+     * 
+     * @param       {function}  func                                The condition function to use to check if a element should be included (defaults to null).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    ignoreNodeCondition: ( func: IgnoreNodeCondition ) => PublicApiJson;
+
+    /**
      * ignoreCssProperties().
      * 
      * States the CSS properties that should not be included in the JSON.
@@ -154,6 +183,19 @@ export type PublicApiJson = {
      * @returns     {Object}                                        The JSON properties object.
      */
     generateUniqueMissingNames: ( flag: boolean ) => PublicApiJson;
+
+    /**
+     * propertyReplacer().
+     * 
+     * States the property replacer function (parameters being Key:string, Value:any) to use for Keys and Values written for the JSON.
+     * 
+     * @public
+     * 
+     * @param       {function}  flag                                The replacer function to use when writing the JSON (defaults to null).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    propertyReplacer: ( func: JsonPropertyReplacer ) => PublicApiJson;
 
     /**
      * get().
@@ -223,6 +265,19 @@ export type PublicApiHtml = {
     removeOriginalAttributes: ( flag: boolean ) => PublicApiHtml;
 
     /**
+     * removeOriginalDataAttributes().
+     * 
+     * States if the original data attributes on the element should be removed.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The HTML properties object.
+     */
+    removeOriginalDataAttributes: ( flag: boolean ) => PublicApiHtml;
+
+    /**
      * clearOriginalHTML().
      * 
      * States if the original HTML in the element should be cleared.
@@ -288,6 +343,19 @@ export type PublicApiHtml = {
     addAttributes: ( flag: boolean ) => PublicApiHtml;
 
     /**
+     * addDataAttributes().
+     * 
+     * States if the data attributes should be written for each element.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The HTML properties object.
+     */
+    addDataAttributes: ( flag: boolean ) => PublicApiHtml;
+
+    /**
      * addCssProperties().
      * 
      * States if the CSS properties should be written for each element.
@@ -348,9 +416,20 @@ export type PublicApiHtml = {
      * 
      * @param       {Object}    element                             The DOM element to add the new JSON HTML nodes to.
      * 
-     * @returns     {string}                                        The JHson.js class instance.
+     * @returns     {Object}                                        The JHson.js class instance.
      */
     write: ( element: HTMLElement ) => PublicApi;
+
+    /**
+     * get().
+     * 
+     * Uses all the options selected via the chained functions to convert the JSON into HTML DOM element.
+     * 
+     * @public
+     * 
+     * @returns     {Object}                                        The HTML DOM element created from the JSON.
+     */
+    get: () => HTMLElement;
 
     /**
      * getVariables().

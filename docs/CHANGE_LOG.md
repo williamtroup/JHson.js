@@ -1,5 +1,24 @@
 # JHson.js - Change Log:
 
+## Version 2.2.0:
+
+#### **Public Functions:**
+- Added "includeDataAttributes()" support for "json()", which states if the data attributes should be included (defaults to true).
+- Added "addDataAttributes()" support for "html()" (including binding support), which states if the data attributes should be added (defaults to true).
+- Added "removeOriginalDataAttributes()" support for "html()" (including binding support), which states if the original data attributes should be removed (defaults to true).
+- Added "propertyReplacer()" support for "json()", which states a JSON property replacer function to use when writing the JSON (defaults to null).
+- Added "ignoreNodeCondition()" support for "json()", which states a condition function (that accepts a DOM element) that states if a node should be included in the JSON (defaults to null).
+- Added "get()" support for "html()", which returns the HTML DOM element created from the JSON.
+
+#### **Documentation:**
+- Updated the documentation to show the right properties for the objects, and added missing documentation for the binding attribute.
+
+#### **Fixes:**
+- Fixed a huge fault that prevented all other binding properties (other than the "json") from being ignored when set in DOM attribute "data-jhson-js".
+
+<br>
+
+
 ## Version 2.1.0:
 
 #### **Public Functions:**

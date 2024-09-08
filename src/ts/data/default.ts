@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        default.ts
- * @version     v2.1.0
+ * @version     v2.2.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -17,10 +17,6 @@ import { Is } from "./is";
 
 
 export namespace Default {
-    export function getAnyString( value: any, defaultValue: string ) : string {
-        return typeof value === "string" ? value : defaultValue;
-    }
-
     export function getString( value: any, defaultValue: string ) : string {
         return Is.definedString( value ) ? value : defaultValue;
     }

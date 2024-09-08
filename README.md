@@ -2,15 +2,15 @@
 JHson.js
 
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=JHson.js%2C%20a%20free%20JavaScript%json%20converter&url=https://github.com/williamtroup/JHson.js&hashtags=javascript,json,html,converter)
-[![npm](https://img.shields.io/badge/npmjs-v2.1.0-blue)](https://www.npmjs.com/package/jhson.js)
-[![nuget](https://img.shields.io/badge/nuget-v2.1.0-purple)](https://www.nuget.org/packages/JHson.js/)
+[![npm](https://img.shields.io/badge/npmjs-v2.2.0-blue)](https://www.npmjs.com/package/jhson.js)
+[![nuget](https://img.shields.io/badge/nuget-v2.2.0-purple)](https://www.nuget.org/packages/JHson.js/)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/williamtroup/JHson.js/blob/main/LICENSE.txt)
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
 </h1>
 
 > <p align="center">📃 A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.</p>
-> <p align="center">v2.1.0</p>
+> <p align="center">v2.2.0</p>
 <br />
 <br />
 
@@ -21,8 +21,9 @@ JHson.js
 - 🦾 Written in TypeScript, allowing greater support for React, Angular, and other libraries!
 - 💻 Full API available via public functions.
 - 🌈 Full support for Attributes, CSS style properties, and formatted text!
-- ⭐ Write your JSON directly to any DOM element for rendering.
+- ⭐ Write your JSON directly to any DOM element for rendering, or get the base element for use elsewhere.
 - 📋 Copy the layout for an entire page without additional files!
+- 🔍 Apply additional filters to exclude specific node types, CSS styles, attributes, etc.
 - 🔠 Data templating for text (with defaults support).
 - 🎥 Write CSS directly back to the head for each element!
 - 💧 Bind JSON directly to DOM elements!
@@ -55,8 +56,8 @@ npm install jhson.js
 You can also use the following CDN links:
 
 ```markdown
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.1.0/dist/jhson.min.js
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.1.0/dist/jhson.export.js
+https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.2.0/dist/jhson.min.js
+https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.2.0/dist/jhson.export.js
 ```
 <br>
 <br>
@@ -100,16 +101,19 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
     var json = $jhson
         .json()
         .includeAttributes( true )
+        .includeDataAttributes( true )
         .includeCssProperties( true )
         .includeText( true )
         .includeChildren( true )
         .friendlyFormat( true )
         .indentSpaces( 2 )
         .ignoreNodeTypes( "q" )
+        .ignoreNodeCondition( null ),
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
         .generateUniqueMissingIds( false )
         .generateUniqueMissingNames( false )
+        .propertyReplacer( null )
         .get( header );
 
     $jhson
@@ -117,16 +121,35 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .json( json )
         .templateData( { "{{template_data}}": "this template data" } )
         .removeOriginalAttributes( true )
+        .removeOriginalDataAttributes( true )
         .clearOriginalHTML( true )
         .addCssToHead( false )
         .clearCssFromHead( false )
         .logTemplateDataWarnings( false )
         .addAttributes( true )
+        .addDataAttributes( true )
         .addCssProperties( true )
         .addText( true )
         .addChildren( true )
         .insertBefore( false )
         .write( header );
+
+    var element = $jhson
+        .html()
+        .json( json )
+        .templateData( { "{{template_data}}": "this template data" } )
+        .removeOriginalAttributes( true )
+        .removeOriginalDataAttributes( true )
+        .clearOriginalHTML( true )
+        .addCssToHead( false )
+        .clearCssFromHead( false )
+        .logTemplateDataWarnings( false )
+        .addAttributes( true )
+        .addDataAttributes( true )
+        .addCssProperties( true )
+        .addText( true )
+        .addChildren( true )
+        .get();
 </script>
 ```
 
@@ -174,9 +197,9 @@ Configuration options allow you to customize how JHson.js will function.  You ca
 
 ```markdown
 <script> 
-  $jhson.setConfiguration( {
-      nodeTypesToIgnore: [ "script" ]
-  } );
+    $jhson.setConfiguration( {
+        safeMode: false
+    } );
 </script>
 ```
 

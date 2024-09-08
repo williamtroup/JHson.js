@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        binding.ts
- * @version     v2.1.0
+ * @version     v2.2.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -36,14 +36,17 @@ export namespace Binding {
             options.json = Default.getString( options.json, propertyDefaults.json );
             options.templateData = Default.getObject( options.templateData, propertyDefaults.templateData );
             options.removeOriginalAttributes = Default.getBoolean( options.removeOriginalAttributes, propertyDefaults.removeOriginalAttributes );
+            options.removeOriginalDataAttributes = Default.getBoolean( options.removeOriginalDataAttributes, propertyDefaults.removeOriginalDataAttributes );
             options.clearOriginalHTML = Default.getBoolean( options.clearOriginalHTML, propertyDefaults.clearOriginalHTML );
             options.addCssToHead = Default.getBoolean( options.addCssToHead, propertyDefaults.addCssToHead );
             options.clearCssFromHead = Default.getBoolean( options.clearCssFromHead, propertyDefaults.clearCssFromHead );
             options.logTemplateDataWarnings = Default.getBoolean( options.logTemplateDataWarnings, propertyDefaults.logTemplateDataWarnings );
             options.addAttributes = Default.getBoolean( options.addAttributes, propertyDefaults.addAttributes );
+            options.addDataAttributes = Default.getBoolean( options.addDataAttributes, propertyDefaults.addDataAttributes );
             options.addCssProperties = Default.getBoolean( options.addCssProperties, propertyDefaults.addCssProperties );
             options.addText = Default.getBoolean( options.addText, propertyDefaults.addText );
             options.addChildren = Default.getBoolean( options.addChildren, propertyDefaults.addChildren );
+            options.insertBefore = Default.getBoolean( options.insertBefore, propertyDefaults.insertBefore );
 
             options = getCustomTriggers( options );
     

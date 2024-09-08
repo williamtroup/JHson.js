@@ -10,7 +10,7 @@
         <script src="js/scripts.js"></script>
     </head>
 
-    <body data-random-attribute="attribute-value">
+    <body data-random-attribute="attribute-value" name="body" id="body">
         <div class="header">
             <h1 id="header">JHson.js - Bootstrap</h1>
             <p id="description">This is a {{template_type | basic}} example of how to use <b>JHson.js</b> ... alongside {{template_bootstrap | Should Be Replaced}} and {{template_data}}.</p>
@@ -28,6 +28,10 @@
             <div class="ms-3 mt-1">
                 <input type="checkbox" id="includeAttributes" name="includeAttributes" checked="checked">
                 <label for="includeAttributes">Include Attributes</label>
+                <br>
+
+                <input type="checkbox" id="includeDataAttributes" name="includeDataAttributes" checked="checked">
+                <label for="includeDataAttributes">Include Data Attributes</label>
                 <br>
     
                 <input type="checkbox" id="includeCssProperties" name="includeCssProperties">
@@ -82,7 +86,8 @@
             <br>
             
             <h2>JSON - WRITE:</h2>
-            <button class="btn btn-primary" onclick="writeJSONData();">Write</button>
+            <button class="btn btn-primary" onclick="writeJsonToHtmlData();">Write</button>
+            <button class="btn btn-primary" onclick="getJsonToHtmlElement();">Get</button>
             <br>
 
             <div class="ms-3 mt-1">
@@ -92,6 +97,10 @@
     
                 <input type="checkbox" id="removeOriginalAttributes" name="removeOriginalAttributes" checked="checked">
                 <label for="removeOriginalAttributes">Remove Original Attributes</label>
+                <br>
+
+                <input type="checkbox" id="removeOriginalDataAttributes" name="removeOriginalDataAttributes" checked="checked">
+                <label for="removeOriginalDataAttributes">Remove Original Data Attributes</label>
                 <br>
     
                 <input type="checkbox" id="clearOriginalHTML" name="clearOriginalHTML" checked="checked">
@@ -112,6 +121,10 @@
     
                 <input type="checkbox" id="addAttributes" name="addAttributes" checked="checked">
                 <label for="addAttributes">Add Attributes</label>
+                <br>
+
+                <input type="checkbox" id="addDataAttributes" name="addDataAttributes" checked="checked">
+                <label for="addDataAttributes">Add Data Attributes</label>
                 <br>
     
                 <input type="checkbox" id="addCssProperties" name="addCssProperties" checked="checked">

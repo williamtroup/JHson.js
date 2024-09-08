@@ -31,6 +31,14 @@ States if the attributes should be included.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > includeDataAttributes( *flag* )**:
+States if the data attributes should be included.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > includeCssProperties( *flag* )**:
 States if the CSS style properties should be included.
 <br>
@@ -79,6 +87,14 @@ States the node types that should not be included in the JSON.
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
+#### **json() > ignoreNodeCondition( *func* )**:
+States the condition function (parameters being element:HtmlElement, and return value being a boolean) to use to state if an element should be included in the JSON.
+<br>
+***Parameter: func***: '*function*' - The condition function to use to check if a element should be included (defaults to null).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
 #### **json() > ignoreCssProperties( *cssProperties* )**:
 States the CSS properties that should not be included in the JSON.
 <br>
@@ -103,10 +119,18 @@ States if the JSON should include unique IDs for DOM elements that don't have th
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
-#### **json() > generateUniqueMissingIds( *flag* )**:
-States if the JSON should include unique IDs for DOM elements that don't have them set already.
+#### **json() > generateUniqueMissingNames( *flag* )**:
+States if the JSON should include unique name for DOM elements that don't have them set already.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > propertyReplacer( *func* )**:
+States the property replacer function (parameters being Key:string, Value:any) to use for Keys and Values written for the JSON.
+<br>
+***Parameter: func***: '*function*' - The replacer function to use when writing the JSON (defaults to null).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
@@ -161,6 +185,14 @@ States if the original attributes on the element should be removed.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > removeOriginalDataAttributes( *flag* )**:
+States if the original data attributes on the element should be removed.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > clearOriginalHTML( *flag* )**:
 States if the original HTML in the element should be cleared.
 <br>
@@ -195,6 +227,14 @@ States if the template data variables not found in any data are logged as warnin
 
 #### **html() > addAttributes( *flag* )**:
 States if the attributes should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
+#### **html() > addDataAttributes( *flag* )**:
+States if the data attributes should be written for each element.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
 <br>
@@ -239,6 +279,12 @@ Uses all the options selected via the chained functions to convert the JSON into
 ***Parameter: element***: '*Object*' - The DOM element to add the new JSON HTML nodes to.
 <br>
 ***Returns***: '*Object*' - The JHson.js class instance.
+<br>
+
+#### **html() > get()**:
+Uses all the options selected via the chained functions to convert the JSON into HTML DOM element.
+<br>
+***Returns***: '*Object*' - The HTML DOM element created from the JSON.
 <br>
 
 #### **html() > getVariables( *element* )**:

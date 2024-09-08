@@ -4,27 +4,32 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        type.ts
- * @version     v2.1.0
+ * @version     v2.2.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
  */
 
 
+export type JsonPropertyReplacer = ( key: string, value: any ) => any;
+export type IgnoreNodeCondition = ( element: HTMLElement ) => boolean;
+
 export type StringToJson = {
     parsed: boolean;
     object: any;
 };
 
-export type HtmlProperties = {
+export interface HtmlProperties {
     json: string;
     templateData: Record<string, string>;
     removeOriginalAttributes: boolean;
+    removeOriginalDataAttributes: boolean;
     clearOriginalHTML: boolean;
     addCssToHead: boolean;
     clearCssFromHead: boolean;
     logTemplateDataWarnings: boolean;
     addAttributes: boolean;
+    addDataAttributes: boolean;
     addCssProperties: boolean;
     addText: boolean;
     addChildren: boolean;
@@ -45,19 +50,8 @@ export type ConfigurationText = {
     attributeNotSetErrorText?: string;
 };
 
-export type BindingOptions = {
+export interface BindingOptions extends HtmlProperties {
     _currentView: BindingOptionsCurrentView;
-    json?: string;
-    templateData?: object;
-    removeOriginalAttributes?: boolean;
-    clearOriginalHTML?: boolean;
-    addCssToHead?: boolean;
-    clearCssFromHead?: boolean;
-    logTemplateDataWarnings?: boolean;
-    addAttributes?: boolean;
-    addCssProperties?: boolean;
-    addText?: boolean;
-    addChildren?: boolean;
     events?: BindingOptionsEvents;
 };
 

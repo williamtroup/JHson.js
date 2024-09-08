@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        enum.ts
- * @version     v2.1.0
+ * @version     v2.2.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -19,6 +19,9 @@ export const enum Char {
     variableEnd = "}}",
     variableDefault = "|",
     dash = "-",
+    dataAttributeStart = "data-",
+    id = "id",
+    name = "name",
 }
 
 export const enum Value {

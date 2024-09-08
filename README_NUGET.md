@@ -16,7 +16,7 @@
 - 🦾 Written in TypeScript, allowing greater support for React, Angular, and other libraries!
 - 💻 Full API available via public functions.
 - 🌈 Full support for Attributes, CSS style properties, and formatted text!
-- ⭐ Write your JSON directly to any DOM element for rendering.
+- ⭐ Write your JSON directly to any DOM element for rendering, or get the base element for use elsewhere.
 - 📋 Copy the layout for an entire page without additional files!
 - 🔍 Apply additional filters to exclude specific node types, CSS styles, attributes, etc.
 - 🔠 Data templating for text (with defaults support).

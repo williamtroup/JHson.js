@@ -15,7 +15,8 @@ import {
     type StringToJson,
     type BindingOptions,
     type Configuration, 
-    type HtmlProperties } from "./ts/type";
+    type HtmlProperties, 
+    type JsonPropertyReplacer } from "./ts/type";
 
 import {
     type PublicApi,
@@ -53,6 +54,7 @@ type JsonProperties = {
     ignoreAttributes: string[];
     generateUniqueMissingIds: boolean;
     generateUniqueMissingNames: boolean;
+    propertyReplacer: JsonPropertyReplacer;
 };
 
 type ElementObject = {
@@ -150,7 +152,8 @@ type ElementObject = {
             ignoreCssProperties: [],
             ignoreAttributes: [],
             generateUniqueMissingIds: false,
-            generateUniqueMissingNames: false
+            generateUniqueMissingNames: false,
+            propertyReplacer: null!
         } as JsonProperties;
     }
 
@@ -164,9 +167,9 @@ type ElementObject = {
             resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
             if ( properties.friendlyFormat ) {
-                result = JSON.stringify( resultJson, null, properties.indentSpaces );
+                result = JSON.stringify( resultJson, properties.propertyReplacer, properties.indentSpaces );
             } else {
-                result = JSON.stringify( resultJson );
+                result = JSON.stringify( resultJson, properties.propertyReplacer );
             }
         }
         
@@ -672,6 +675,12 @@ type ElementObject = {
 
                 generateUniqueMissingNames: function ( flag: boolean ) : PublicApiJson {
                     properties.generateUniqueMissingNames = Default.getBoolean( flag, properties.generateUniqueMissingNames );
+
+                    return this;
+                },
+
+                propertyReplacer: function ( func: JsonPropertyReplacer ) : PublicApiJson {
+                    properties.propertyReplacer = Default.getFunction( func, properties.propertyReplacer );
 
                     return this;
                 },

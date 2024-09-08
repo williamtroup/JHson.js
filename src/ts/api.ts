@@ -11,6 +11,9 @@
  */
 
 
+import { type JsonPropertyReplacer } from "./type";
+
+
 export type PublicApiJson = {
     /**
      * includeAttributes().
@@ -167,6 +170,19 @@ export type PublicApiJson = {
      * @returns     {Object}                                        The JSON properties object.
      */
     generateUniqueMissingNames: ( flag: boolean ) => PublicApiJson;
+
+    /**
+     * propertyReplacer().
+     * 
+     * States the property replacer function (parameters being Key:string, Value:any) to use for Keys and Values written for the JSON.
+     * 
+     * @public
+     * 
+     * @param       {function}  flag                                The replacer function to use when writing the JSON (defaults to null).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    propertyReplacer: ( func: JsonPropertyReplacer ) => PublicApiJson;
 
     /**
      * get().

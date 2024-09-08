@@ -111,10 +111,18 @@ States if the JSON should include unique IDs for DOM elements that don't have th
 ***Returns***: '*Object*' - The JSON properties object.
 <br>
 
-#### **json() > generateUniqueMissingIds( *flag* )**:
-States if the JSON should include unique IDs for DOM elements that don't have them set already.
+#### **json() > generateUniqueMissingNames( *flag* )**:
+States if the JSON should include unique name for DOM elements that don't have them set already.
 <br>
 ***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to false).
+<br>
+***Returns***: '*Object*' - The JSON properties object.
+<br>
+
+#### **json() > propertyReplacer( *func* )**:
+States the property replacer function (parameters being Key:string, Value:any) to use for Keys and Values written for the JSON.
+<br>
+***Parameter: flag***: '*function*' - The replacer function to use when writing the JSON (defaults to null).
 <br>
 ***Returns***: '*Object*' - The JSON properties object.
 <br>

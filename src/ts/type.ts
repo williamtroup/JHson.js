@@ -33,6 +33,8 @@ export type HtmlProperties = {
     insertBefore: boolean;
 };
 
+export type JsonPropertyReplacer = ( key: string, value: any ) => any;
+
 export type Configuration = {
     safeMode?: boolean;
     domElementTypes?: string[] | string;

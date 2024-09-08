@@ -288,7 +288,8 @@ var Trigger;
             ignoreCssProperties: [],
             ignoreAttributes: [],
             generateUniqueMissingIds: false,
-            generateUniqueMissingNames: false
+            generateUniqueMissingNames: false,
+            propertyReplacer: null
         };
     }
     function a(e, t) {
@@ -298,9 +299,9 @@ var Trigger;
             const i = o(e, t, {});
             r[i.nodeName] = i.nodeValues;
             if (t.friendlyFormat) {
-                n = JSON.stringify(r, null, t.indentSpaces);
+                n = JSON.stringify(r, t.propertyReplacer, t.indentSpaces);
             } else {
-                n = JSON.stringify(r);
+                n = JSON.stringify(r, t.propertyReplacer);
             }
         }
         return n;
@@ -668,6 +669,10 @@ var Trigger;
                 },
                 generateUniqueMissingNames: function(t) {
                     e.generateUniqueMissingNames = Default2.getBoolean(t, e.generateUniqueMissingNames);
+                    return this;
+                },
+                propertyReplacer: function(t) {
+                    e.propertyReplacer = Default2.getFunction(t, e.propertyReplacer);
                     return this;
                 },
                 get: function(t) {

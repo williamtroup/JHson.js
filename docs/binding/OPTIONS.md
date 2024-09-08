@@ -15,6 +15,7 @@ Below are all the JSON properties that can be passed in the "data-jhson-js" bind
 | *boolean* | clearCssFromHead | States if all the CSS style tags should be cleared from the HTML documents HEAD DOM element (defaults to false). |
 | *boolean* | logTemplateDataWarnings | States if the template data variables not found in any data are logged as warnings (defaults to false). |
 | *boolean* | addAttributes | States if the attributes should be written for each element (defaults to true). |
+| *boolean* | addDataAttributes | States if the data attributes should be written for each element (defaults to true). |
 | *boolean* | addCssProperties | States if the CSS properties should be written for each element (defaults to true). |
 | *boolean* | addText | States if the text should be written for each element (defaults to true). |
 | *boolean* | addChildren | States if the children should be written for each element (defaults to true). |

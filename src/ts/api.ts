@@ -301,6 +301,19 @@ export type PublicApiHtml = {
     addAttributes: ( flag: boolean ) => PublicApiHtml;
 
     /**
+     * addDataAttributes().
+     * 
+     * States if the data attributes should be written for each element.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The HTML properties object.
+     */
+    addDataAttributes: ( flag: boolean ) => PublicApiHtml;
+
+    /**
      * addCssProperties().
      * 
      * States if the CSS properties should be written for each element.

@@ -490,9 +490,11 @@ var Trigger;
         for (let i in t) {
             if (Str.startsWithAnyCase(i, "@")) {
                 if (n.addAttributes) {
-                    const n = i.replace("@", "");
-                    const r = t[i];
-                    e.setAttribute(n, r);
+                    const r = i.replace("@", "");
+                    if (n.addDataAttributes || !r.startsWith("data-")) {
+                        const n = t[i];
+                        e.setAttribute(r, n);
+                    }
                 }
             } else if (Str.startsWithAnyCase(i, "$")) {
                 if (n.addCssProperties) {
@@ -706,6 +708,10 @@ var Trigger;
                 },
                 addAttributes: function(n) {
                     e.addAttributes = Default2.getBoolean(n, e.addAttributes);
+                    return t;
+                },
+                addDataAttributes: function(n) {
+                    e.addDataAttributes = Default2.getBoolean(n, e.addDataAttributes);
                     return t;
                 },
                 addCssProperties: function(n) {

@@ -25,6 +25,7 @@ export type HtmlProperties = {
     clearCssFromHead: boolean;
     logTemplateDataWarnings: boolean;
     addAttributes: boolean;
+    addDataAttributes: boolean;
     addCssProperties: boolean;
     addText: boolean;
     addChildren: boolean;

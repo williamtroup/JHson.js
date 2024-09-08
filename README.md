@@ -123,6 +123,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .clearCssFromHead( false )
         .logTemplateDataWarnings( false )
         .addAttributes( true )
+        .addDataAttributes( true )
         .addCssProperties( true )
         .addText( true )
         .addChildren( true )

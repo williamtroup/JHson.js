@@ -21,6 +21,7 @@ var _SET_TEMPLATE_DATA = null,
     _CLEAR_CSS_FROM_HEAD = null,
     _LOG_TEMPLATE_DATA_WARNINGS = null,
     _ADD_ATTRIBUTES = null,
+    _ADD_DATA_ATTRIBUTES = null,
     _ADD_CSS_PROPERTIES = null,
     _ADD_TEXT = null,
     _ADD_CHILDREN = null,
@@ -54,6 +55,7 @@ var _SET_TEMPLATE_DATA = null,
         _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" );
         _LOG_TEMPLATE_DATA_WARNINGS = document.getElementById( "logTemplateDataWarnings" );
         _ADD_ATTRIBUTES = document.getElementById( "addAttributes" );
+        _ADD_DATA_ATTRIBUTES = document.getElementById( "addDataAttributes" );
         _ADD_CSS_PROPERTIES = document.getElementById( "addCssProperties" );
         _ADD_TEXT = document.getElementById( "addText" );
         _ADD_CHILDREN = document.getElementById( "addChildren" );
@@ -119,6 +121,7 @@ function writeJSONData() {
         .clearCssFromHead( _CLEAR_CSS_FROM_HEAD.checked )
         .logTemplateDataWarnings( _LOG_TEMPLATE_DATA_WARNINGS.checked )
         .addAttributes( _ADD_ATTRIBUTES.checked )
+        .addDataAttributes( _ADD_DATA_ATTRIBUTES.checked )
         .addCssProperties( _ADD_CSS_PROPERTIES.checked )
         .addText( _ADD_TEXT.checked )
         .addChildren( _ADD_CHILDREN.checked )

@@ -411,9 +411,12 @@ type ElementObject = {
             if ( Str.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
                 if ( properties.addAttributes ) {
                     const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
-                    const attributeValue: string = jsonObject[ jsonKey ];
 
-                    element.setAttribute( attributeName, attributeValue );
+                    if ( properties.addDataAttributes || !attributeName.startsWith( "data-" ) ) {
+                        const attributeValue: string = jsonObject[ jsonKey ];
+
+                        element.setAttribute( attributeName, attributeValue );
+                    }
                 }
 
             } else if ( Str.startsWithAnyCase( jsonKey, JsonValue.cssStyle ) ) {
@@ -731,6 +734,12 @@ type ElementObject = {
 
                 addAttributes: function ( flag: boolean ) : PublicApiHtml {
                     properties.addAttributes = Default.getBoolean( flag, properties.addAttributes );
+
+                    return scope;
+                },
+
+                addDataAttributes: function ( flag: boolean ) : PublicApiHtml {
+                    properties.addDataAttributes = Default.getBoolean( flag, properties.addDataAttributes );
 
                     return scope;
                 },

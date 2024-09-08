@@ -209,6 +209,14 @@ States if the attributes should be written for each element.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > addDataAttributes( *flag* )**:
+States if the data attributes should be written for each element.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > addCssProperties( *flag* )**:
 States if the CSS properties should be written for each element.
 <br>

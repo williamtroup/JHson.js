@@ -126,8 +126,7 @@ type ElementObject = {
     function renderElement( bindingOptions: BindingOptions ) : void {
         Trigger.customEvent( bindingOptions.events!.onBeforeRender!, bindingOptions._currentView.element );
 
-        const properties: HtmlProperties = getDefaultHtmlProperties();
-        properties.json = bindingOptions.json!;
+        const properties: HtmlProperties = getDefaultHtmlProperties( bindingOptions );
 
         writeHtml( bindingOptions._currentView.element, properties );
 
@@ -326,21 +325,24 @@ type ElementObject = {
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    function getDefaultHtmlProperties() : HtmlProperties {
+    function getDefaultHtmlProperties( bindingOptions: BindingOptions = null! ) : HtmlProperties {
+        const isBindingOptionsSet: boolean = Is.definedObject( bindingOptions );
+
         return {
-            json: Char.empty,
-            templateData: {},
-            removeOriginalAttributes: true,
-            removeOriginalDataAttributes: true,
-            clearOriginalHTML: true,
-            addCssToHead: false,
-            clearCssFromHead: false,
-            logTemplateDataWarnings: false,
-            addAttributes: true,
-            addCssProperties: true,
-            addText: true,
-            addChildren: true,
-            insertBefore: false
+            json: isBindingOptionsSet ? bindingOptions.json : Char.empty,
+            templateData: isBindingOptionsSet ? bindingOptions.templateData : {},
+            removeOriginalAttributes: isBindingOptionsSet ? bindingOptions.removeOriginalAttributes : true,
+            removeOriginalDataAttributes: isBindingOptionsSet ? bindingOptions.removeOriginalDataAttributes : true,
+            clearOriginalHTML: isBindingOptionsSet ? bindingOptions.clearOriginalHTML : true,
+            addCssToHead: isBindingOptionsSet ? bindingOptions.addCssToHead : false,
+            clearCssFromHead: isBindingOptionsSet ? bindingOptions.clearCssFromHead : false,
+            logTemplateDataWarnings: isBindingOptionsSet ? bindingOptions.logTemplateDataWarnings : false,
+            addAttributes: isBindingOptionsSet ? bindingOptions.addAttributes : true,
+            addDataAttributes: isBindingOptionsSet ? bindingOptions.addDataAttributes : true,
+            addCssProperties: isBindingOptionsSet ? bindingOptions.addCssProperties : true,
+            addText: isBindingOptionsSet ? bindingOptions.addText : true,
+            addChildren: isBindingOptionsSet ? bindingOptions.addChildren : true,
+            insertBefore: isBindingOptionsSet ? bindingOptions.insertBefore : false
         } as HtmlProperties;
     }
 

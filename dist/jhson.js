@@ -278,8 +278,7 @@ var Trigger;
     }
     function r(e) {
         Trigger.customEvent(e.events.onBeforeRender, e._currentView.element);
-        const t = c();
-        t.json = e.json;
+        const t = c(e);
         m(e._currentView.element, t);
         Trigger.customEvent(e.events.onRenderComplete, e._currentView.element);
     }
@@ -424,21 +423,23 @@ var Trigger;
         }
         return t;
     }
-    function c() {
+    function c(e = null) {
+        const t = Is.definedObject(e);
         return {
-            json: "",
-            templateData: {},
-            removeOriginalAttributes: true,
-            removeOriginalDataAttributes: true,
-            clearOriginalHTML: true,
-            addCssToHead: false,
-            clearCssFromHead: false,
-            logTemplateDataWarnings: false,
-            addAttributes: true,
-            addCssProperties: true,
-            addText: true,
-            addChildren: true,
-            insertBefore: false
+            json: t ? e.json : "",
+            templateData: t ? e.templateData : {},
+            removeOriginalAttributes: t ? e.removeOriginalAttributes : true,
+            removeOriginalDataAttributes: t ? e.removeOriginalDataAttributes : true,
+            clearOriginalHTML: t ? e.clearOriginalHTML : true,
+            addCssToHead: t ? e.addCssToHead : false,
+            clearCssFromHead: t ? e.clearCssFromHead : false,
+            logTemplateDataWarnings: t ? e.logTemplateDataWarnings : false,
+            addAttributes: t ? e.addAttributes : true,
+            addDataAttributes: t ? e.addDataAttributes : true,
+            addCssProperties: t ? e.addCssProperties : true,
+            addText: t ? e.addText : true,
+            addChildren: t ? e.addChildren : true,
+            insertBefore: t ? e.insertBefore : false
         };
     }
     function g(t) {
@@ -496,12 +497,12 @@ var Trigger;
                         break;
                     }
                 }
-                C(t);
+                y(t);
                 if (n.addCssToHead) {
                     h(a);
                 }
                 if (n.logTemplateDataWarnings) {
-                    y(a);
+                    C(a);
                 }
             }
         }
@@ -623,7 +624,7 @@ var Trigger;
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function y(t) {
+    function C(t) {
         const n = t.templateDataKeysProcessed.length;
         if (t.templateDataKeysLength > n) {
             for (let n = 0; n < t.templateDataKeysLength; n++) {
@@ -634,7 +635,7 @@ var Trigger;
             }
         }
     }
-    function C(e) {
+    function y(e) {
         const t = Str.getTemplateVariables(e.innerHTML);
         const n = t.length;
         for (let r = 0; r < n; r++) {

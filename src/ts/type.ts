@@ -19,7 +19,7 @@ export type StringToJson = {
     object: any;
 };
 
-export type HtmlProperties = {
+export interface HtmlProperties {
     json: string;
     templateData: Record<string, string>;
     removeOriginalAttributes: boolean;
@@ -50,22 +50,8 @@ export type ConfigurationText = {
     attributeNotSetErrorText?: string;
 };
 
-export type BindingOptions = {
+export interface BindingOptions extends HtmlProperties {
     _currentView: BindingOptionsCurrentView;
-    json?: string;
-    templateData?: object;
-    removeOriginalAttributes?: boolean;
-    removeOriginalDataAttributes?: boolean;
-    clearOriginalHTML?: boolean;
-    addCssToHead?: boolean;
-    clearCssFromHead?: boolean;
-    logTemplateDataWarnings?: boolean;
-    addAttributes?: boolean;
-    addDataAttributes?: boolean;
-    addCssProperties?: boolean;
-    addText?: boolean;
-    addChildren?: boolean;
-    insertBefore?: boolean;
     events?: BindingOptionsEvents;
 };
 

@@ -11,10 +11,10 @@
 - Added "get()" support for "html()", which returns the HTML DOM element created from the JSON.
 
 #### **Documentation:**
-- Updated the documentation to show the right properties for the objects, and add missing documentation for the binding attribute.
+- Updated the documentation to show the right properties for the objects, and added missing documentation for the binding attribute.
 
 #### **Fixes:**
-- Fixed a huge fault that prevented all other binding properties (other than the "json") to be ignored when set in DOM attribute "data-jhson-js".
+- Fixed a huge fault that prevented all other binding properties (other than the "json") from being ignored when set in DOM attribute "data-jhson-js".
 
 <br>
 

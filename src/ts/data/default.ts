@@ -17,10 +17,6 @@ import { Is } from "./is";
 
 
 export namespace Default {
-    export function getAnyString( value: any, defaultValue: string ) : string {
-        return typeof value === "string" ? value : defaultValue;
-    }
-
     export function getString( value: any, defaultValue: string ) : string {
         return Is.definedString( value ) ? value : defaultValue;
     }

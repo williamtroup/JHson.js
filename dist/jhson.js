@@ -42,10 +42,6 @@ var Is;
 var Default2;
 
 (Default => {
-    function getAnyString(e, t) {
-        return typeof e === "string" ? e : t;
-    }
-    Default.getAnyString = getAnyString;
     function getString(e, t) {
         return Is.definedString(e) ? e : t;
     }
@@ -480,7 +476,7 @@ var Trigger;
                 }
             }
         }
-        return A;
+        return C;
     }
     function m(e, t) {
         for (let n in e.templateData) {
@@ -622,7 +618,7 @@ var Trigger;
             }
         }
     }
-    const A = {
+    const C = {
         json: function() {
             const e = i();
             const t = {
@@ -769,7 +765,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return A;
+            return C;
         },
         getVersion: function() {
             return "2.2.0";
@@ -779,7 +775,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = A;
+            window.$jhson = C;
         }
     })();
 })();//# sourceMappingURL=jhson.js.map

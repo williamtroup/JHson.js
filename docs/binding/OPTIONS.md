@@ -18,6 +18,7 @@ Below are all the JSON properties that can be passed in the "data-jhson-js" bind
 | *boolean* | addCssProperties | States if the CSS properties should be written for each element (defaults to true). |
 | *boolean* | addText | States if the text should be written for each element (defaults to true). |
 | *boolean* | addChildren | States if the children should be written for each element (defaults to true). |
+| *boolean* | insertBefore | States if the elements should be added before the first detected child (if clearing the HTML is turned off, defaults to false). |
 
 <br/>
 

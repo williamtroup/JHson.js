@@ -218,7 +218,7 @@ type ElementObject = {
             const attribute: Attr = element.attributes[ attributeIndex ];
 
             if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
-                result[ JsonValue.attribute + attribute.nodeName ] = attribute.nodeValue;
+                result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
                 attributesAvailable.push( attribute.nodeName );
             }
         }

@@ -342,7 +342,7 @@ var Trigger;
         for (let a = 0; a < r; a++) {
             const r = e.attributes[a];
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
-                t["@" + r.nodeName] = r.nodeValue;
+                t[`${"@"}${r.nodeName}`] = r.nodeValue;
                 i.push(r.nodeName);
             }
         }

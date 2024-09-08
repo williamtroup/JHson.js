@@ -323,6 +323,7 @@ type ElementObject = {
             json: Char.empty,
             templateData: {},
             removeOriginalAttributes: true,
+            removeOriginalDataAttributes: true,
             clearOriginalHTML: true,
             addCssToHead: false,
             clearCssFromHead: false,
@@ -359,8 +360,16 @@ type ElementObject = {
                         let insertBefore: HTMLElement = null!;
 
                         if ( properties.removeOriginalAttributes ) {
-                            while ( element.attributes.length > 0 ) {
-                                element.removeAttribute( element.attributes[ 0 ].name );
+                            let attributesLength: number = element.attributes.length;
+
+                            while ( attributesLength > 0 ) {
+                                const attributeName: string = element.attributes[ 0 ].name;
+
+                                if ( properties.removeOriginalDataAttributes || !attributeName.startsWith( "data-" ) ) {
+                                    element.removeAttribute( attributeName );
+                                }
+
+                                attributesLength--;
                             }
                         }
 
@@ -704,6 +713,12 @@ type ElementObject = {
 
                 removeOriginalAttributes: function ( flag: boolean ) : PublicApiHtml {
                     properties.removeOriginalAttributes = Default.getBoolean( flag, properties.removeOriginalAttributes );
+
+                    return scope;
+                },
+
+                removeOriginalDataAttributes: function ( flag: boolean ) : PublicApiHtml {
+                    properties.removeOriginalDataAttributes = Default.getBoolean( flag, properties.removeOriginalDataAttributes );
 
                     return scope;
                 },

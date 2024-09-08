@@ -99,6 +99,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .json( json )
         .templateData( { "{{template_data}}": "this template data" } )
         .removeOriginalAttributes( true )
+        .removeOriginalDataAttributes( true )
         .clearOriginalHTML( true )
         .addCssToHead( false )
         .clearCssFromHead( false )

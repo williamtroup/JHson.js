@@ -169,6 +169,14 @@ States if the original attributes on the element should be removed.
 ***Returns***: '*Object*' - The HTML properties object.
 <br>
 
+#### **html() > removeOriginalDataAttributes( *flag* )**:
+States if the original data attributes on the element should be removed.
+<br>
+***Parameter: flag***: '*boolean*' - The boolean flag that states the condition (defaults to true).
+<br>
+***Returns***: '*Object*' - The HTML properties object.
+<br>
+
 #### **html() > clearOriginalHTML( *flag* )**:
 States if the original HTML in the element should be cleared.
 <br>

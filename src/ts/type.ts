@@ -20,6 +20,7 @@ export type HtmlProperties = {
     json: string;
     templateData: Record<string, string>;
     removeOriginalAttributes: boolean;
+    removeOriginalDataAttributes: boolean;
     clearOriginalHTML: boolean;
     addCssToHead: boolean;
     clearCssFromHead: boolean;

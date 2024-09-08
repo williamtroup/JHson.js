@@ -236,6 +236,19 @@ export type PublicApiHtml = {
     removeOriginalAttributes: ( flag: boolean ) => PublicApiHtml;
 
     /**
+     * removeOriginalDataAttributes().
+     * 
+     * States if the original data attributes on the element should be removed.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to true).
+     * 
+     * @returns     {Object}                                        The HTML properties object.
+     */
+    removeOriginalDataAttributes: ( flag: boolean ) => PublicApiHtml;
+
+    /**
      * clearOriginalHTML().
      * 
      * States if the original HTML in the element should be cleared.

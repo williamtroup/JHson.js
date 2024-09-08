@@ -5,6 +5,7 @@
 #### **Public Functions:**
 - Added "includeDataAttributes()" support for "json()", which states if the data attributes should be included (defaults to true).
 - Added "addDataAttributes()" support for "html()" (including binding support), which states if the data attributes should be added (defaults to true).
+- Added "removeOriginalDataAttributes()" support for "html()" (including binding support), which states if the original data attributes should be removed (defaults to true).
 
 #### **Documentation:**
 - Updated the documentation to show the right properties for the objects, and add missing documentation for the binding attribute.

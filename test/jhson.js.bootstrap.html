@@ -10,7 +10,7 @@
         <script src="js/scripts.js"></script>
     </head>
 
-    <body data-random-attribute="attribute-value">
+    <body data-random-attribute="attribute-value" name="body" id="body">
         <div class="header">
             <h1 id="header">JHson.js - Bootstrap</h1>
             <p id="description">This is a {{template_type | basic}} example of how to use <b>JHson.js</b> ... alongside {{template_bootstrap | Should Be Replaced}} and {{template_data}}.</p>
@@ -96,6 +96,10 @@
     
                 <input type="checkbox" id="removeOriginalAttributes" name="removeOriginalAttributes" checked="checked">
                 <label for="removeOriginalAttributes">Remove Original Attributes</label>
+                <br>
+
+                <input type="checkbox" id="removeOriginalDataAttributes" name="removeOriginalDataAttributes" checked="checked">
+                <label for="removeOriginalDataAttributes">Remove Original Data Attributes</label>
                 <br>
     
                 <input type="checkbox" id="clearOriginalHTML" name="clearOriginalHTML" checked="checked">

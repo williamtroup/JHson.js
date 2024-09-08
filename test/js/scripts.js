@@ -15,8 +15,9 @@ var _JSON_TEXTAREA = null,
     _GENERATE_UNIQUE_MISSING_NAMES = null;
 
 var _SET_TEMPLATE_DATA = null,
-    _REMOVE_ATTRIBUTES = null,
-    _CLEAR_HTML = null,
+    _REMOVE_ORIGINAL_ATTRIBUTES = null,
+    _REMOVE_ORIGINAL_DATA_ATTRIBUTES = null,
+    _CLEAR_ORIGINAL_HTML = null,
     _WRITE_CSS_TO_HEAD = null,
     _CLEAR_CSS_FROM_HEAD = null,
     _LOG_TEMPLATE_DATA_WARNINGS = null,
@@ -49,8 +50,9 @@ var _SET_TEMPLATE_DATA = null,
         _GENERATE_UNIQUE_MISSING_NAMES = document.getElementById( "generateUniqueMissingNames" );
 
         _SET_TEMPLATE_DATA = document.getElementById( "setTemplateData" );
-        _REMOVE_ATTRIBUTES = document.getElementById( "removeOriginalAttributes" );
-        _CLEAR_HTML = document.getElementById( "clearOriginalHTML" );
+        _REMOVE_ORIGINAL_ATTRIBUTES = document.getElementById( "removeOriginalAttributes" );
+        _REMOVE_ORIGINAL_DATA_ATTRIBUTES = document.getElementById( "removeOriginalDataAttributes" );
+        _CLEAR_ORIGINAL_HTML = document.getElementById( "clearOriginalHTML" );
         _WRITE_CSS_TO_HEAD = document.getElementById( "addCssToHead" );
         _CLEAR_CSS_FROM_HEAD = document.getElementById( "clearCssFromHead" );
         _LOG_TEMPLATE_DATA_WARNINGS = document.getElementById( "logTemplateDataWarnings" );
@@ -115,8 +117,9 @@ function writeJSONData() {
     }
 
     htmlScope
-        .removeOriginalAttributes( _REMOVE_ATTRIBUTES.checked )
-        .clearOriginalHTML( _CLEAR_HTML.checked )
+        .removeOriginalAttributes( _REMOVE_ORIGINAL_ATTRIBUTES.checked )
+        .removeOriginalDataAttributes( _REMOVE_ORIGINAL_DATA_ATTRIBUTES.checked )
+        .clearOriginalHTML( _CLEAR_ORIGINAL_HTML.checked )
         .addCssToHead( _WRITE_CSS_TO_HEAD.checked )
         .clearCssFromHead( _CLEAR_CSS_FROM_HEAD.checked )
         .logTemplateDataWarnings( _LOG_TEMPLATE_DATA_WARNINGS.checked )

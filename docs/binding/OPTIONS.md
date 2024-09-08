@@ -10,6 +10,7 @@ Below are all the JSON properties that can be passed in the "data-jhson-js" bind
 | *string* | json | States the JSON that should be written as HTML DOM elements (defaults to null). |
 | *object* | templateData | States the template data that should be used inside each HTML DOM elements HTML (defaults to {}). |
 | *boolean* | removeOriginalAttributes | States if the original attributes on the element should be removed (defaults to true). |
+| *boolean* | removeOriginalDataAttributes | States if the original data attributes on the element should be removed (defaults to true). |
 | *boolean* | clearOriginalHTML | States if the original HTML in the element should be cleared (defaults to true). |
 | *boolean* | addCssToHead | States if the CSS style properties should be written to a "style" tag in the HTML documents HEAD DOM element (defaults to false). |
 | *boolean* | clearCssFromHead | States if all the CSS style tags should be cleared from the HTML documents HEAD DOM element (defaults to false). |

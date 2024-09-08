@@ -421,6 +421,7 @@ var Trigger;
             json: "",
             templateData: {},
             removeOriginalAttributes: true,
+            removeOriginalDataAttributes: true,
             clearOriginalHTML: true,
             addCssToHead: false,
             clearCssFromHead: false,
@@ -452,8 +453,13 @@ var Trigger;
                     if (e === t.nodeName.toLowerCase()) {
                         let a = null;
                         if (n.removeOriginalAttributes) {
-                            while (t.attributes.length > 0) {
-                                t.removeAttribute(t.attributes[0].name);
+                            let e = t.attributes.length;
+                            while (e > 0) {
+                                const r = t.attributes[0].name;
+                                if (n.removeOriginalDataAttributes || !r.startsWith("data-")) {
+                                    t.removeAttribute(r);
+                                }
+                                e--;
                             }
                         }
                         if (n.clearOriginalHTML) {
@@ -465,16 +471,16 @@ var Trigger;
                         break;
                     }
                 }
-                O(t);
+                y(t);
                 if (n.addCssToHead) {
                     T(i);
                 }
                 if (n.logTemplateDataWarnings) {
-                    y(i);
+                    O(i);
                 }
             }
         }
-        return C;
+        return A;
     }
     function m(e, t) {
         for (let n in e.templateData) {
@@ -592,7 +598,7 @@ var Trigger;
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function y(t) {
+    function O(t) {
         const n = t.templateDataKeysProcessed.length;
         if (t.templateDataKeysLength > n) {
             for (let n = 0; n < t.templateDataKeysLength; n++) {
@@ -603,7 +609,7 @@ var Trigger;
             }
         }
     }
-    function O(e) {
+    function y(e) {
         const t = Str.getTemplateVariables(e.innerHTML);
         const n = t.length;
         for (let r = 0; r < n; r++) {
@@ -616,7 +622,7 @@ var Trigger;
             }
         }
     }
-    const C = {
+    const A = {
         json: function() {
             const e = i();
             const t = {
@@ -692,6 +698,10 @@ var Trigger;
                     e.removeOriginalAttributes = Default2.getBoolean(n, e.removeOriginalAttributes);
                     return t;
                 },
+                removeOriginalDataAttributes: function(n) {
+                    e.removeOriginalDataAttributes = Default2.getBoolean(n, e.removeOriginalDataAttributes);
+                    return t;
+                },
                 clearOriginalHTML: function(n) {
                     e.clearOriginalHTML = Default2.getBoolean(n, e.clearOriginalHTML);
                     return t;
@@ -759,7 +769,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return C;
+            return A;
         },
         getVersion: function() {
             return "2.2.0";
@@ -769,7 +779,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = C;
+            window.$jhson = A;
         }
     })();
 })();//# sourceMappingURL=jhson.js.map

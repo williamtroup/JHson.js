@@ -358,7 +358,7 @@ var Trigger;
         for (let e = 0; e < a; e++) {
             const a = i[e];
             if (n.ignoreCssProperties.indexOf(a) === -1) {
-                const e = "$" + a;
+                const e = `${"$"}${a}`;
                 const n = i.getPropertyValue(a);
                 if (!r.hasOwnProperty(e) || r[e] !== n) {
                     t[e] = n;

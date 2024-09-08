@@ -244,7 +244,7 @@ type ElementObject = {
             const cssComputedStyleName: string = computedStyles[ cssComputedStyleIndex ];
 
             if ( properties.ignoreCssProperties.indexOf( cssComputedStyleName ) === Value.notFound ) {
-                const cssComputedStyleNameStorage: string = JsonValue.cssStyle + cssComputedStyleName;
+                const cssComputedStyleNameStorage: string = `${JsonValue.cssStyle}${cssComputedStyleName}`;
                 const cssComputedValue: string = computedStyles.getPropertyValue( cssComputedStyleName );
 
                 if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {

@@ -374,7 +374,7 @@ var Trigger;
         t.width = e.width;
         t.height = e.height;
         const n = t.getContext("2d");
-        n.drawImage(e, 0, 0);
+        n.drawImage(e, 0, 0, e.width, e.height);
         const r = t.toDataURL();
         return r;
     }

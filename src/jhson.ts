@@ -256,7 +256,7 @@ type ElementObject = {
         canvas.height = image.height;
 
         const context: CanvasRenderingContext2D = canvas.getContext( "2d" )!;
-        context.drawImage( image, 0, 0 );
+        context.drawImage( image, 0, 0, image.width, image.height );
 
         const dataURL: string = canvas.toDataURL();
 

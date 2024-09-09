@@ -90,20 +90,26 @@ function getJSONData() {
         .generateUniqueMissingIds( _GENERATE_UNIQUE_MISSING_IDS.checked )
         .generateUniqueMissingNames( _GENERATE_UNIQUE_MISSING_NAMES.checked )
         .get( _BODY );
+
+    window.scrollTo( 0, 0 );
 }
 
 function getJSONVariables() {
     var variables = $jhson.json().getVariables( "{{variable_start}}<div>{{variable_1}}</div><div>{{variable_2}}</div>{{variable_end}}" ),
         variablesString = JSON.stringify( variables );
 
-    console.log( variablesString );
+    _JSON_TEXTAREA.value = variablesString;
+
+    window.scrollTo( 0, 0 );
 }
 
 function getHTMLVariables() {
     var variables = $jhson.html().getVariables( document.getElementById( "description" ) ),
         variablesString = JSON.stringify( variables );
 
-    console.log( variablesString );
+    _JSON_TEXTAREA.value = variablesString;
+    
+    window.scrollTo( 0, 0 );
 }
 
 function writeJsonToHtmlData() {
@@ -111,7 +117,9 @@ function writeJsonToHtmlData() {
 }
 
 function getJsonToHtmlElement() {
-    console.log( getHtmlScope().get() );
+    _JSON_TEXTAREA.value = getHtmlScope().get();
+
+    window.scrollTo( 0, 0 );
 }
 
 function getHtmlScope() {
@@ -142,4 +150,10 @@ function getHtmlScope() {
         .insertBefore( _INSERT_BEFORE.checked );
 
     return htmlScope;
+}
+
+function getVersion() {
+    _JSON_TEXTAREA.value = $jhson.getVersion();
+
+    window.scrollTo( 0, 0 );
 }

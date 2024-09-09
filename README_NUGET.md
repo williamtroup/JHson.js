@@ -91,7 +91,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .friendlyFormat( true )
         .indentSpaces( 2 )
         .ignoreNodeTypes( "q" )
-        .ignoreNodeCondition( null ),
+        .ignoreNodeCondition( null )
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
         .generateUniqueMissingIds( false )

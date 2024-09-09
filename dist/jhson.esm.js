@@ -321,13 +321,13 @@ var Trigger;
             s(e, r, t);
         }
         if (t.includeCssProperties) {
-            u(e, r, t, n);
+            l(e, r, t, n);
         }
         if (t.includeChildren && i > 0) {
-            a = d(e, r, i, t, n);
+            a = u(e, r, i, t, n);
         }
         if (t.includeText) {
-            f(e, r, a);
+            d(e, r, a);
         }
         if (r.hasOwnProperty("&children") && r["&children"].length === 0) {
             delete r["&children"];
@@ -352,7 +352,7 @@ var Trigger;
                 if (n.includeDataAttributes || !r.nodeName.startsWith("data-")) {
                     const a = `${"@"}${r.nodeName}`;
                     if (e.nodeName.toLowerCase() === "img" && r.nodeName === "src" && n.includeImagesAsBase64) {
-                        t[a] = l(e);
+                        t[a] = c(e);
                     } else {
                         t[a] = r.nodeValue;
                     }
@@ -367,16 +367,7 @@ var Trigger;
             t[`${"@"}${"name"}`] = crypto.randomUUID();
         }
     }
-    function l(e) {
-        const t = DomElement.createWithNoContainer("canvas");
-        t.width = e.width;
-        t.height = e.height;
-        const n = t.getContext("2d");
-        n.drawImage(e, 0, 0, e.width, e.height);
-        const r = t.toDataURL();
-        return r;
-    }
-    function u(e, t, n, r) {
+    function l(e, t, n, r) {
         const i = getComputedStyle(e);
         const a = i.length;
         for (let e = 0; e < a; e++) {
@@ -391,12 +382,12 @@ var Trigger;
             }
         }
     }
-    function d(t, n, r, i, a) {
+    function u(t, n, r, i, a) {
         let s = 0;
         n["&children"] = [];
         for (let l = 0; l < r; l++) {
             const r = t.children[l];
-            const u = o(r, i, c(a));
+            const u = o(r, i, f(a));
             let d = false;
             if (e.formattingNodeTypes.indexOf(u.nodeName) > -1) {
                 s++;
@@ -416,7 +407,7 @@ var Trigger;
         }
         return s;
     }
-    function f(e, t, n) {
+    function d(e, t, n) {
         if (Is.definedString(e.innerText)) {
             if (n > 0 && t.hasOwnProperty("&children") && t["&children"].length === 0) {
                 t["#text"] = e.innerHTML;
@@ -427,7 +418,7 @@ var Trigger;
             }
         }
     }
-    function c(e) {
+    function f(e) {
         const t = {};
         for (let n in e) {
             if (e.hasOwnProperty(n)) {
@@ -435,6 +426,15 @@ var Trigger;
             }
         }
         return t;
+    }
+    function c(e) {
+        const t = DomElement.createWithNoContainer("canvas");
+        t.width = e.width;
+        t.height = e.height;
+        const n = t.getContext("2d");
+        n.drawImage(e, 0, 0, e.width, e.height);
+        const r = t.toDataURL();
+        return r;
     }
     function g(e = null) {
         const t = Is.definedObject(e);

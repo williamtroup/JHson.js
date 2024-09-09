@@ -250,19 +250,6 @@ type ElementObject = {
         }
     }
 
-    function getBase64FromImageUrl( image: HTMLImageElement ) : string {
-        const canvas: HTMLCanvasElement = DomElement.createWithNoContainer( "canvas" ) as HTMLCanvasElement;
-        canvas.width = image.width;
-        canvas.height = image.height;
-
-        const context: CanvasRenderingContext2D = canvas.getContext( "2d" )!;
-        context.drawImage( image, 0, 0, image.width, image.height );
-
-        const dataURL: string = canvas.toDataURL();
-
-        return dataURL;
-    }
-
     function getElementCssProperties( element: HTMLElement, result: Record<string, any>, properties: JsonProperties, parentCssStyles: Record<string, string> ) : void {
         const computedStyles: CSSStyleDeclaration = getComputedStyle( element );
         const computedStylesLength: number = computedStyles.length;
@@ -338,6 +325,19 @@ type ElementObject = {
         }
 
         return copy;
+    }
+
+    function getBase64FromImageUrl( image: HTMLImageElement ) : string {
+        const canvas: HTMLCanvasElement = DomElement.createWithNoContainer( "canvas" ) as HTMLCanvasElement;
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        const context: CanvasRenderingContext2D = canvas.getContext( "2d" )!;
+        context.drawImage( image, 0, 0, image.width, image.height );
+
+        const dataURL: string = canvas.toDataURL();
+
+        return dataURL;
     }
 
 

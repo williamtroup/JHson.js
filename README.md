@@ -27,7 +27,7 @@ JHson.js
 - 🔠 Data templating for text (with defaults support).
 - 🎥 Write CSS directly back to the head for each element!
 - 💧 Bind JSON directly to DOM elements!
-- 📷 Include images as Base 64 URLs.
+- 📷 Include and write images as Base 64 URLs.
 <br />
 <br />
 

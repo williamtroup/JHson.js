@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        api.ts
- * @version     v2.2.0
+ * @version     v2.3.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -79,6 +79,19 @@ export type PublicApiJson = {
      * @returns     {Object}                                        The JSON properties object.
      */
     includeChildren: ( flag: boolean ) => PublicApiJson;
+
+    /**
+     * includeImagesAsBase64().
+     * 
+     * States if the image source attribute should be included as Base 64 URLs.
+     * 
+     * @public
+     * 
+     * @param       {boolean}    flag                               The boolean flag that states the condition (defaults to false).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    includeImagesAsBase64: ( flag: boolean ) => PublicApiJson;
 
     /**
      * friendlyFormat().
@@ -481,6 +494,39 @@ export type PublicApi = {
      * @returns     {Object}                                                The HTML properties object.
      */
     html: () => PublicApiHtml;
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Public API Functions:  Rendering
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+	/**
+	 * render().
+	 *
+	 * Renders an element using the options specified.
+	 *
+	 * @public
+	 *
+	 * @param       {Object}    element                                     The element to render.
+	 * @param       {Object}    options                                     All the binding options that should be set (refer to "Binding Options" documentation for properties).
+	 *
+	 * @returns     {Object}                                                The JHson.js class instance.
+	 */
+	render: ( element: HTMLElement, options: object ) => PublicApi;
+
+	/**
+	 * renderAll().
+	 *
+	 * Finds all new elements and renders them.
+	 *
+	 * @public
+	 *
+	 * @returns     {Object}                                                The JHson.js class instance.
+	 */
+	renderAll: () => PublicApi;
+
 
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

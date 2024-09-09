@@ -28,6 +28,17 @@ div.header p {
 div.header h1 {
     margin-bottom: 8px;
     font-weight: 700;
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.header img.logo {
+    height: 50px;
+    width: 50px;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 0.25rem;
 }
 
 h2 {

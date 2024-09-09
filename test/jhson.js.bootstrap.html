@@ -10,8 +10,9 @@
         <script src="js/scripts.js"></script>
     </head>
 
-    <body data-random-attribute="attribute-value" name="body" id="body">
+    <body data-random-attribute="attribute-value" name="body" id="body" style="font-family: default;">
         <div class="header">
+            <img src="images/image.png" class="logo" />
             <h1 id="header">JHson.js - Bootstrap</h1>
             <p id="description">This is a {{template_type | basic}} example of how to use <b>JHson.js</b> ... alongside {{template_bootstrap | Should Be Replaced}} and {{template_data}}.</p>
         </div>
@@ -44,6 +45,10 @@
     
                 <input type="checkbox" id="includeChildren" name="includeChildren" checked="checked">
                 <label for="includeChildren">Include Children</label>
+                <br>
+
+                <input type="checkbox" id="includeImagesAsBase64" name="includeImagesAsBase64">
+                <label for="includeImagesAsBase64">Include Images As Base 64</label>
                 <br>
     
                 <input type="checkbox" id="friendlyFormat" name="friendlyFormat" checked="checked">
@@ -149,7 +154,7 @@
             <br />
 
             <h2>Additional Data:</h2>
-            <button class="btn btn-primary" onclick="console.log( $jhson.getVersion() );">Get Version</button>
+            <button class="btn btn-primary" onclick="getVersion();">Get Version</button>
         </div>
     </body>
 </html>

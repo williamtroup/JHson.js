@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.ts
- * @version     v2.2.0
+ * @version     v2.3.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2024
@@ -48,6 +48,7 @@ type JsonProperties = {
     includeCssProperties: boolean;
     includeText: boolean;
     includeChildren: boolean;
+    includeImagesAsBase64: boolean;
     friendlyFormat: boolean;
     indentSpaces: number;
     ignoreNodeTypes: string[];
@@ -147,6 +148,7 @@ type ElementObject = {
             includeCssProperties: false,
             includeText: true,
             includeChildren: true,
+            includeImagesAsBase64: false,
             friendlyFormat: true,
             indentSpaces: 2,
             ignoreNodeTypes: [],
@@ -226,8 +228,17 @@ type ElementObject = {
 
             if ( Is.definedString( attribute.nodeName ) && properties.ignoreAttributes.indexOf( attribute.nodeName ) === Value.notFound ) {
                 if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( Char.dataAttributeStart ) ) {
-                    result[ `${JsonValue.attribute}${attribute.nodeName}` ] = attribute.nodeValue;
-                    attributesAvailable.push( attribute.nodeName );
+                    const resultName: string = `${JsonValue.attribute}${attribute.nodeName}`;
+
+                    if ( !properties.includeCssProperties || attribute.nodeName !== "style" ) {
+                        if ( element.nodeName.toLowerCase() === "img" && attribute.nodeName === "src" && properties.includeImagesAsBase64 ) {
+                            result[ resultName ] = getBase64FromImageUrl( element as HTMLImageElement );
+                        } else {
+                            result[ resultName ] = attribute.nodeValue;
+                        }
+    
+                        attributesAvailable.push( attribute.nodeName );
+                    }
                 }
             }
         }
@@ -316,6 +327,19 @@ type ElementObject = {
         }
 
         return copy;
+    }
+
+    function getBase64FromImageUrl( image: HTMLImageElement ) : string {
+        const canvas: HTMLCanvasElement = DomElement.createWithNoContainer( "canvas" ) as HTMLCanvasElement;
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        const context: CanvasRenderingContext2D = canvas.getContext( "2d" )!;
+        context.drawImage( image, 0, 0, image.width, image.height );
+
+        const dataURL: string = canvas.toDataURL();
+
+        return dataURL;
     }
 
 
@@ -668,6 +692,12 @@ type ElementObject = {
                     return this;
                 },
 
+                includeImagesAsBase64: function ( flag: boolean ) : PublicApiJson {
+                    properties.includeImagesAsBase64 = Default.getBoolean( flag, properties.includeImagesAsBase64 );
+
+                    return this;
+                },
+
                 friendlyFormat: function ( flag: boolean ) : PublicApiJson {
                     properties.friendlyFormat = Default.getBoolean( flag, properties.friendlyFormat );
 
@@ -854,6 +884,27 @@ type ElementObject = {
 
         /*
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+         * Public API Functions:  Rendering
+         * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+         */
+
+        render: function ( element: HTMLElement, options: object ) : PublicApi {
+            if ( Is.definedObject( element ) && Is.definedObject( options ) ) {
+                renderElement( Binding.Options.getForNewInstance( options, element, getDefaultHtmlProperties() ) );
+            }
+    
+            return _public;
+        },
+
+        renderAll: function () : PublicApi {
+            render();
+
+            return _public;
+        },
+
+
+        /*
+         * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          * Public API Functions:  Configuration
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
@@ -886,7 +937,7 @@ type ElementObject = {
          */
 
         getVersion: function () : string {
-            return "2.2.0";
+            return "2.3.0";
         }
     };
 

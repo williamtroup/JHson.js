@@ -2,15 +2,15 @@
 JHson.js
 
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=JHson.js%2C%20a%20free%20JavaScript%json%20converter&url=https://github.com/williamtroup/JHson.js&hashtags=javascript,json,html,converter)
-[![npm](https://img.shields.io/badge/npmjs-v2.2.0-blue)](https://www.npmjs.com/package/jhson.js)
-[![nuget](https://img.shields.io/badge/nuget-v2.2.0-purple)](https://www.nuget.org/packages/JHson.js/)
+[![npm](https://img.shields.io/badge/npmjs-v2.3.0-blue)](https://www.npmjs.com/package/jhson.js)
+[![nuget](https://img.shields.io/badge/nuget-v2.3.0-purple)](https://www.nuget.org/packages/JHson.js/)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/williamtroup/JHson.js/blob/main/LICENSE.txt)
 [![discussions Welcome](https://img.shields.io/badge/discussions-Welcome-red)](https://github.com/williamtroup/JHson.js/discussions)
 [![coded by William Troup](https://img.shields.io/badge/coded_by-William_Troup-yellow)](https://william-troup.com/)
 </h1>
 
 > <p align="center">📃 A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.</p>
-> <p align="center">v2.2.0</p>
+> <p align="center">v2.3.0</p>
 <br />
 <br />
 
@@ -27,6 +27,7 @@ JHson.js
 - 🔠 Data templating for text (with defaults support).
 - 🎥 Write CSS directly back to the head for each element!
 - 💧 Bind JSON directly to DOM elements!
+- 📷 Include and write images as Base 64 URLs.
 <br />
 <br />
 
@@ -40,7 +41,7 @@ All modern browsers (such as Google Chrome, FireFox, and Opera) are fully suppor
 
 <h1>What are the most recent changes?</h1>
 
-To see a list of all the most recent changes, click [here](docs/CHANGE_LOG.md).
+To see a list of all the most recent changes, click [here](https://www.william-troup.com/jhson-js/documentation/recent-changes.html).
 <br>
 <br>
 
@@ -53,11 +54,13 @@ You can install the library with npm into your local modules directory using the
 npm install jhson.js
 ```
 
-You can also use the following CDN links:
+Or, you can download the latest zipped up version [here](https://www.william-troup.com/jhson-js/download.html).
+
+Or, you can also use the following CDN links:
 
 ```markdown
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.2.0/dist/jhson.min.js
-https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.2.0/dist/jhson.export.js
+https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.3.0/dist/jhson.min.js
+https://cdn.jsdelivr.net/gh/williamtroup/JHson.js@2.3.0/dist/jhson.export.js
 ```
 <br>
 <br>
@@ -105,10 +108,11 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .includeCssProperties( true )
         .includeText( true )
         .includeChildren( true )
+        .includeImagesAsBase64( false )
         .friendlyFormat( true )
         .indentSpaces( 2 )
         .ignoreNodeTypes( "q" )
-        .ignoreNodeCondition( null ),
+        .ignoreNodeCondition( null )
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
         .generateUniqueMissingIds( false )
@@ -164,9 +168,9 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
 </div>
 ```
 
-To see a list of all the available binding options you can use for "data-jhson-js", click [here](docs/binding/OPTIONS.md).
+To see a list of all the available binding options you can use for "data-jhson-js", click [here](https://www.william-troup.com/jhson-js/documentation/binding-options.html).
 
-To see a list of all the available custom triggers you can use for "data-jhson-js", click [here](docs/binding/CUSTOM_TRIGGERS.md).
+To see a list of all the available custom triggers you can use for "data-jhson-js", click [here](https://www.william-troup.com/jhson-js/documentation/binding-options-custom-triggers.html).
 
 <br>
 
@@ -186,7 +190,7 @@ To customize, and get more out of JHson.js, please read through the following do
 
 ### 1. Public Functions:
 
-To see a list of all the public functions available, click [here](docs/PUBLIC_FUNCTIONS.md).
+To see a list of all the public functions available, click [here](https://www.william-troup.com/jhson-js/documentation/public-functions.html).
 <br>
 <br>
 
@@ -203,4 +207,4 @@ Configuration options allow you to customize how JHson.js will function.  You ca
 </script>
 ```
 
-To see a list of all the available configuration options you can use, click [here](docs/configuration/OPTIONS.md).
+To see a list of all the available configuration options you can use, click [here](https://www.william-troup.com/jhson-js/documentation/options.html).

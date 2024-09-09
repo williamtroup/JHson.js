@@ -6,6 +6,7 @@ var _JSON_TEXTAREA = null,
     _INCLUDE_CSS_STYLES = null,
     _INCLUDE_TEXT = null,
     _INCLUDE_CHILDREN = null,
+    _INCLUDE_IMAGES_AS_BASE_64 = null,
     _FRIENDLY_FORMAT = null,
     _INDENT_SPACES = null,
     _IGNORE_NODE_TYPES = null,
@@ -41,6 +42,7 @@ var _SET_TEMPLATE_DATA = null,
         _INCLUDE_CSS_STYLES = document.getElementById( "includeCssProperties" );
         _INCLUDE_TEXT = document.getElementById( "includeText" );
         _INCLUDE_CHILDREN = document.getElementById( "includeChildren" );
+        _INCLUDE_IMAGES_AS_BASE_64 = document.getElementById( "includeImagesAsBase64" );
         _FRIENDLY_FORMAT = document.getElementById( "friendlyFormat" );
         _INDENT_SPACES = document.getElementById( "indentSpaces" );
         _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" );
@@ -72,6 +74,8 @@ function setupConfiguration() {
 }
 
 function getJSONData() {
+    _JSON_TEXTAREA.value = "";
+    
     _JSON_TEXTAREA.value = $jhson
         .json()
         .includeAttributes( _INCLUDE_ATTRIBUTES.checked )
@@ -79,6 +83,7 @@ function getJSONData() {
         .includeCssProperties( _INCLUDE_CSS_STYLES.checked )
         .includeText( _INCLUDE_TEXT.checked )
         .includeChildren( _INCLUDE_CHILDREN.checked )
+        .includeImagesAsBase64( _INCLUDE_IMAGES_AS_BASE_64.checked )
         .friendlyFormat( _FRIENDLY_FORMAT.checked )
         .indentSpaces( parseInt( _INDENT_SPACES.value ) )
         .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
@@ -87,20 +92,26 @@ function getJSONData() {
         .generateUniqueMissingIds( _GENERATE_UNIQUE_MISSING_IDS.checked )
         .generateUniqueMissingNames( _GENERATE_UNIQUE_MISSING_NAMES.checked )
         .get( _BODY );
+
+    window.scrollTo( 0, 0 );
 }
 
 function getJSONVariables() {
     var variables = $jhson.json().getVariables( "{{variable_start}}<div>{{variable_1}}</div><div>{{variable_2}}</div>{{variable_end}}" ),
         variablesString = JSON.stringify( variables );
 
-    console.log( variablesString );
+    _JSON_TEXTAREA.value = variablesString;
+
+    window.scrollTo( 0, 0 );
 }
 
 function getHTMLVariables() {
     var variables = $jhson.html().getVariables( document.getElementById( "description" ) ),
         variablesString = JSON.stringify( variables );
 
-    console.log( variablesString );
+    _JSON_TEXTAREA.value = variablesString;
+    
+    window.scrollTo( 0, 0 );
 }
 
 function writeJsonToHtmlData() {
@@ -108,7 +119,9 @@ function writeJsonToHtmlData() {
 }
 
 function getJsonToHtmlElement() {
-    console.log( getHtmlScope().get() );
+    _JSON_TEXTAREA.value = getHtmlScope().get();
+
+    window.scrollTo( 0, 0 );
 }
 
 function getHtmlScope() {
@@ -139,4 +152,10 @@ function getHtmlScope() {
         .insertBefore( _INSERT_BEFORE.checked );
 
     return htmlScope;
+}
+
+function getVersion() {
+    _JSON_TEXTAREA.value = $jhson.getVersion();
+
+    window.scrollTo( 0, 0 );
 }

@@ -8,7 +8,7 @@
 - Added new public function "renderAll()", which will find all new DOM elements with the "data-jhson-js" attribute and render them.
 
 #### **General Improvements:**
-- When "includeCssProperties()" and "includeAttributes()" is set to true, the attribute "style" is now ignored.
+- When "includeCssProperties()" and "includeAttributes()" are set to true, the attribute "style" is now ignored.
 
 <br>
 

@@ -74,6 +74,8 @@ function setupConfiguration() {
 }
 
 function getJSONData() {
+    _JSON_TEXTAREA.value = "";
+    
     _JSON_TEXTAREA.value = $jhson
         .json()
         .includeAttributes( _INCLUDE_ATTRIBUTES.checked )

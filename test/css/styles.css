@@ -38,6 +38,7 @@ div.header img.logo {
     margin-right: 10px;
     display: inline-block;
     vertical-align: top;
+    border-radius: 0.25rem;
 }
 
 h2 {

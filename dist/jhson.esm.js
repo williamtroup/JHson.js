@@ -351,12 +351,14 @@ var Trigger;
             if (Is.definedString(r.nodeName) && n.ignoreAttributes.indexOf(r.nodeName) === -1) {
                 if (n.includeDataAttributes || !r.nodeName.startsWith("data-")) {
                     const a = `${"@"}${r.nodeName}`;
-                    if (e.nodeName.toLowerCase() === "img" && r.nodeName === "src" && n.includeImagesAsBase64) {
-                        t[a] = c(e);
-                    } else {
-                        t[a] = r.nodeValue;
+                    if (!n.includeCssProperties || r.nodeName !== "style") {
+                        if (e.nodeName.toLowerCase() === "img" && r.nodeName === "src" && n.includeImagesAsBase64) {
+                            t[a] = c(e);
+                        } else {
+                            t[a] = r.nodeValue;
+                        }
+                        i.push(r.nodeName);
                     }
-                    i.push(r.nodeName);
                 }
             }
         }
@@ -519,7 +521,7 @@ var Trigger;
                 }
             }
         }
-        return S;
+        return N;
     }
     function b(e, t) {
         for (let n in e.templateData) {
@@ -661,7 +663,7 @@ var Trigger;
             }
         }
     }
-    const S = {
+    const N = {
         json: function() {
             const e = i();
             const t = {
@@ -823,7 +825,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return S;
+            return N;
         },
         getVersion: function() {
             return "2.3.0";
@@ -833,7 +835,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", (() => t()));
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = S;
+            window.$jhson = N;
         }
     })();
 })();//# sourceMappingURL=jhson.esm.js.map

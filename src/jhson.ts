@@ -230,13 +230,15 @@ type ElementObject = {
                 if ( properties.includeDataAttributes || !attribute.nodeName.startsWith( Char.dataAttributeStart ) ) {
                     const resultName: string = `${JsonValue.attribute}${attribute.nodeName}`;
 
-                    if ( element.nodeName.toLowerCase() === "img" && attribute.nodeName === "src" && properties.includeImagesAsBase64 ) {
-                        result[ resultName ] = getBase64FromImageUrl( element as HTMLImageElement );
-                    } else {
-                        result[ resultName ] = attribute.nodeValue;
+                    if ( !properties.includeCssProperties || attribute.nodeName !== "style" ) {
+                        if ( element.nodeName.toLowerCase() === "img" && attribute.nodeName === "src" && properties.includeImagesAsBase64 ) {
+                            result[ resultName ] = getBase64FromImageUrl( element as HTMLImageElement );
+                        } else {
+                            result[ resultName ] = attribute.nodeValue;
+                        }
+    
+                        attributesAvailable.push( attribute.nodeName );
                     }
-
-                    attributesAvailable.push( attribute.nodeName );
                 }
             }
         }

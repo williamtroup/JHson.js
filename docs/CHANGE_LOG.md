@@ -5,6 +5,9 @@
 #### **Public Functions:**
 - Added "includeImagesAsBase64()" support for "json()", which states if the image source attributes should be included as a Base 64 URLs (defaults to false).
 
+#### **General Improvements:**
+- When "includeCssProperties()" and "includeAttributes()" is set to true, the attribute "style" is now ignored.
+
 <br>
 
 

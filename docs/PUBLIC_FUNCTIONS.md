@@ -305,6 +305,26 @@ Uses all the options selected via the chained functions to get the template vari
 <br>
 
 
+## Rendering:
+
+### **render( *element*, *options* )**:
+Renders an element using the options specified.
+<br>
+***Parameter: element***: '*Object*' - The element to render.
+<br>
+***Parameter: options***: '*Object*' - All the binding options that should be set (refer to ["Binding Options"](binding/OPTIONS.md) documentation for properties).
+<br>
+***Returns***: '*Object*' - The JHson.js class instance.
+<br>
+
+### **renderAll()**:
+Finds all new elements and renders them.
+<br>
+***Returns***: '*Object*' - The JHson.js class instance.
+<br>
+<br>
+
+
 ## Configuration:
 
 ### **setConfiguration( *newConfiguration* )**:

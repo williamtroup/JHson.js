@@ -495,6 +495,39 @@ export type PublicApi = {
      */
     html: () => PublicApiHtml;
 
+
+    /*
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * Public API Functions:  Rendering
+     * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
+
+	/**
+	 * render().
+	 *
+	 * Renders an element using the options specified.
+	 *
+	 * @public
+	 *
+	 * @param       {Object}    element                                     The element to render.
+	 * @param       {Object}    options                                     All the binding options that should be set (refer to "Binding Options" documentation for properties).
+	 *
+	 * @returns     {Object}                                                The JHson.js class instance.
+	 */
+	render: ( element: HTMLElement, options: object ) => PublicApi;
+
+	/**
+	 * renderAll().
+	 *
+	 * Finds all new elements and renders them.
+	 *
+	 * @public
+	 *
+	 * @returns     {Object}                                                The JHson.js class instance.
+	 */
+	renderAll: () => PublicApi;
+
+
     /*
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      * Public API Functions:  Configuration

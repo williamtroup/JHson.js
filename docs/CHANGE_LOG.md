@@ -4,6 +4,8 @@
 
 #### **Public Functions:**
 - Added "includeImagesAsBase64()" support for "json()", which states if the image source attributes should be included as a Base 64 URLs (defaults to false).
+- Added new public function "render()", which will render a specific DOM element using the options you specify.
+- Added new public function "renderAll()", which will find all new DOM elements with the "data-jhson-js" attribute and render them.
 
 #### **General Improvements:**
 - When "includeCssProperties()" and "includeAttributes()" is set to true, the attribute "style" is now ignored.

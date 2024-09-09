@@ -813,6 +813,16 @@ var Trigger;
             };
             return t;
         },
+        render: function(e, t) {
+            if (Is.definedObject(e) && Is.definedObject(t)) {
+                r(Binding.Options.getForNewInstance(t, e, g()));
+            }
+            return N;
+        },
+        renderAll: function() {
+            t();
+            return N;
+        },
         setConfiguration: function(t) {
             if (Is.definedObject(t)) {
                 let n = false;

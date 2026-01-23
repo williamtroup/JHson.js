@@ -460,8 +460,8 @@ type ElementObject = {
             }
         }
 
-        writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( a, b ) {
-            return b.length - a.length;
+        writingScope.templateDataKeys = writingScope.templateDataKeys.sort( function( keyA: string, keyB: string ) {
+            return keyB.length - keyA.length;
         } );
 
         writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;

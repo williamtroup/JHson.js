@@ -23,14 +23,14 @@ var t;
         return t(e) && typeof e === "string";
     }
     e.definedString = i;
-    function o(e) {
+    function a(e) {
         return t(e) && typeof e === "function";
     }
-    e.definedFunction = o;
-    function a(e) {
+    e.definedFunction = a;
+    function o(e) {
         return t(e) && typeof e === "number";
     }
-    e.definedNumber = a;
+    e.definedNumber = o;
     function s(e) {
         return n(e) && e instanceof Array;
     }
@@ -52,14 +52,14 @@ var n;
         return t.definedNumber(e) ? e : n;
     }
     e.getNumber = i;
-    function o(e, n) {
+    function a(e, n) {
         return t.definedFunction(e) ? e : n;
     }
-    e.getFunction = o;
-    function a(e, n) {
+    e.getFunction = a;
+    function o(e, n) {
         return t.definedArray(e) ? e : n;
     }
-    e.getArray = a;
+    e.getArray = o;
     function s(e, n) {
         return t.definedObject(e) ? e : n;
     }
@@ -74,7 +74,7 @@ var n;
                 r = t;
             }
         } else {
-            r = a(e, n);
+            r = o(e, n);
         }
         return r;
     }
@@ -116,19 +116,19 @@ var n;
                 i = [];
             }
         }
-        const o = r[0].split(".");
-        const a = o.pop();
+        const a = r[0].split(".");
+        const o = a.pop();
         let s = globalThis;
         let l = true;
-        for (const e of o) {
+        for (const e of a) {
             s = s[e];
             if (!t.defined(s)) {
                 l = false;
                 break;
             }
         }
-        if (l && t.definedFunction(s[a])) {
-            n = s[a].apply(s, i);
+        if (l && t.definedFunction(s[o])) {
+            n = s[o].apply(s, i);
         }
         return n;
     }
@@ -185,7 +185,7 @@ var i;
     e.getTemplateVariables = i;
 })(i || (i = {}));
 
-var o;
+var a;
 
 (e => {
     let t;
@@ -208,9 +208,9 @@ var o;
             return e;
         }
     })(t = e.Options || (e.Options = {}));
-})(o || (o = {}));
+})(a || (a = {}));
 
-var a;
+var o;
 
 (e => {
     let t;
@@ -249,7 +249,7 @@ var a;
             return e;
         }
     })(t = e.Options || (e.Options = {}));
-})(a || (a = {}));
+})(o || (o = {}));
 
 var s;
 
@@ -281,11 +281,11 @@ var s;
     function c(r) {
         let i = true;
         if (t.defined(r) && r.hasAttribute(e.JHSON_JS_ATTRIBUTE_NAME)) {
-            const o = r.getAttribute(e.JHSON_JS_ATTRIBUTE_NAME);
-            if (t.definedString(o)) {
-                const s = n.getObjectFromString(o, l);
+            const a = r.getAttribute(e.JHSON_JS_ATTRIBUTE_NAME);
+            if (t.definedString(a)) {
+                const s = n.getObjectFromString(a, l);
                 if (s.parsed && t.definedObject(s.object)) {
-                    u(a.Options.getForNewInstance(s.object, r, A()));
+                    u(o.Options.getForNewInstance(s.object, r, A()));
                 } else {
                     if (!l.safeMode) {
                         console.error(l.text.attributeNotValidErrorText.replace("{{attribute_name}}", e.JHSON_JS_ATTRIBUTE_NAME));
@@ -307,7 +307,7 @@ var s;
         N(e._currentView.element, t);
         s.customEvent(e.events.onRenderComplete, e._currentView.element);
     }
-    function f() {
+    function g() {
         return {
             includeAttributes: true,
             includeDataAttributes: true,
@@ -326,7 +326,7 @@ var s;
             propertyReplacer: null
         };
     }
-    function g(e, n) {
+    function f(e, n) {
         let r = "";
         if (t.definedObject(e)) {
             const t = {};
@@ -343,7 +343,7 @@ var s;
     function p(e, t, n) {
         const r = {};
         const i = e.children.length;
-        let o = 0;
+        let a = 0;
         if (t.includeAttributes) {
             m(e, r, t);
         }
@@ -351,10 +351,10 @@ var s;
             b(e, r, t, n);
         }
         if (t.includeChildren && i > 0) {
-            o = h(e, r, i, t, n);
+            a = T(e, r, i, t, n);
         }
         if (t.includeText) {
-            T(e, r, o);
+            O(e, r, a);
         }
         if (Object.prototype.hasOwnProperty.call(r, "&children") && r["&children"].length === 0) {
             delete r["&children"];
@@ -366,15 +366,15 @@ var s;
     }
     function m(e, n, r) {
         const i = e.attributes.length;
-        const o = [];
+        const a = [];
         if (r.includeText && e.nodeName.toLowerCase() === "textarea") {
             const r = e;
             if (t.defined(r.value)) {
                 n["#text"] = r.value;
             }
         }
-        for (let a = 0; a < i; a++) {
-            const i = e.attributes[a];
+        for (let o = 0; o < i; o++) {
+            const i = e.attributes[o];
             if (t.definedString(i.nodeName) && r.ignoreAttributes.indexOf(i.nodeName) === -1) {
                 if (r.includeDataAttributes || !i.nodeName.startsWith("data-")) {
                     const t = `${"@"}${i.nodeName}`;
@@ -384,26 +384,26 @@ var s;
                         } else {
                             n[t] = i.nodeValue;
                         }
-                        o.push(i.nodeName);
+                        a.push(i.nodeName);
                     }
                 }
             }
         }
-        if (r.generateUniqueMissingIds && o.indexOf("id") === -1 && r.ignoreAttributes.indexOf("id") === -1) {
+        if (r.generateUniqueMissingIds && a.indexOf("id") === -1 && r.ignoreAttributes.indexOf("id") === -1) {
             n[`${"@"}${"id"}`] = crypto.randomUUID();
         }
-        if (r.generateUniqueMissingNames && o.indexOf("name") === -1 && r.ignoreAttributes.indexOf("name") === -1) {
+        if (r.generateUniqueMissingNames && a.indexOf("name") === -1 && r.ignoreAttributes.indexOf("name") === -1) {
             n[`${"@"}${"name"}`] = crypto.randomUUID();
         }
     }
     function b(e, t, n, r) {
         const i = getComputedStyle(e);
-        const o = i.length;
-        for (let e = 0; e < o; e++) {
-            const o = i[e];
-            if (n.ignoreCssProperties.indexOf(o) === -1) {
-                const e = `${"$"}${o}`;
-                const n = i.getPropertyValue(o);
+        const a = i.length;
+        for (let e = 0; e < a; e++) {
+            const a = i[e];
+            if (n.ignoreCssProperties.indexOf(a) === -1) {
+                const e = `${"$"}${a}`;
+                const n = i.getPropertyValue(a);
                 if (!Object.prototype.hasOwnProperty.call(r, e) || r[e] !== n) {
                     t[e] = n;
                     r[e] = t[e];
@@ -411,20 +411,20 @@ var s;
             }
         }
     }
-    function h(e, n, r, i, o) {
-        let a = 0;
+    function T(e, n, r, i, a) {
+        let o = 0;
         n["&children"] = [];
         for (let s = 0; s < r; s++) {
             const r = e.children[s];
-            const d = p(r, i, O(o));
+            const d = p(r, i, h(a));
             let c = false;
             if (l.formattingNodeTypes.indexOf(d.nodeName) > -1) {
-                a++;
+                o++;
             } else {
                 if (i.ignoreNodeTypes.indexOf(d.nodeName) === -1) {
                     if (!t.definedFunction(i.ignoreNodeCondition) || !i.ignoreNodeCondition(r)) {
                         c = true;
-                        a++;
+                        o++;
                     }
                 }
             }
@@ -434,9 +434,9 @@ var s;
                 n["&children"].push(e);
             }
         }
-        return a;
+        return o;
     }
-    function T(e, n, r) {
+    function O(e, n, r) {
         if (t.definedString(e.innerText)) {
             if (r > 0 && Object.prototype.hasOwnProperty.call(n, "&children") && n["&children"].length === 0) {
                 n["#text"] = e.innerHTML;
@@ -447,7 +447,7 @@ var s;
             }
         }
     }
-    function O(e) {
+    function h(e) {
         const t = {};
         for (const n in e) {
             if (Object.prototype.hasOwnProperty.call(e, n)) {
@@ -487,37 +487,37 @@ var s;
     function C(e) {
         let i = null;
         if (t.definedString(e.json)) {
-            const o = n.getObjectFromString(e.json, l);
-            for (const e in o.object) {
+            const a = n.getObjectFromString(e.json, l);
+            for (const e in a.object) {
                 i = r.createWithNoContainer(e);
                 break;
             }
             if (t.defined(i)) {
-                N(i, e, o);
+                N(i, e, a);
             }
         }
         return i;
     }
     function N(e, r, i = null) {
         if (t.definedObject(e) && t.definedString(r.json)) {
-            let o = i;
-            if (!t.definedObject(o)) {
-                o = n.getObjectFromString(r.json, l);
+            let a = i;
+            if (!t.definedObject(a)) {
+                a = n.getObjectFromString(r.json, l);
             }
-            const a = {
+            const o = {
                 css: {},
                 templateDataKeys: [],
                 templateDataKeysLength: 0,
                 templateDataKeysProcessed: []
             };
-            if (o.parsed && t.definedObject(o.object)) {
+            if (a.parsed && t.definedObject(a.object)) {
                 if (r.clearCssFromHead) {
                     v();
                 }
                 if (t.definedObject(r.templateData)) {
-                    x(r, a);
+                    x(r, o);
                 }
-                for (const t in o.object) {
+                for (const t in a.object) {
                     if (t === e.nodeName.toLowerCase()) {
                         if (r.removeOriginalAttributes) {
                             let t = e.attributes.length;
@@ -532,16 +532,16 @@ var s;
                         if (r.clearOriginalHTML) {
                             e.innerHTML = "";
                         }
-                        j(e, o.object[t], r, a);
+                        j(e, a.object[t], r, o);
                         break;
                     }
                 }
                 M(e);
                 if (r.addCssToHead) {
-                    S(a);
+                    S(o);
                 }
                 if (r.logTemplateDataWarnings) {
-                    H(a);
+                    H(o);
                 }
             }
         }
@@ -558,8 +558,8 @@ var s;
         });
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function j(e, t, n, o) {
-        const a = [];
+    function j(e, t, n, a) {
+        const o = [];
         for (const s in t) {
             if (i.startsWithAnyCase(s, "@")) {
                 if (n.addAttributes) {
@@ -575,52 +575,52 @@ var s;
                     if (!n.addCssToHead) {
                         e.style.setProperty(r, t[s]);
                     } else {
-                        a.push(`${r}:${t[s]};`);
+                        o.push(`${r}:${t[s]};`);
                     }
                 }
             } else if (s === "#text") {
                 if (n.addText) {
-                    D(e, t[s], n, o);
+                    D(e, t[s], n, a);
                 }
             } else if (s === "&children") {
                 if (n.addChildren) {
                     const i = t[s].length;
-                    for (let a = 0; a < i; a++) {
-                        const i = t[s][a];
+                    for (let o = 0; o < i; o++) {
+                        const i = t[s][o];
                         for (const t in i) {
                             if (Object.prototype.hasOwnProperty.call(i, t)) {
-                                const a = r.create(e, t.toLowerCase());
-                                j(a, i[t], n, o);
+                                const o = r.create(e, t.toLowerCase());
+                                j(o, i[t], n, a);
                             }
                         }
                     }
                 }
             }
         }
-        if (a.length > 0) {
-            B(e, a, o);
+        if (o.length > 0) {
+            B(e, o, a);
         }
     }
     function D(e, t, n, r) {
         e.innerHTML = t;
         if (r.templateDataKeysLength > 0) {
             for (let t = 0; t < r.templateDataKeysLength; t++) {
-                let o = r.templateDataKeys[t];
-                if (Object.prototype.hasOwnProperty.call(n.templateData, o)) {
-                    const t = n.templateData[o];
-                    if (e.innerHTML.indexOf(o) > -1) {
-                        e.innerHTML = i.replaceAll(e.innerHTML, o, t);
-                        if (r.templateDataKeysProcessed.indexOf(o) === -1) {
-                            r.templateDataKeysProcessed.push(o);
+                let a = r.templateDataKeys[t];
+                if (Object.prototype.hasOwnProperty.call(n.templateData, a)) {
+                    const t = n.templateData[a];
+                    if (e.innerHTML.indexOf(a) > -1) {
+                        e.innerHTML = i.replaceAll(e.innerHTML, a, t);
+                        if (r.templateDataKeysProcessed.indexOf(a) === -1) {
+                            r.templateDataKeysProcessed.push(a);
                         }
                     } else {
-                        o = `${o.replace("}}", "")}${" "}${"|"}`;
-                        const n = e.innerHTML.indexOf(o);
+                        a = `${a.replace("}}", "")}${" "}${"|"}`;
+                        const n = e.innerHTML.indexOf(a);
                         if (n > -1) {
                             const r = e.innerHTML.indexOf("}}", n);
                             if (r > -1) {
-                                const o = e.innerHTML.substring(n, r + "}}".length);
-                                e.innerHTML = i.replaceAll(e.innerHTML, o, t);
+                                const a = e.innerHTML.substring(n, r + "}}".length);
+                                e.innerHTML = i.replaceAll(e.innerHTML, a, t);
                             }
                         }
                     }
@@ -639,11 +639,11 @@ var s;
             }
             i = `#${e.id} {`;
         }
-        let o = [];
-        o.push(i);
-        o = o.concat(n);
-        o.push("}");
-        r.css[e.id] = o;
+        let a = [];
+        a.push(i);
+        a = a.concat(n);
+        a.push("}");
+        r.css[e.id] = a;
     }
     function S(e) {
         const t = document.getElementsByTagName("head")[0];
@@ -688,144 +688,136 @@ var s;
         }
     }
     const L = {
-        json: function() {
-            const e = f();
+        json: () => {
+            const e = g();
             const t = {
-                includeAttributes: function(t) {
-                    e.includeAttributes = n.getBoolean(t, e.includeAttributes);
-                    return this;
+                includeAttributes: r => {
+                    e.includeAttributes = n.getBoolean(r, e.includeAttributes);
+                    return t;
                 },
-                includeDataAttributes: function(t) {
-                    e.includeDataAttributes = n.getBoolean(t, e.includeDataAttributes);
-                    return this;
+                includeDataAttributes: r => {
+                    e.includeDataAttributes = n.getBoolean(r, e.includeDataAttributes);
+                    return t;
                 },
-                includeCssProperties: function(t) {
-                    e.includeCssProperties = n.getBoolean(t, e.includeCssProperties);
-                    return this;
+                includeCssProperties: r => {
+                    e.includeCssProperties = n.getBoolean(r, e.includeCssProperties);
+                    return t;
                 },
-                includeText: function(t) {
-                    e.includeText = n.getBoolean(t, e.includeText);
-                    return this;
+                includeText: r => {
+                    e.includeText = n.getBoolean(r, e.includeText);
+                    return t;
                 },
-                includeChildren: function(t) {
-                    e.includeChildren = n.getBoolean(t, e.includeChildren);
-                    return this;
+                includeChildren: r => {
+                    e.includeChildren = n.getBoolean(r, e.includeChildren);
+                    return t;
                 },
-                includeImagesAsBase64: function(t) {
-                    e.includeImagesAsBase64 = n.getBoolean(t, e.includeImagesAsBase64);
-                    return this;
+                includeImagesAsBase64: r => {
+                    e.includeImagesAsBase64 = n.getBoolean(r, e.includeImagesAsBase64);
+                    return t;
                 },
-                friendlyFormat: function(t) {
-                    e.friendlyFormat = n.getBoolean(t, e.friendlyFormat);
-                    return this;
+                friendlyFormat: r => {
+                    e.friendlyFormat = n.getBoolean(r, e.friendlyFormat);
+                    return t;
                 },
-                indentSpaces: function(t) {
-                    e.indentSpaces = n.getNumber(t, e.indentSpaces);
-                    return this;
+                indentSpaces: r => {
+                    e.indentSpaces = n.getNumber(r, e.indentSpaces);
+                    return t;
                 },
-                ignoreNodeTypes: function(t) {
-                    e.ignoreNodeTypes = n.getStringOrArray(t, e.ignoreNodeTypes);
-                    return this;
+                ignoreNodeTypes: r => {
+                    e.ignoreNodeTypes = n.getStringOrArray(r, e.ignoreNodeTypes);
+                    return t;
                 },
-                ignoreNodeCondition: function(t) {
-                    e.ignoreNodeCondition = n.getFunction(t, e.ignoreNodeCondition);
-                    return this;
+                ignoreNodeCondition: r => {
+                    e.ignoreNodeCondition = n.getFunction(r, e.ignoreNodeCondition);
+                    return t;
                 },
-                ignoreCssProperties: function(t) {
-                    e.ignoreCssProperties = n.getStringOrArray(t, e.ignoreCssProperties);
-                    return this;
+                ignoreCssProperties: r => {
+                    e.ignoreCssProperties = n.getStringOrArray(r, e.ignoreCssProperties);
+                    return t;
                 },
-                ignoreAttributes: function(t) {
-                    e.ignoreAttributes = n.getStringOrArray(t, e.ignoreAttributes);
-                    return this;
+                ignoreAttributes: r => {
+                    e.ignoreAttributes = n.getStringOrArray(r, e.ignoreAttributes);
+                    return t;
                 },
-                generateUniqueMissingIds: function(t) {
-                    e.generateUniqueMissingIds = n.getBoolean(t, e.generateUniqueMissingIds);
-                    return this;
+                generateUniqueMissingIds: r => {
+                    e.generateUniqueMissingIds = n.getBoolean(r, e.generateUniqueMissingIds);
+                    return t;
                 },
-                generateUniqueMissingNames: function(t) {
-                    e.generateUniqueMissingNames = n.getBoolean(t, e.generateUniqueMissingNames);
-                    return this;
+                generateUniqueMissingNames: r => {
+                    e.generateUniqueMissingNames = n.getBoolean(r, e.generateUniqueMissingNames);
+                    return t;
                 },
-                propertyReplacer: function(t) {
-                    e.propertyReplacer = n.getFunction(t, e.propertyReplacer);
-                    return this;
+                propertyReplacer: r => {
+                    e.propertyReplacer = n.getFunction(r, e.propertyReplacer);
+                    return t;
                 },
-                get: function(t) {
-                    return g(t, e);
-                },
-                getVariables: function(e) {
-                    return i.getTemplateVariables(e);
-                }
+                get: t => f(t, e),
+                getVariables: e => i.getTemplateVariables(e)
             };
             return t;
         },
         html: function() {
             const e = A();
             const r = {
-                json: function(t) {
+                json: t => {
                     e.json = n.getString(t, e.json);
                     return r;
                 },
-                templateData: function(t) {
+                templateData: t => {
                     e.templateData = n.getObject(t, e.templateData);
                     return r;
                 },
-                removeOriginalAttributes: function(t) {
+                removeOriginalAttributes: t => {
                     e.removeOriginalAttributes = n.getBoolean(t, e.removeOriginalAttributes);
                     return r;
                 },
-                removeOriginalDataAttributes: function(t) {
+                removeOriginalDataAttributes: t => {
                     e.removeOriginalDataAttributes = n.getBoolean(t, e.removeOriginalDataAttributes);
                     return r;
                 },
-                clearOriginalHTML: function(t) {
+                clearOriginalHTML: t => {
                     e.clearOriginalHTML = n.getBoolean(t, e.clearOriginalHTML);
                     return r;
                 },
-                addCssToHead: function(t) {
+                addCssToHead: t => {
                     e.addCssToHead = n.getBoolean(t, e.addCssToHead);
                     return r;
                 },
-                clearCssFromHead: function(t) {
+                clearCssFromHead: t => {
                     e.clearCssFromHead = n.getBoolean(t, e.clearCssFromHead);
                     return r;
                 },
-                logTemplateDataWarnings: function(t) {
+                logTemplateDataWarnings: t => {
                     e.logTemplateDataWarnings = n.getBoolean(t, e.logTemplateDataWarnings);
                     return r;
                 },
-                addAttributes: function(t) {
+                addAttributes: t => {
                     e.addAttributes = n.getBoolean(t, e.addAttributes);
                     return r;
                 },
-                addDataAttributes: function(t) {
+                addDataAttributes: t => {
                     e.addDataAttributes = n.getBoolean(t, e.addDataAttributes);
                     return r;
                 },
-                addCssProperties: function(t) {
+                addCssProperties: t => {
                     e.addCssProperties = n.getBoolean(t, e.addCssProperties);
                     return r;
                 },
-                addText: function(t) {
+                addText: t => {
                     e.addText = n.getBoolean(t, e.addText);
                     return r;
                 },
-                addChildren: function(t) {
+                addChildren: t => {
                     e.addChildren = n.getBoolean(t, e.addChildren);
                     return r;
                 },
-                insertBefore: function(t) {
+                insertBefore: t => {
                     e.insertBefore = n.getBoolean(t, e.insertBefore);
                     return r;
                 },
-                write: function(t) {
-                    return N(t, e);
-                },
-                get: function() {
-                    return C(e);
-                },
-                getVariables: function(e) {
+                write: t => N(t, e),
+                get: () => C(e),
+                getVariables: e => {
                     let n = [];
                     if (t.definedObject(e)) {
                         n = i.getTemplateVariables(e.innerHTML);
@@ -835,17 +827,17 @@ var s;
             };
             return r;
         },
-        render: function(e, n) {
+        render: (e, n) => {
             if (t.definedObject(e) && t.definedObject(n)) {
-                u(a.Options.getForNewInstance(n, e, A()));
+                u(o.Options.getForNewInstance(n, e, A()));
             }
             return L;
         },
-        renderAll: function() {
+        renderAll: () => {
             d();
             return L;
         },
-        setConfiguration: function(e) {
+        setConfiguration: e => {
             if (t.definedObject(e)) {
                 let t = false;
                 const n = l;
@@ -856,17 +848,15 @@ var s;
                     }
                 }
                 if (t) {
-                    l = o.Options.get(n);
+                    l = a.Options.get(n);
                 }
             }
             return L;
         },
-        getVersion: function() {
-            return "2.4.0";
-        }
+        getVersion: () => "2.4.0"
     };
     (() => {
-        l = o.Options.get();
+        l = a.Options.get();
         document.addEventListener("DOMContentLoaded", () => d());
         if (!t.defined(window.$jhson)) {
             window.$jhson = L;

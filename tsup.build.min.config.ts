@@ -6,7 +6,7 @@ export default defineConfig( [
     entry: [
       "src/jhson.ts"
     ],
-    outExtension({ }) {
+    outExtension() {
       return {
         js: ".min.js",
       };

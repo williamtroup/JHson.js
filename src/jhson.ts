@@ -98,7 +98,7 @@ type ElementObject = {
         let result: boolean = true;
 
         if ( Is.defined( element ) && element.hasAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME ) ) {
-            let bindingOptionsData: string = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME )!;
+            const bindingOptionsData: string = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME )!;
 
             if ( Is.definedString( bindingOptionsData ) ) {
                 const bindingOptions: StringToJson = Default.getObjectFromString( bindingOptionsData, _configuration );
@@ -201,7 +201,7 @@ type ElementObject = {
             getElementText( element, result, childrenAdded );
         }
 
-        if ( result.hasOwnProperty( JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
+        if ( Object.prototype.hasOwnProperty.call( result,  JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
             delete result[ JsonValue.children ];
         }
 
@@ -263,7 +263,7 @@ type ElementObject = {
                 const cssComputedStyleNameStorage: string = `${JsonValue.cssStyle}${cssComputedStyleName}`;
                 const cssComputedValue: string = computedStyles.getPropertyValue( cssComputedStyleName );
 
-                if ( !parentCssStyles.hasOwnProperty( cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
+                if ( !Object.prototype.hasOwnProperty.call( parentCssStyles,  cssComputedStyleNameStorage ) || parentCssStyles[ cssComputedStyleNameStorage ] !== cssComputedValue ) {
                     result[ cssComputedStyleNameStorage ] = cssComputedValue;
                     parentCssStyles[ cssComputedStyleNameStorage ] = result[ cssComputedStyleNameStorage ];
                 }
@@ -306,7 +306,7 @@ type ElementObject = {
 
     function getElementText( element: HTMLElement, result: Record<string, any>, childrenAdded: number ) : void {
         if ( Is.definedString( element.innerText ) ) {
-            if ( childrenAdded > 0 && result.hasOwnProperty( JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
+            if ( childrenAdded > 0 && Object.prototype.hasOwnProperty.call( result,  JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
                 result[ JsonValue.text ] = element.innerHTML;
             } else {
     
@@ -320,8 +320,8 @@ type ElementObject = {
     function getParentCssStylesCopy( parentCssStyles: Record<string, string> ) : Record<string, string> {
         const copy: Record<string, string> = {};
 
-        for ( let cssStyleName in parentCssStyles ) {
-            if ( parentCssStyles.hasOwnProperty( cssStyleName ) ) {
+        for ( const cssStyleName in parentCssStyles ) {
+            if ( Object.prototype.hasOwnProperty.call( parentCssStyles,  cssStyleName ) ) {
                 copy[ cssStyleName ] = parentCssStyles[ cssStyleName ];
             }
         }
@@ -376,7 +376,7 @@ type ElementObject = {
         if ( Is.definedString( properties.json ) ) {
             const convertedJsonObject: StringToJson = Default.getObjectFromString( properties.json, _configuration );
 
-            for ( let key in convertedJsonObject.object ) {
+            for ( const key in convertedJsonObject.object ) {
                 result = DomElement.createWithNoContainer( key );
                 break;
             }
@@ -413,10 +413,8 @@ type ElementObject = {
                     setupWritingScopeTemplateDataKeys( properties, writingScope );
                 }
 
-                for ( let key in convertedJsonObject.object ) {
+                for ( const key in convertedJsonObject.object ) {
                     if ( key === element.nodeName.toLowerCase() ) {
-                        let insertBefore: HTMLElement = null!;
-
                         if ( properties.removeOriginalAttributes ) {
                             let attributesLength: number = element.attributes.length;
 
@@ -433,11 +431,9 @@ type ElementObject = {
 
                         if ( properties.clearOriginalHTML ) {
                             element.innerHTML = Char.empty;
-                        } else if ( properties.insertBefore && element.children.length > 0 ) {
-                            insertBefore = element.children[ 0 ] as HTMLElement;
                         }
 
-                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope, insertBefore );
+                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
                         break;
                     }
                 }
@@ -458,8 +454,8 @@ type ElementObject = {
     }
 
     function setupWritingScopeTemplateDataKeys( properties: HtmlProperties, writingScope: WritingScope ) : void {
-        for ( let templateDataKey in properties.templateData ) {
-            if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+        for ( const templateDataKey in properties.templateData ) {
+            if ( Object.prototype.hasOwnProperty.call( properties.templateData,  templateDataKey ) ) {
                 writingScope.templateDataKeys.push( templateDataKey );
             }
         }
@@ -471,10 +467,10 @@ type ElementObject = {
         writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
     }
 
-    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope, insertBefore: HTMLElement ) : void {
+    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
         const cssStyles: string[] = [];
 
-        for ( let jsonKey in jsonObject ) {
+        for ( const jsonKey in jsonObject ) {
             if ( Str.startsWithAnyCase( jsonKey, JsonValue.attribute ) ) {
                 if ( properties.addAttributes ) {
                     const attributeName: string = jsonKey.replace( JsonValue.attribute, Char.empty );
@@ -509,11 +505,11 @@ type ElementObject = {
                     for ( let childrenIndex: number = 0; childrenIndex < childrenLength; childrenIndex++ ) {
                         const childJson: any = jsonObject[ jsonKey ][ childrenIndex ];
     
-                        for ( let childJsonKey in childJson ) {
-                            if ( childJson.hasOwnProperty( childJsonKey ) ) {
+                        for ( const childJsonKey in childJson ) {
+                            if ( Object.prototype.hasOwnProperty.call( childJson,  childJsonKey ) ) {
                                 const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
     
-                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope, null! );
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
                             }
                         }
                     }
@@ -533,7 +529,7 @@ type ElementObject = {
             for ( let templateDataKeyIndex: number = 0; templateDataKeyIndex <  writingScope.templateDataKeysLength; templateDataKeyIndex++ ) {
                 let templateDataKey: string = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
-                if ( properties.templateData.hasOwnProperty( templateDataKey ) ) {
+                if ( Object.prototype.hasOwnProperty.call( properties.templateData,  templateDataKey ) ) {
                     const templateDataKeyReplacement: string = properties.templateData[ templateDataKey ];
 
                     if ( element.innerHTML.indexOf( templateDataKey ) > Value.notFound ) {
@@ -591,8 +587,8 @@ type ElementObject = {
         const head: HTMLElement = document.getElementsByTagName( "head" )[ 0 ];
         let cssLines: string[] = [];
 
-        for ( let elementId in writingScope.css ) {
-            if ( writingScope.css.hasOwnProperty( elementId ) ) {
+        for ( const elementId in writingScope.css ) {
+            if ( Object.prototype.hasOwnProperty.call( writingScope.css,  elementId ) ) {
                 cssLines = cssLines.concat( writingScope.css[ elementId ] );
             }
         }
@@ -914,8 +910,8 @@ type ElementObject = {
                 let configurationHasChanged: boolean = false;
                 const newInternalConfiguration: any = _configuration;
             
-                for ( let propertyName in newConfiguration ) {
-                    if ( newConfiguration.hasOwnProperty( propertyName ) && _configuration.hasOwnProperty( propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
+                for ( const propertyName in newConfiguration ) {
+                    if ( Object.prototype.hasOwnProperty.call( newConfiguration,  propertyName ) && Object.prototype.hasOwnProperty.call( _configuration,  propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
                         newInternalConfiguration[ propertyName ] = newConfiguration[ propertyName ];
                         configurationHasChanged = true;
                     }

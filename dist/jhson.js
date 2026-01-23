@@ -113,7 +113,7 @@ var DomElement;
 
 (e => {
     function t(e, t) {
-        let r = n(t);
+        const r = n(t);
         e.appendChild(r);
         return r;
     }
@@ -121,7 +121,7 @@ var DomElement;
     function n(e) {
         const t = e.toLowerCase();
         const n = t === "text";
-        let r = n ? document.createTextNode("") : document.createElement(t);
+        const r = n ? document.createTextNode("") : document.createElement(t);
         return r;
     }
     e.createWithNoContainer = n;
@@ -256,7 +256,7 @@ var Trigger;
     function n(t) {
         let n = true;
         if (Is.defined(t) && t.hasAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME)) {
-            let i = t.getAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME);
+            const i = t.getAttribute(Constant.JHSON_JS_ATTRIBUTE_NAME);
             if (Is.definedString(i)) {
                 const a = Default2.getObjectFromString(i, e);
                 if (a.parsed && Is.definedObject(a.object)) {
@@ -331,7 +331,7 @@ var Trigger;
         if (t.includeText) {
             d(e, r, a);
         }
-        if (r.hasOwnProperty("&children") && r["&children"].length === 0) {
+        if (Object.prototype.hasOwnProperty.call(r, "&children") && r["&children"].length === 0) {
             delete r["&children"];
         }
         return {
@@ -355,7 +355,7 @@ var Trigger;
                     const a = `${"@"}${r.nodeName}`;
                     if (!n.includeCssProperties || r.nodeName !== "style") {
                         if (e.nodeName.toLowerCase() === "img" && r.nodeName === "src" && n.includeImagesAsBase64) {
-                            t[a] = c(e);
+                            t[a] = f(e);
                         } else {
                             t[a] = r.nodeValue;
                         }
@@ -379,7 +379,7 @@ var Trigger;
             if (n.ignoreCssProperties.indexOf(a) === -1) {
                 const e = `${"$"}${a}`;
                 const n = i.getPropertyValue(a);
-                if (!r.hasOwnProperty(e) || r[e] !== n) {
+                if (!Object.prototype.hasOwnProperty.call(r, e) || r[e] !== n) {
                     t[e] = n;
                     r[e] = t[e];
                 }
@@ -391,7 +391,7 @@ var Trigger;
         n["&children"] = [];
         for (let l = 0; l < r; l++) {
             const r = t.children[l];
-            const u = o(r, i, f(a));
+            const u = o(r, i, c(a));
             let d = false;
             if (e.formattingNodeTypes.indexOf(u.nodeName) > -1) {
                 s++;
@@ -413,7 +413,7 @@ var Trigger;
     }
     function d(e, t, n) {
         if (Is.definedString(e.innerText)) {
-            if (n > 0 && t.hasOwnProperty("&children") && t["&children"].length === 0) {
+            if (n > 0 && Object.prototype.hasOwnProperty.call(t, "&children") && t["&children"].length === 0) {
                 t["#text"] = e.innerHTML;
             } else {
                 if (e.innerText.trim() === e.innerHTML.trim()) {
@@ -422,16 +422,16 @@ var Trigger;
             }
         }
     }
-    function f(e) {
+    function c(e) {
         const t = {};
-        for (let n in e) {
-            if (e.hasOwnProperty(n)) {
+        for (const n in e) {
+            if (Object.prototype.hasOwnProperty.call(e, n)) {
                 t[n] = e[n];
             }
         }
         return t;
     }
-    function c(e) {
+    function f(e) {
         const t = DomElement.createWithNoContainer("canvas");
         t.width = e.width;
         t.height = e.height;
@@ -463,7 +463,7 @@ var Trigger;
         let n = null;
         if (Is.definedString(t.json)) {
             const r = Default2.getObjectFromString(t.json, e);
-            for (let e in r.object) {
+            for (const e in r.object) {
                 n = DomElement.createWithNoContainer(e);
                 break;
             }
@@ -487,14 +487,13 @@ var Trigger;
             };
             if (i.parsed && Is.definedObject(i.object)) {
                 if (n.clearCssFromHead) {
-                    C();
+                    y();
                 }
                 if (Is.definedObject(n.templateData)) {
                     b(n, a);
                 }
-                for (let e in i.object) {
+                for (const e in i.object) {
                     if (e === t.nodeName.toLowerCase()) {
-                        let r = null;
                         if (n.removeOriginalAttributes) {
                             let e = t.attributes.length;
                             while (e > 0) {
@@ -507,27 +506,25 @@ var Trigger;
                         }
                         if (n.clearOriginalHTML) {
                             t.innerHTML = "";
-                        } else if (n.insertBefore && t.children.length > 0) {
-                            r = t.children[0];
                         }
-                        D(t, i.object[e], n, a, r);
+                        D(t, i.object[e], n, a);
                         break;
                     }
                 }
-                y(t);
+                A(t);
                 if (n.addCssToHead) {
                     O(a);
                 }
                 if (n.logTemplateDataWarnings) {
-                    A(a);
+                    C(a);
                 }
             }
         }
-        return N;
+        return j;
     }
     function b(e, t) {
-        for (let n in e.templateData) {
-            if (e.templateData.hasOwnProperty(n)) {
+        for (const n in e.templateData) {
+            if (Object.prototype.hasOwnProperty.call(e.templateData, n)) {
                 t.templateDataKeys.push(n);
             }
         }
@@ -536,47 +533,47 @@ var Trigger;
         });
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function D(e, t, n, r, i) {
-        const a = [];
-        for (let i in t) {
-            if (Str.startsWithAnyCase(i, "@")) {
+    function D(e, t, n, r) {
+        const i = [];
+        for (const a in t) {
+            if (Str.startsWithAnyCase(a, "@")) {
                 if (n.addAttributes) {
-                    const r = i.replace("@", "");
+                    const r = a.replace("@", "");
                     if (n.addDataAttributes || !r.startsWith("data-")) {
-                        const n = t[i];
+                        const n = t[a];
                         e.setAttribute(r, n);
                     }
                 }
-            } else if (Str.startsWithAnyCase(i, "$")) {
+            } else if (Str.startsWithAnyCase(a, "$")) {
                 if (n.addCssProperties) {
-                    const r = i.replace("$", "");
+                    const r = a.replace("$", "");
                     if (!n.addCssToHead) {
-                        e.style.setProperty(r, t[i]);
+                        e.style.setProperty(r, t[a]);
                     } else {
-                        a.push(`${r}:${t[i]};`);
+                        i.push(`${r}:${t[a]};`);
                     }
                 }
-            } else if (i === "#text") {
+            } else if (a === "#text") {
                 if (n.addText) {
-                    h(e, t[i], n, r);
+                    h(e, t[a], n, r);
                 }
-            } else if (i === "&children") {
+            } else if (a === "&children") {
                 if (n.addChildren) {
-                    const a = t[i].length;
-                    for (let o = 0; o < a; o++) {
-                        const a = t[i][o];
-                        for (let t in a) {
-                            if (a.hasOwnProperty(t)) {
-                                const i = DomElement.create(e, t.toLowerCase());
-                                D(i, a[t], n, r, null);
+                    const i = t[a].length;
+                    for (let o = 0; o < i; o++) {
+                        const i = t[a][o];
+                        for (const t in i) {
+                            if (Object.prototype.hasOwnProperty.call(i, t)) {
+                                const a = DomElement.create(e, t.toLowerCase());
+                                D(a, i[t], n, r);
                             }
                         }
                     }
                 }
             }
         }
-        if (a.length > 0) {
-            T(e, a, r);
+        if (i.length > 0) {
+            T(e, i, r);
         }
     }
     function h(e, t, n, r) {
@@ -584,7 +581,7 @@ var Trigger;
         if (r.templateDataKeysLength > 0) {
             for (let t = 0; t < r.templateDataKeysLength; t++) {
                 let i = r.templateDataKeys[t];
-                if (n.templateData.hasOwnProperty(i)) {
+                if (Object.prototype.hasOwnProperty.call(n.templateData, i)) {
                     const t = n.templateData[i];
                     if (e.innerHTML.indexOf(i) > -1) {
                         e.innerHTML = Str.replaceAll(e.innerHTML, i, t);
@@ -626,22 +623,22 @@ var Trigger;
     function O(e) {
         const t = document.getElementsByTagName("head")[0];
         let n = [];
-        for (let t in e.css) {
-            if (e.css.hasOwnProperty(t)) {
+        for (const t in e.css) {
+            if (Object.prototype.hasOwnProperty.call(e.css, t)) {
                 n = n.concat(e.css[t]);
             }
         }
         const r = DomElement.create(t, "style");
         r.appendChild(document.createTextNode(n.join("\n")));
     }
-    function C() {
+    function y() {
         const e = [].slice.call(document.getElementsByTagName("styles"));
         const t = e.length;
         for (let n = 0; n < t; n++) {
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function A(t) {
+    function C(t) {
         const n = t.templateDataKeysProcessed.length;
         if (t.templateDataKeysLength > n) {
             for (let n = 0; n < t.templateDataKeysLength; n++) {
@@ -652,7 +649,7 @@ var Trigger;
             }
         }
     }
-    function y(e) {
+    function A(e) {
         const t = Str.getTemplateVariables(e.innerHTML);
         const n = t.length;
         for (let r = 0; r < n; r++) {
@@ -665,7 +662,7 @@ var Trigger;
             }
         }
     }
-    const N = {
+    const j = {
         json: function() {
             const e = i();
             const t = {
@@ -817,18 +814,18 @@ var Trigger;
             if (Is.definedObject(e) && Is.definedObject(t)) {
                 r(Binding.Options.getForNewInstance(t, e, g()));
             }
-            return N;
+            return j;
         },
         renderAll: function() {
             t();
-            return N;
+            return j;
         },
         setConfiguration: function(t) {
             if (Is.definedObject(t)) {
                 let n = false;
                 const r = e;
-                for (let i in t) {
-                    if (t.hasOwnProperty(i) && e.hasOwnProperty(i) && r[i] !== t[i]) {
+                for (const i in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, i) && Object.prototype.hasOwnProperty.call(e, i) && r[i] !== t[i]) {
                         r[i] = t[i];
                         n = true;
                     }
@@ -837,7 +834,7 @@ var Trigger;
                     e = Config.Options.get(r);
                 }
             }
-            return N;
+            return j;
         },
         getVersion: function() {
             return "2.4.0";
@@ -847,7 +844,7 @@ var Trigger;
         e = Config.Options.get();
         document.addEventListener("DOMContentLoaded", () => t());
         if (!Is.defined(window.$jhson)) {
-            window.$jhson = N;
+            window.$jhson = j;
         }
     })();
 })();//# sourceMappingURL=jhson.js.map

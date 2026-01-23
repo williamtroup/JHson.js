@@ -4,14 +4,14 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        enum.ts
- * @version     v2.3.0
+ * @version     v2.4.0
  * @author      Bunoon
  * @license     MIT License
- * @copyright   Bunoon 2024
+ * @copyright   Bunoon 2026
  */
 
 
-export const enum Char {
+export enum Char {
     empty = "",
     space = " ",
     newLine = "\n",
@@ -22,13 +22,15 @@ export const enum Char {
     dataAttributeStart = "data-",
     id = "id",
     name = "name",
+    comma = ",",
+    dot = ".",
 }
 
-export const enum Value {
+export enum Value {
     notFound = -1,
 }
 
-export const enum JsonValue {
+export enum JsonValue {
     text = "#text",
     cssStyle = "$",
     attribute = "@",

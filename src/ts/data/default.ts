@@ -4,14 +4,14 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        default.ts
- * @version     v2.3.0
+ * @version     v2.4.0
  * @author      Bunoon
  * @license     MIT License
- * @copyright   Bunoon 2024
+ * @copyright   Bunoon 2026
  */
 
 
-import { type Configuration, type StringToJson } from "../type";
+import { type ConfigurationOptions, type StringToJson } from "../type";
 import { Char } from "./enum";
 import { Is } from "./is";
 
@@ -60,7 +60,7 @@ export namespace Default {
         return result;
     }
 
-    export function getObjectFromString( objectString: any, configuration: Configuration ) : StringToJson {
+    export function getObjectFromString( objectString: any, configuration: ConfigurationOptions ) : StringToJson {
         const result: StringToJson = {
             parsed: true,
             object: null
@@ -68,16 +68,16 @@ export namespace Default {
 
         try {
             if ( Is.definedString( objectString ) ) {
-                result.object = JSON.parse( objectString );
+                try {
+                    result.object = JSON.parse( objectString );
+                } catch {
+                    result.object = JSON.parse( objectString.replace( /'/g, '"' ) );
+                }
             }
 
         } catch ( e1: any ) {
             try {
-                result.object = eval( `(${objectString})` );
-
-                if ( Is.definedFunction( result.object ) ) {
-                    result.object = result.object();
-                }
+                result.object = getObjectFromFunction( objectString );
                 
             } catch ( e2: any ) {
                 if ( !configuration.safeMode ) {
@@ -87,6 +87,45 @@ export namespace Default {
                 
                 result.object = null;
             }
+        }
+
+        return result;
+    }
+
+    function getObjectFromFunction( functionName: string ) : any {
+        let result: any = null;
+
+        const functionNameParts: string[] = functionName.split( "(" );
+        let functionNameArguments: string[] = [];
+
+        if ( functionNameParts.length > 1 ) {
+            functionNameArguments = functionNameParts[ 1 ]
+                .replace( ")", Char.empty )
+                .replace( ";", Char.empty )
+                .trim()
+                .split( Char.comma );
+
+            if ( functionNameArguments.length === 1 && functionNameArguments[ 0 ] === Char.empty ) {
+                functionNameArguments = [];
+            }
+        }
+
+        const namespaces: string[] = functionNameParts[ 0 ].split( Char.dot );
+        const onlyFunctionName: string = namespaces.pop()!;
+        let context: any = globalThis;
+        let contextFound: boolean = true;
+
+        for ( const namespace of namespaces ) {
+            context = context[ namespace ];
+            
+            if ( !Is.defined( context ) ) {
+                contextFound = false;
+                break;
+            }
+        }
+
+        if ( contextFound && Is.definedFunction( context[ onlyFunctionName ] ) ) {
+            result = context[ onlyFunctionName ].apply( context, functionNameArguments );
         }
 
         return result;

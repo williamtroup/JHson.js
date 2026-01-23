@@ -4,10 +4,10 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        type.ts
- * @version     v2.3.0
+ * @version     v2.4.0
  * @author      Bunoon
  * @license     MIT License
- * @copyright   Bunoon 2024
+ * @copyright   Bunoon 2026
  */
 
 
@@ -36,14 +36,14 @@ export interface HtmlProperties {
     insertBefore: boolean;
 };
 
-export type Configuration = {
+export type ConfigurationOptions = {
     safeMode?: boolean;
     domElementTypes?: string[] | string;
     formattingNodeTypes: string[] | string;
-    text?: ConfigurationText;
+    text?: ConfigurationOptionsText;
 };
 
-export type ConfigurationText = {
+export type ConfigurationOptionsText = {
     variableWarningText?: string;
     objectErrorText?: string;
     attributeNotValidErrorText?: string;

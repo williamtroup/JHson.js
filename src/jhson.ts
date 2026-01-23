@@ -14,7 +14,7 @@
 import {
     type StringToJson,
     type BindingOptions,
-    type Configuration, 
+    type ConfigurationOptions, 
     type HtmlProperties, 
     type JsonPropertyReplacer, 
     type IgnoreNodeCondition } from "./ts/type";
@@ -68,7 +68,7 @@ type ElementObject = {
 
 ( () => {
     // Variables: Configuration
-    let _configuration: Configuration = {} as Configuration;
+    let _configurationOptions: ConfigurationOptions = {} as ConfigurationOptions;
     
 
     /*
@@ -78,7 +78,7 @@ type ElementObject = {
      */
 
     function render() : void {
-        const tagTypes: string[] = _configuration.domElementTypes as string[];
+        const tagTypes: string[] = _configurationOptions.domElementTypes as string[];
         const tagTypesLength: number = tagTypes.length;
 
         for ( let tagTypeIndex: number = 0; tagTypeIndex < tagTypesLength; tagTypeIndex++ ) {
@@ -101,21 +101,21 @@ type ElementObject = {
             const bindingOptionsData: string = element.getAttribute( Constant.JHSON_JS_ATTRIBUTE_NAME )!;
 
             if ( Is.definedString( bindingOptionsData ) ) {
-                const bindingOptions: StringToJson = Default.getObjectFromString( bindingOptionsData, _configuration );
+                const bindingOptions: StringToJson = Default.getObjectFromString( bindingOptionsData, _configurationOptions );
 
                 if ( bindingOptions.parsed && Is.definedObject( bindingOptions.object ) ) {
                     renderElement( Binding.Options.getForNewInstance( bindingOptions.object, element, getDefaultHtmlProperties() ) );
 
                 } else {
-                    if ( !_configuration.safeMode ) {
-                        console.error( _configuration.text!.attributeNotValidErrorText!.replace( "{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME ) );
+                    if ( !_configurationOptions.safeMode ) {
+                        console.error( _configurationOptions.text!.attributeNotValidErrorText!.replace( "{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME ) );
                         result = false;
                     }
                 }
 
             } else {
-                if ( !_configuration.safeMode ) {
-                    console.error( _configuration.text!.attributeNotSetErrorText!.replace( "{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME ) );
+                if ( !_configurationOptions.safeMode ) {
+                    console.error( _configurationOptions.text!.attributeNotSetErrorText!.replace( "{{attribute_name}}", Constant.JHSON_JS_ATTRIBUTE_NAME ) );
                     result = false;
                 }
             }
@@ -281,7 +281,7 @@ type ElementObject = {
             const childElementData: ElementObject = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) );
             let addChild: boolean = false;
 
-            if ( _configuration.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
+            if ( _configurationOptions.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
                 totalChildren++;
             } else {
 
@@ -374,7 +374,7 @@ type ElementObject = {
         let result: HTMLElement = null!;
 
         if ( Is.definedString( properties.json ) ) {
-            const convertedJsonObject: StringToJson = Default.getObjectFromString( properties.json, _configuration );
+            const convertedJsonObject: StringToJson = Default.getObjectFromString( properties.json, _configurationOptions );
 
             for ( const key in convertedJsonObject.object ) {
                 result = DomElement.createWithNoContainer( key );
@@ -394,7 +394,7 @@ type ElementObject = {
             let convertedJsonObject: StringToJson = overrideConvertedJsonObject;
 
             if ( !Is.definedObject( convertedJsonObject ) ) {
-                convertedJsonObject = Default.getObjectFromString( properties.json, _configuration )
+                convertedJsonObject = Default.getObjectFromString( properties.json, _configurationOptions )
             }
 
             const writingScope: WritingScope = {
@@ -614,7 +614,7 @@ type ElementObject = {
                 const templateDataKey: string = writingScope.templateDataKeys[ templateDataKeyIndex ];
 
                 if ( writingScope.templateDataKeysProcessed.indexOf( templateDataKey ) === Value.notFound ) {
-                    console.warn( _configuration.text!.variableWarningText!.replace( "{{variable_name}}", templateDataKey ) );
+                    console.warn( _configurationOptions.text!.variableWarningText!.replace( "{{variable_name}}", templateDataKey ) );
                 }
             }
         }
@@ -908,17 +908,17 @@ type ElementObject = {
         setConfiguration: function ( newConfiguration: any ) : PublicApi {
             if ( Is.definedObject( newConfiguration ) ) {
                 let configurationHasChanged: boolean = false;
-                const newInternalConfiguration: any = _configuration;
+                const newInternalConfiguration: any = _configurationOptions;
             
                 for ( const propertyName in newConfiguration ) {
-                    if ( Object.prototype.hasOwnProperty.call( newConfiguration,  propertyName ) && Object.prototype.hasOwnProperty.call( _configuration,  propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
+                    if ( Object.prototype.hasOwnProperty.call( newConfiguration,  propertyName ) && Object.prototype.hasOwnProperty.call( _configurationOptions,  propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
                         newInternalConfiguration[ propertyName ] = newConfiguration[ propertyName ];
                         configurationHasChanged = true;
                     }
                 }
         
                 if ( configurationHasChanged ) {
-                    _configuration = Config.Options.get( newInternalConfiguration );
+                    _configurationOptions = Config.Options.get( newInternalConfiguration );
                 }
             }
     
@@ -945,7 +945,7 @@ type ElementObject = {
      */
 
     ( () => {
-        _configuration = Config.Options.get();
+        _configurationOptions = Config.Options.get();
 
         document.addEventListener( "DOMContentLoaded", () => render() );
 

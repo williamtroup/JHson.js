@@ -36,14 +36,14 @@ export interface HtmlProperties {
     insertBefore: boolean;
 };
 
-export type Configuration = {
+export type ConfigurationOptions = {
     safeMode?: boolean;
     domElementTypes?: string[] | string;
     formattingNodeTypes: string[] | string;
-    text?: ConfigurationText;
+    text?: ConfigurationOptionsText;
 };
 
-export type ConfigurationText = {
+export type ConfigurationOptionsText = {
     variableWarningText?: string;
     objectErrorText?: string;
     attributeNotValidErrorText?: string;

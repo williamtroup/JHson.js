@@ -22,6 +22,8 @@ export const enum Char {
     dataAttributeStart = "data-",
     id = "id",
     name = "name",
+    comma = ",",
+    dot = ".",
 }
 
 export const enum Value {

@@ -43,10 +43,10 @@
     "build-typescript-minimized": "tsup --config tsup.build.min.config.ts"
   },
   "devDependencies": {
-    "@swc/core": "^1.7.23",
-    "sass": "^1.78.0",
-    "terser": "^5.31.6",
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4"
+    "@swc/core": "^1.15.10",
+    "sass": "^1.97.3",
+    "terser": "^5.46.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   }
 }

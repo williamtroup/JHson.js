@@ -531,9 +531,9 @@ var Trigger;
                 t.templateDataKeys.push(n);
             }
         }
-        t.templateDataKeys = t.templateDataKeys.sort((function(e, t) {
+        t.templateDataKeys = t.templateDataKeys.sort(function(e, t) {
             return t.length - e.length;
-        }));
+        });
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
     function D(e, t, n, r, i) {
@@ -845,7 +845,7 @@ var Trigger;
     };
     (() => {
         e = Config.Options.get();
-        document.addEventListener("DOMContentLoaded", (() => t()));
+        document.addEventListener("DOMContentLoaded", () => t());
         if (!Is.defined(window.$jhson)) {
             window.$jhson = N;
         }

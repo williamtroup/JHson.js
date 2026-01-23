@@ -11,7 +11,7 @@
  */
 
 
-export const enum Char {
+export enum Char {
     empty = "",
     space = " ",
     newLine = "\n",
@@ -26,11 +26,11 @@ export const enum Char {
     dot = ".",
 }
 
-export const enum Value {
+export enum Value {
     notFound = -1,
 }
 
-export const enum JsonValue {
+export enum JsonValue {
     text = "#text",
     cssStyle = "$",
     attribute = "@",

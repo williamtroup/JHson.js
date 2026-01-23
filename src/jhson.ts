@@ -66,7 +66,7 @@ type ElementObject = {
 };
 
 
-( () => {
+( () : void => {
     // Variables: Configuration
     let _configurationOptions: ConfigurationOptions = {} as ConfigurationOptions;
     
@@ -944,10 +944,10 @@ type ElementObject = {
      * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      */
 
-    ( () => {
+    ( () : void => {
         _configurationOptions = Config.Options.get();
 
-        document.addEventListener( "DOMContentLoaded", () => render() );
+        document.addEventListener( "DOMContentLoaded", () : void => render() );
 
         if ( !Is.defined( window.$jhson ) ) {
             window.$jhson = _public;

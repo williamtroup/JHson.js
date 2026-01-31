@@ -865,16 +865,16 @@ var l;
         },
         setConfiguration: e => {
             if (t.definedObject(e)) {
-                let t = false;
-                const n = d;
+                const t = d;
+                let n = false;
                 for (const r in e) {
-                    if (Object.prototype.hasOwnProperty.call(e, r) && Object.prototype.hasOwnProperty.call(d, r) && n[r] !== e[r]) {
-                        n[r] = e[r];
-                        t = true;
+                    if (Object.prototype.hasOwnProperty.call(e, r) && Object.prototype.hasOwnProperty.call(t, r) && t[r] !== e[r]) {
+                        t[r] = e[r];
+                        n = true;
                     }
                 }
-                if (t) {
-                    d = a.Options.get(n);
+                if (n) {
+                    d = a.Options.get(t);
                 }
             }
             return w;

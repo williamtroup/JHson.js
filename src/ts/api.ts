@@ -11,7 +11,11 @@
  */
 
 
-import { type IgnoreNodeCondition, type JsonPropertyReplacer } from "./type";
+import {
+    type BindingOptions,
+    type ConfigurationOptions,
+    type IgnoreNodeCondition,
+    type JsonPropertyReplacer } from "./type";
 
 
 export type PublicApiJson = {
@@ -523,11 +527,11 @@ export type PublicApi = {
 	 * @public
 	 *
 	 * @param       {Object}    element                                     The element to render.
-	 * @param       {Object}    options                                     All the binding options that should be set (refer to "Binding Options" documentation for properties).
+	 * @param       {Object}    bindingOptions                              All the binding options that should be set (refer to "Binding Options" documentation for properties).
 	 *
 	 * @returns     {Object}                                                The JHson.js class instance.
 	 */
-	render: ( element: HTMLElement, options: object ) => PublicApi;
+	render: ( element: HTMLElement, bindingOptions: BindingOptions ) => PublicApi;
 
 	/**
 	 * renderAll().
@@ -554,11 +558,11 @@ export type PublicApi = {
      * 
      * @public
      * 
-     * @param       {Object}    newConfiguration                            All the configuration options that should be set (refer to "Configuration Options" documentation for properties).
+     * @param       {Object}    configurationOptions                        All the configuration options that should be set (refer to "Configuration Options" documentation for properties).
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    setConfiguration: ( newConfiguration: any ) => PublicApi;
+    setConfiguration: ( configurationOptions: ConfigurationOptions ) => PublicApi;
 
 
     /*

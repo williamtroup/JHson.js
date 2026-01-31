@@ -30,7 +30,7 @@ import { DomElement } from "./ts/dom/dom";
 import { Char, JsonValue, Value } from "./ts/data/enum";
 import { Is } from "./ts/data/is";
 import { Str } from "./ts/data/str";
-import { Config } from "./ts/options/config";
+import { Configuration } from "./ts/options/config";
 import { Binding } from "./ts/options/binding";
 import { Trigger } from "./ts/area/trigger";
 import { DocumentElement } from "./ts/dom/document-element";
@@ -901,9 +901,9 @@ type ElementObject = {
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
 
-        render: ( element: HTMLElement, options: object ) : PublicApi => {
-            if ( Is.definedObject( element ) && Is.definedObject( options ) ) {
-                renderElement( Binding.Options.getForNewInstance( options, element, getDefaultHtmlProperties() ) );
+        render: ( element: HTMLElement, bindingOptions: BindingOptions ) : PublicApi => {
+            if ( Is.definedObject( element ) && Is.definedObject( bindingOptions ) ) {
+                renderElement( Binding.Options.getForNewInstance( bindingOptions, element, getDefaultHtmlProperties() ) );
             }
     
             return _public;
@@ -922,20 +922,20 @@ type ElementObject = {
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
 
-        setConfiguration: ( newConfiguration: any ) : PublicApi => {
-            if ( Is.definedObject( newConfiguration ) ) {
-                let configurationHasChanged: boolean = false;
-                const newInternalConfiguration: any = _configurationOptions;
+        setConfiguration: ( configurationOptions: ConfigurationOptions ) : PublicApi => {
+            if ( Is.definedObject( configurationOptions ) ) {
+                const existingConfigurationOptions: ConfigurationOptions = _configurationOptions;
+                let configurationOptionsHaveChanged: boolean = false;
             
-                for ( const propertyName in newConfiguration ) {
-                    if ( Object.prototype.hasOwnProperty.call( newConfiguration,  propertyName ) && Object.prototype.hasOwnProperty.call( _configurationOptions,  propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
-                        newInternalConfiguration[ propertyName ] = newConfiguration[ propertyName ];
-                        configurationHasChanged = true;
+                for ( const propertyName in configurationOptions ) {
+                    if ( Object.prototype.hasOwnProperty.call( configurationOptions, propertyName ) && Object.prototype.hasOwnProperty.call( existingConfigurationOptions, propertyName ) && existingConfigurationOptions[ propertyName ] !== configurationOptions[ propertyName ] ) {
+                        existingConfigurationOptions[ propertyName ] = configurationOptions[ propertyName ];
+                        configurationOptionsHaveChanged = true;
                     }
                 }
         
-                if ( configurationHasChanged ) {
-                    _configurationOptions = Config.Options.get( newInternalConfiguration );
+                if ( configurationOptionsHaveChanged ) {
+                    _configurationOptions = Configuration.Options.get( existingConfigurationOptions );
                 }
             }
     
@@ -962,7 +962,7 @@ type ElementObject = {
      */
 
     ( () : void => {
-        _configurationOptions = Config.Options.get();
+        _configurationOptions = Configuration.Options.get();
         
         DocumentElement.onContentLoaded( () : void => render() );
 

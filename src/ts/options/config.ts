@@ -15,13 +15,13 @@ import { type ConfigurationOptionsText, type ConfigurationOptions } from "../typ
 import { Default } from "../data/default";
 
 
-export namespace Config {
+export namespace Configuration {
     export namespace Options {
-        export function get( newConfiguration: any = null ) : ConfigurationOptions {
-            let configuration: ConfigurationOptions = Default.getObject( newConfiguration, {} as ConfigurationOptions );
-            configuration.safeMode = Default.getBoolean( configuration.safeMode, true );
-            configuration.domElementTypes = Default.getStringOrArray( configuration.domElementTypes, [ "*" ] );
-            configuration.formattingNodeTypes = Default.getStringOrArray( configuration.formattingNodeTypes, [
+        export function get( newConfigurationOptions: unknown = null ) : ConfigurationOptions {
+            let configurationOptions: ConfigurationOptions = Default.getObject( newConfigurationOptions, {} as ConfigurationOptions );
+            configurationOptions.safeMode = Default.getBoolean( configurationOptions.safeMode, true );
+            configurationOptions.domElementTypes = Default.getStringOrArray( configurationOptions.domElementTypes, [ "*" ] );
+            configurationOptions.formattingNodeTypes = Default.getStringOrArray( configurationOptions.formattingNodeTypes, [
                 "b",
                 "strong",
                 "i",
@@ -34,19 +34,19 @@ export namespace Config {
                 "sup"
             ] );
     
-            configuration = getText( configuration );
+            configurationOptions = getText( configurationOptions );
 
-            return configuration;
+            return configurationOptions;
         }
     
-        function getText( configuration: ConfigurationOptions ) : ConfigurationOptions {
-            configuration.text = Default.getObject( configuration.text, {} as ConfigurationOptionsText );
-            configuration.text!.variableWarningText = Default.getString( configuration.text!.variableWarningText, "Template variable {{variable_name}} not found." );
-            configuration.text!.objectErrorText = Default.getString( configuration.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
-            configuration.text!.attributeNotValidErrorText = Default.getString( configuration.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
-            configuration.text!.attributeNotSetErrorText = Default.getString( configuration.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );
+        function getText( configurationOptions: ConfigurationOptions ) : ConfigurationOptions {
+            configurationOptions.text = Default.getObject( configurationOptions.text, {} as ConfigurationOptionsText );
+            configurationOptions.text!.variableWarningText = Default.getString( configurationOptions.text!.variableWarningText, "Template variable {{variable_name}} not found." );
+            configurationOptions.text!.objectErrorText = Default.getString( configurationOptions.text!.objectErrorText, "Errors in object: {{error_1}}, {{error_2}}" );
+            configurationOptions.text!.attributeNotValidErrorText = Default.getString( configurationOptions.text!.attributeNotValidErrorText, "The attribute '{{attribute_name}}' is not a valid object." );
+            configurationOptions.text!.attributeNotSetErrorText = Default.getString( configurationOptions.text!.attributeNotSetErrorText, "The attribute '{{attribute_name}}' has not been set correctly." );
             
-            return configuration;
+            return configurationOptions;
         }
     }
 }

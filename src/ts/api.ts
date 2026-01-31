@@ -178,7 +178,7 @@ export type PublicApiJson = {
      * 
      * @public
      * 
-     * @param       {Object}    ids                                 The element IDs to ignore (can be an array of strings, or a space separated string, and defaults to []).
+     * @param       {Object}    ids                                 The element IDs to ignore (will include children, and can be an array of strings, or a space separated string, and defaults to []).
      * 
      * @returns     {Object}                                        The JSON properties object.
      */

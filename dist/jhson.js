@@ -855,7 +855,7 @@ var s;
             }
             return L;
         },
-        getVersion: () => "2.4.0"
+        getVersion: () => "2.4.1"
     };
     (() => {
         l = a.Options.get();

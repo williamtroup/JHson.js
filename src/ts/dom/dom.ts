@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        dom.ts
- * @version     v2.4.0
+ * @version     v2.4.1
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2026

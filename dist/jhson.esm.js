@@ -137,19 +137,24 @@ var n;
 var r;
 
 (e => {
-    function t(e, t) {
-        const r = n(t);
-        e.appendChild(r);
-        return r;
+    function n(e, n, r = null) {
+        const i = n.toLowerCase();
+        const a = document.createElement(i);
+        if (t.defined(r)) {
+            e.insertBefore(a, r);
+        } else {
+            e.appendChild(a);
+        }
+        return a;
     }
-    e.create = t;
-    function n(e) {
+    e.create = n;
+    function r(e) {
         const t = e.toLowerCase();
         const n = t === "text";
         const r = n ? document.createTextNode("") : document.createElement(t);
         return r;
     }
-    e.createWithNoContainer = n;
+    e.createWithNoContainer = r;
 })(r || (r = {}));
 
 var i;
@@ -298,7 +303,7 @@ var l;
             if (t.definedString(a)) {
                 const s = n.getObjectFromString(a, d);
                 if (s.parsed && t.definedObject(s.object)) {
-                    g(o.Options.getForNewInstance(s.object, r, C()));
+                    f(o.Options.getForNewInstance(s.object, r, C()));
                 } else {
                     if (!d.safeMode) {
                         console.error(d.text.attributeNotValidErrorText.replace("{{attribute_name}}", e.JHSON_JS_ATTRIBUTE_NAME));
@@ -314,13 +319,13 @@ var l;
         }
         return i;
     }
-    function g(e) {
+    function f(e) {
         s.customEvent(e.events.onBeforeRender, e._currentView.element);
         const t = C(e);
         x(e._currentView.element, t);
         s.customEvent(e.events.onRenderComplete, e._currentView.element);
     }
-    function f() {
+    function g() {
         return {
             includeAttributes: true,
             includeDataAttributes: true,
@@ -539,6 +544,7 @@ var l;
                 }
                 for (const t in a.object) {
                     if (t === e.nodeName.toLowerCase()) {
+                        let n = null;
                         if (r.removeOriginalAttributes) {
                             let t = e.attributes.length;
                             while (t > 0) {
@@ -551,17 +557,19 @@ var l;
                         }
                         if (r.clearOriginalHTML) {
                             e.innerHTML = "";
+                        } else if (r.insertBefore && e.children.length > 0) {
+                            n = e.children[0];
                         }
-                        D(e, a.object[t], r, o);
+                        D(e, a.object[t], r, o, n);
                         break;
                     }
                 }
-                L(e);
+                M(e);
                 if (r.addCssToHead) {
                     v(o);
                 }
                 if (r.logTemplateDataWarnings) {
-                    M(o);
+                    L(o);
                 }
             }
         }
@@ -578,47 +586,47 @@ var l;
         });
         t.templateDataKeysLength = t.templateDataKeys.length;
     }
-    function D(e, t, n, a) {
-        const o = [];
-        for (const s in t) {
-            if (i.startsWithAnyCase(s, "@")) {
+    function D(e, t, n, a, o) {
+        const s = [];
+        for (const l in t) {
+            if (i.startsWithAnyCase(l, "@")) {
                 if (n.addAttributes) {
-                    const r = s.replace("@", "");
+                    const r = l.replace("@", "");
                     if (n.addDataAttributes || !r.startsWith("data-")) {
-                        const n = t[s];
+                        const n = t[l];
                         e.setAttribute(r, n);
                     }
                 }
-            } else if (i.startsWithAnyCase(s, "$")) {
+            } else if (i.startsWithAnyCase(l, "$")) {
                 if (n.addCssProperties) {
-                    const r = s.replace("$", "");
+                    const r = l.replace("$", "");
                     if (!n.addCssToHead) {
-                        e.style.setProperty(r, t[s]);
+                        e.style.setProperty(r, t[l]);
                     } else {
-                        o.push(`${r}:${t[s]};`);
+                        s.push(`${r}:${t[l]};`);
                     }
                 }
-            } else if (s === "#text") {
+            } else if (l === "#text") {
                 if (n.addText) {
-                    B(e, t[s], n, a);
+                    B(e, t[l], n, a);
                 }
-            } else if (s === "&children") {
+            } else if (l === "&children") {
                 if (n.addChildren) {
-                    const i = t[s].length;
-                    for (let o = 0; o < i; o++) {
-                        const i = t[s][o];
+                    const i = t[l].length;
+                    for (let s = 0; s < i; s++) {
+                        const i = t[l][s];
                         for (const t in i) {
                             if (Object.prototype.hasOwnProperty.call(i, t)) {
-                                const o = r.create(e, t.toLowerCase());
-                                D(o, i[t], n, a);
+                                const s = r.create(e, t.toLowerCase(), o);
+                                D(s, i[t], n, a, null);
                             }
                         }
                     }
                 }
             }
         }
-        if (o.length > 0) {
-            S(e, o, a);
+        if (s.length > 0) {
+            S(e, s, a);
         }
     }
     function B(e, t, n, r) {
@@ -683,7 +691,7 @@ var l;
             e[n].parentNode.removeChild(e[n]);
         }
     }
-    function M(e) {
+    function L(e) {
         const t = e.templateDataKeysProcessed.length;
         if (e.templateDataKeysLength > t) {
             for (let t = 0; t < e.templateDataKeysLength; t++) {
@@ -694,7 +702,7 @@ var l;
             }
         }
     }
-    function L(e) {
+    function M(e) {
         const n = i.getTemplateVariables(e.innerHTML);
         const r = n.length;
         for (let i = 0; i < r; i++) {
@@ -709,7 +717,7 @@ var l;
     }
     const w = {
         json: () => {
-            const e = f();
+            const e = g();
             const t = {
                 includeAttributes: r => {
                     e.includeAttributes = n.getBoolean(r, e.includeAttributes);
@@ -853,7 +861,7 @@ var l;
         },
         render: (e, n) => {
             if (t.definedObject(e) && t.definedObject(n)) {
-                g(o.Options.getForNewInstance(n, e, C()));
+                f(o.Options.getForNewInstance(n, e, C()));
             }
             return w;
         },

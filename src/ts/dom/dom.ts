@@ -12,12 +12,19 @@
 
 
 import { Char } from "../data/enum";
+import { Is } from "../data/is";
 
 
 export namespace DomElement {
-    export function create( container: HTMLElement, type: string ) : HTMLElement {
-        const result: any = createWithNoContainer( type );
-        container.appendChild( result );
+    export function create( container: HTMLElement, type: string, beforeNode: HTMLElement = null! ) : HTMLElement {
+        const nodeType: string = type.toLowerCase();
+        const result: HTMLElement = document.createElement( nodeType );
+
+        if ( Is.defined( beforeNode ) ) {
+            container.insertBefore( result, beforeNode );
+        } else {
+            container.appendChild( result );
+        }
 
         return result;
     }

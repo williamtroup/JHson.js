@@ -426,6 +426,8 @@ type ElementObject = {
 
                 for ( const key in convertedJsonObject.object ) {
                     if ( key === element.nodeName.toLowerCase() ) {
+                        let insertBefore: HTMLElement = null!;
+
                         if ( properties.removeOriginalAttributes ) {
                             let attributesLength: number = element.attributes.length;
 
@@ -442,9 +444,11 @@ type ElementObject = {
 
                         if ( properties.clearOriginalHTML ) {
                             element.innerHTML = Char.empty;
+                        } else if ( properties.insertBefore && element.children.length > 0 ) {
+                            insertBefore = element.children[ 0 ] as HTMLElement;
                         }
 
-                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
+                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope, insertBefore );
                         break;
                     }
                 }
@@ -478,7 +482,7 @@ type ElementObject = {
         writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
     }
 
-    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
+    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope, insertBefore: HTMLElement ) : void {
         const cssStyles: string[] = [];
 
         for ( const jsonKey in jsonObject ) {
@@ -518,9 +522,9 @@ type ElementObject = {
     
                         for ( const childJsonKey in childJson ) {
                             if ( Object.prototype.hasOwnProperty.call( childJson,  childJsonKey ) ) {
-                                const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
+                                const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase(), insertBefore );
     
-                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope, null! );
                             }
                         }
                     }

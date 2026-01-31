@@ -33,6 +33,7 @@ import { Str } from "./ts/data/str";
 import { Config } from "./ts/options/config";
 import { Binding } from "./ts/options/binding";
 import { Trigger } from "./ts/area/trigger";
+import { DocumentElement } from "./ts/dom/document-element";
 
 
 type WritingScope = {
@@ -946,8 +947,8 @@ type ElementObject = {
 
     ( () : void => {
         _configurationOptions = Config.Options.get();
-
-        document.addEventListener( "DOMContentLoaded", () : void => render() );
+        
+        DocumentElement.onContentLoaded( () : void => render() );
 
         if ( !Is.defined( window.$jhson ) ) {
             window.$jhson = _public;

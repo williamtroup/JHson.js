@@ -56,6 +56,7 @@ type JsonProperties = {
     ignoreNodeCondition: IgnoreNodeCondition;
     ignoreCssProperties: string[];
     ignoreAttributes: string[];
+    ignoreElementIds: string[];
     generateUniqueMissingIds: boolean;
     generateUniqueMissingNames: boolean;
     propertyReplacer: JsonPropertyReplacer;
@@ -156,6 +157,7 @@ type ElementObject = {
             ignoreNodeCondition: null!,
             ignoreCssProperties: [],
             ignoreAttributes: [],
+            ignoreElementIds: [],
             generateUniqueMissingIds: false,
             generateUniqueMissingNames: false,
             propertyReplacer: null!
@@ -167,7 +169,7 @@ type ElementObject = {
 
         if ( Is.definedObject( element ) ) {
             const resultJson: any = {};
-            const elementJson: ElementObject = getElementObject( element, properties, {} );
+            const elementJson: ElementObject = getElementObject( element, properties, {}, false );
 
             resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
@@ -181,35 +183,41 @@ type ElementObject = {
         return result;
     }
 
-    function getElementObject( element: HTMLElement, properties: JsonProperties, parentCssStyles: Record<string, string> ) : ElementObject {
-        const result: Record<string, any> = {};
-        const childrenLength: number = element.children.length;
-        let childrenAdded: number = 0;
+    function getElementObject( element: HTMLElement, properties: JsonProperties, parentCssStyles: Record<string, string>, checkElementId: boolean = true ) : ElementObject {
+        let result: ElementObject = null!;
+        const nodeValues: Record<string, any> = {};
 
-        if ( properties.includeAttributes ) {
-            getElementAttributes( element, result, properties );
+        if ( !checkElementId || ( !Is.definedString( element.id ) || properties.ignoreElementIds.indexOf( element.id ) === Value.notFound ) ) {
+            const childrenLength: number = element.children.length;
+            let childrenAdded: number = 0;
+
+            if ( properties.includeAttributes ) {
+                getElementAttributes( element, nodeValues, properties );
+            }
+
+            if ( properties.includeCssProperties ) {
+                getElementCssProperties( element, nodeValues, properties, parentCssStyles );
+            }
+
+            if ( properties.includeChildren && childrenLength > 0 ) {
+                childrenAdded = getElementChildren( element, nodeValues, childrenLength, properties, parentCssStyles );
+            }
+
+            if ( properties.includeText ) {
+                getElementText( element, nodeValues, childrenAdded );
+            }
+
+            if ( Object.prototype.hasOwnProperty.call( nodeValues,  JsonValue.children ) && nodeValues[ JsonValue.children ].length === 0 ) {
+                delete nodeValues[ JsonValue.children ];
+            }
+
+            result = {
+                nodeName: element.nodeName.toLowerCase(),
+                nodeValues: nodeValues,
+            } as ElementObject;
         }
 
-        if ( properties.includeCssProperties ) {
-            getElementCssProperties( element, result, properties, parentCssStyles );
-        }
-
-        if ( properties.includeChildren && childrenLength > 0 ) {
-            childrenAdded = getElementChildren( element, result, childrenLength, properties, parentCssStyles );
-        }
-
-        if ( properties.includeText ) {
-            getElementText( element, result, childrenAdded );
-        }
-
-        if ( Object.prototype.hasOwnProperty.call( result,  JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
-            delete result[ JsonValue.children ];
-        }
-
-        return {
-            nodeName: element.nodeName.toLowerCase(),
-            nodeValues: result
-        } as ElementObject;
+        return result;
     }
 
     function getElementAttributes( element: HTMLElement, result: Record<string, any>, properties: JsonProperties ) : void {
@@ -282,14 +290,16 @@ type ElementObject = {
             const childElementData: ElementObject = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) );
             let addChild: boolean = false;
 
-            if ( _configurationOptions.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
-                totalChildren++;
-            } else {
+            if ( Is.definedObject( childElementData ) ) {
+                if ( _configurationOptions.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
+                    totalChildren++;
+                } else {
 
-                if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === Value.notFound ) {
-                    if ( !Is.definedFunction( properties.ignoreNodeCondition ) || !properties.ignoreNodeCondition( child ) ) {
-                        addChild = true;
-                        totalChildren++;
+                    if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === Value.notFound ) {
+                        if ( !Is.definedFunction( properties.ignoreNodeCondition ) || !properties.ignoreNodeCondition( child ) ) {
+                            addChild = true;
+                            totalChildren++;
+                        }
                     }
                 }
             }
@@ -727,6 +737,12 @@ type ElementObject = {
 
                 ignoreAttributes: ( attributes: string[] | string ) : PublicApiJson => {
                     properties.ignoreAttributes = Default.getStringOrArray( attributes, properties.ignoreAttributes );
+
+                    return scope;
+                },
+
+                ignoreElementIds: ( ids: string[] | string ) : PublicApiJson => {
+                    properties.ignoreElementIds = Default.getStringOrArray( ids, properties.ignoreElementIds );
 
                     return scope;
                 },

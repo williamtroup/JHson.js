@@ -336,6 +336,7 @@ var l;
             ignoreNodeCondition: null,
             ignoreCssProperties: [],
             ignoreAttributes: [],
+            ignoreElementIds: [],
             generateUniqueMissingIds: false,
             generateUniqueMissingNames: false,
             propertyReplacer: null
@@ -345,7 +346,7 @@ var l;
         let r = "";
         if (t.definedObject(e)) {
             const t = {};
-            const i = m(e, n, {});
+            const i = m(e, n, {}, false);
             t[i.nodeName] = i.nodeValues;
             if (n.friendlyFormat) {
                 r = JSON.stringify(t, n.propertyReplacer, n.indentSpaces);
@@ -355,29 +356,33 @@ var l;
         }
         return r;
     }
-    function m(e, t, n) {
-        const r = {};
-        const i = e.children.length;
-        let a = 0;
-        if (t.includeAttributes) {
-            b(e, r, t);
+    function m(e, n, r, i = true) {
+        let a = null;
+        const o = {};
+        if (!i || (!t.definedString(e.id) || n.ignoreElementIds.indexOf(e.id) === -1)) {
+            const t = e.children.length;
+            let i = 0;
+            if (n.includeAttributes) {
+                b(e, o, n);
+            }
+            if (n.includeCssProperties) {
+                O(e, o, n, r);
+            }
+            if (n.includeChildren && t > 0) {
+                i = T(e, o, t, n, r);
+            }
+            if (n.includeText) {
+                h(e, o, i);
+            }
+            if (Object.prototype.hasOwnProperty.call(o, "&children") && o["&children"].length === 0) {
+                delete o["&children"];
+            }
+            a = {
+                nodeName: e.nodeName.toLowerCase(),
+                nodeValues: o
+            };
         }
-        if (t.includeCssProperties) {
-            T(e, r, t, n);
-        }
-        if (t.includeChildren && i > 0) {
-            a = O(e, r, i, t, n);
-        }
-        if (t.includeText) {
-            h(e, r, a);
-        }
-        if (Object.prototype.hasOwnProperty.call(r, "&children") && r["&children"].length === 0) {
-            delete r["&children"];
-        }
-        return {
-            nodeName: e.nodeName.toLowerCase(),
-            nodeValues: r
-        };
+        return a;
     }
     function b(e, n, r) {
         const i = e.attributes.length;
@@ -411,7 +416,7 @@ var l;
             n[`${"@"}${"name"}`] = crypto.randomUUID();
         }
     }
-    function T(e, t, n, r) {
+    function O(e, t, n, r) {
         const i = getComputedStyle(e);
         const a = i.length;
         for (let e = 0; e < a; e++) {
@@ -426,20 +431,22 @@ var l;
             }
         }
     }
-    function O(e, n, r, i, a) {
+    function T(e, n, r, i, a) {
         let o = 0;
         n["&children"] = [];
         for (let s = 0; s < r; s++) {
             const r = e.children[s];
             const l = m(r, i, y(a));
             let c = false;
-            if (d.formattingNodeTypes.indexOf(l.nodeName) > -1) {
-                o++;
-            } else {
-                if (i.ignoreNodeTypes.indexOf(l.nodeName) === -1) {
-                    if (!t.definedFunction(i.ignoreNodeCondition) || !i.ignoreNodeCondition(r)) {
-                        c = true;
-                        o++;
+            if (t.definedObject(l)) {
+                if (d.formattingNodeTypes.indexOf(l.nodeName) > -1) {
+                    o++;
+                } else {
+                    if (i.ignoreNodeTypes.indexOf(l.nodeName) === -1) {
+                        if (!t.definedFunction(i.ignoreNodeCondition) || !i.ignoreNodeCondition(r)) {
+                            c = true;
+                            o++;
+                        }
                     }
                 }
             }
@@ -752,6 +759,10 @@ var l;
                 },
                 ignoreAttributes: r => {
                     e.ignoreAttributes = n.getStringOrArray(r, e.ignoreAttributes);
+                    return t;
+                },
+                ignoreElementIds: r => {
+                    e.ignoreElementIds = n.getStringOrArray(r, e.ignoreElementIds);
                     return t;
                 },
                 generateUniqueMissingIds: r => {

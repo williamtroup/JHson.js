@@ -96,6 +96,7 @@ Make sure you include the "DOCTYPE html" tag at the top of your HTML, as follows
         .ignoreNodeCondition( null )
         .ignoreCssProperties( "padding" )
         .ignoreAttributes( "data-your-attribute" )
+        .ignoreElementIds( "your-element-id" )
         .generateUniqueMissingIds( false )
         .generateUniqueMissingNames( false )
         .propertyReplacer( null )

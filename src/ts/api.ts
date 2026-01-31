@@ -172,6 +172,19 @@ export type PublicApiJson = {
     ignoreAttributes: ( attributes: string[] | string ) => PublicApiJson;
 
     /**
+     * ignoreElementIds().
+     * 
+     * States the element IDs that should not be included in the JSON.
+     * 
+     * @public
+     * 
+     * @param       {Object}    ids                                 The element IDs to ignore (can be an array of strings, or a space separated string, and defaults to []).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    ignoreElementIds: ( ids: string[] | string ) => PublicApiJson;
+    
+    /**
      * generateUniqueMissingIds().
      * 
      * States if the JSON should include unique IDs for DOM elements that don't have them set already.

@@ -4,14 +4,18 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        api.ts
- * @version     v2.4.0
+ * @version     v2.5.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2026
  */
 
 
-import { type IgnoreNodeCondition, type JsonPropertyReplacer } from "./type";
+import {
+    type BindingOptions,
+    type ConfigurationOptions,
+    type IgnoreNodeCondition,
+    type JsonPropertyReplacer } from "./type";
 
 
 export type PublicApiJson = {
@@ -171,6 +175,19 @@ export type PublicApiJson = {
      */
     ignoreAttributes: ( attributes: string[] | string ) => PublicApiJson;
 
+    /**
+     * ignoreElementIds().
+     * 
+     * States the element IDs that should not be included in the JSON.
+     * 
+     * @public
+     * 
+     * @param       {Object}    ids                                 The element IDs to ignore (will include children, and can be an array of strings, or a space separated string, and defaults to []).
+     * 
+     * @returns     {Object}                                        The JSON properties object.
+     */
+    ignoreElementIds: ( ids: string[] | string ) => PublicApiJson;
+    
     /**
      * generateUniqueMissingIds().
      * 
@@ -510,11 +527,11 @@ export type PublicApi = {
 	 * @public
 	 *
 	 * @param       {Object}    element                                     The element to render.
-	 * @param       {Object}    options                                     All the binding options that should be set (refer to "Binding Options" documentation for properties).
+	 * @param       {Object}    bindingOptions                              All the binding options that should be set (refer to "Binding Options" documentation for properties).
 	 *
 	 * @returns     {Object}                                                The JHson.js class instance.
 	 */
-	render: ( element: HTMLElement, options: object ) => PublicApi;
+	render: ( element: HTMLElement, bindingOptions: BindingOptions ) => PublicApi;
 
 	/**
 	 * renderAll().
@@ -541,11 +558,11 @@ export type PublicApi = {
      * 
      * @public
      * 
-     * @param       {Object}    newConfiguration                            All the configuration options that should be set (refer to "Configuration Options" documentation for properties).
+     * @param       {Object}    configurationOptions                        All the configuration options that should be set (refer to "Configuration Options" documentation for properties).
      * 
      * @returns     {Object}                                                The JHson.js class instance.
      */
-    setConfiguration: ( newConfiguration: any ) => PublicApi;
+    setConfiguration: ( configurationOptions: ConfigurationOptions ) => PublicApi;
 
 
     /*

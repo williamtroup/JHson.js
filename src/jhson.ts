@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        jhson.ts
- * @version     v2.4.0
+ * @version     v2.5.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2026
@@ -30,9 +30,10 @@ import { DomElement } from "./ts/dom/dom";
 import { Char, JsonValue, Value } from "./ts/data/enum";
 import { Is } from "./ts/data/is";
 import { Str } from "./ts/data/str";
-import { Config } from "./ts/options/config";
+import { Configuration } from "./ts/options/config";
 import { Binding } from "./ts/options/binding";
 import { Trigger } from "./ts/area/trigger";
+import { DocumentElement } from "./ts/dom/document-element";
 
 
 type WritingScope = {
@@ -55,6 +56,7 @@ type JsonProperties = {
     ignoreNodeCondition: IgnoreNodeCondition;
     ignoreCssProperties: string[];
     ignoreAttributes: string[];
+    ignoreElementIds: string[];
     generateUniqueMissingIds: boolean;
     generateUniqueMissingNames: boolean;
     propertyReplacer: JsonPropertyReplacer;
@@ -155,6 +157,7 @@ type ElementObject = {
             ignoreNodeCondition: null!,
             ignoreCssProperties: [],
             ignoreAttributes: [],
+            ignoreElementIds: [],
             generateUniqueMissingIds: false,
             generateUniqueMissingNames: false,
             propertyReplacer: null!
@@ -166,7 +169,7 @@ type ElementObject = {
 
         if ( Is.definedObject( element ) ) {
             const resultJson: any = {};
-            const elementJson: ElementObject = getElementObject( element, properties, {} );
+            const elementJson: ElementObject = getElementObject( element, properties, {}, false );
 
             resultJson[ elementJson.nodeName ] = elementJson.nodeValues;
 
@@ -180,35 +183,41 @@ type ElementObject = {
         return result;
     }
 
-    function getElementObject( element: HTMLElement, properties: JsonProperties, parentCssStyles: Record<string, string> ) : ElementObject {
-        const result: Record<string, any> = {};
-        const childrenLength: number = element.children.length;
-        let childrenAdded: number = 0;
+    function getElementObject( element: HTMLElement, properties: JsonProperties, parentCssStyles: Record<string, string>, checkElementId: boolean = true ) : ElementObject {
+        let result: ElementObject = null!;
+        const nodeValues: Record<string, any> = {};
 
-        if ( properties.includeAttributes ) {
-            getElementAttributes( element, result, properties );
+        if ( !checkElementId || ( !Is.definedString( element.id ) || properties.ignoreElementIds.indexOf( element.id ) === Value.notFound ) ) {
+            const childrenLength: number = element.children.length;
+            let childrenAdded: number = 0;
+
+            if ( properties.includeAttributes ) {
+                getElementAttributes( element, nodeValues, properties );
+            }
+
+            if ( properties.includeCssProperties ) {
+                getElementCssProperties( element, nodeValues, properties, parentCssStyles );
+            }
+
+            if ( properties.includeChildren && childrenLength > 0 ) {
+                childrenAdded = getElementChildren( element, nodeValues, childrenLength, properties, parentCssStyles );
+            }
+
+            if ( properties.includeText ) {
+                getElementText( element, nodeValues, childrenAdded );
+            }
+
+            if ( Object.prototype.hasOwnProperty.call( nodeValues,  JsonValue.children ) && nodeValues[ JsonValue.children ].length === 0 ) {
+                delete nodeValues[ JsonValue.children ];
+            }
+
+            result = {
+                nodeName: element.nodeName.toLowerCase(),
+                nodeValues: nodeValues,
+            } as ElementObject;
         }
 
-        if ( properties.includeCssProperties ) {
-            getElementCssProperties( element, result, properties, parentCssStyles );
-        }
-
-        if ( properties.includeChildren && childrenLength > 0 ) {
-            childrenAdded = getElementChildren( element, result, childrenLength, properties, parentCssStyles );
-        }
-
-        if ( properties.includeText ) {
-            getElementText( element, result, childrenAdded );
-        }
-
-        if ( Object.prototype.hasOwnProperty.call( result,  JsonValue.children ) && result[ JsonValue.children ].length === 0 ) {
-            delete result[ JsonValue.children ];
-        }
-
-        return {
-            nodeName: element.nodeName.toLowerCase(),
-            nodeValues: result
-        } as ElementObject;
+        return result;
     }
 
     function getElementAttributes( element: HTMLElement, result: Record<string, any>, properties: JsonProperties ) : void {
@@ -281,14 +290,16 @@ type ElementObject = {
             const childElementData: ElementObject = getElementObject( child, properties, getParentCssStylesCopy( parentCssStyles ) );
             let addChild: boolean = false;
 
-            if ( _configurationOptions.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
-                totalChildren++;
-            } else {
+            if ( Is.definedObject( childElementData ) ) {
+                if ( _configurationOptions.formattingNodeTypes.indexOf( childElementData.nodeName ) > Value.notFound ) {
+                    totalChildren++;
+                } else {
 
-                if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === Value.notFound ) {
-                    if ( !Is.definedFunction( properties.ignoreNodeCondition ) || !properties.ignoreNodeCondition( child ) ) {
-                        addChild = true;
-                        totalChildren++;
+                    if ( properties.ignoreNodeTypes.indexOf( childElementData.nodeName ) === Value.notFound ) {
+                        if ( !Is.definedFunction( properties.ignoreNodeCondition ) || !properties.ignoreNodeCondition( child ) ) {
+                            addChild = true;
+                            totalChildren++;
+                        }
                     }
                 }
             }
@@ -415,6 +426,8 @@ type ElementObject = {
 
                 for ( const key in convertedJsonObject.object ) {
                     if ( key === element.nodeName.toLowerCase() ) {
+                        let insertBefore: HTMLElement = null!;
+
                         if ( properties.removeOriginalAttributes ) {
                             let attributesLength: number = element.attributes.length;
 
@@ -431,9 +444,11 @@ type ElementObject = {
 
                         if ( properties.clearOriginalHTML ) {
                             element.innerHTML = Char.empty;
+                        } else if ( properties.insertBefore && element.children.length > 0 ) {
+                            insertBefore = element.children[ 0 ] as HTMLElement;
                         }
 
-                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope );
+                        writeNode( element, convertedJsonObject.object[ key ], properties, writingScope, insertBefore );
                         break;
                     }
                 }
@@ -467,7 +482,7 @@ type ElementObject = {
         writingScope.templateDataKeysLength = writingScope.templateDataKeys.length;
     }
 
-    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope ) : void {
+    function writeNode( element: HTMLElement, jsonObject: any, properties: HtmlProperties, writingScope: WritingScope, insertBefore: HTMLElement ) : void {
         const cssStyles: string[] = [];
 
         for ( const jsonKey in jsonObject ) {
@@ -507,9 +522,9 @@ type ElementObject = {
     
                         for ( const childJsonKey in childJson ) {
                             if ( Object.prototype.hasOwnProperty.call( childJson,  childJsonKey ) ) {
-                                const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase() );
+                                const childElement: HTMLElement = DomElement.create( element, childJsonKey.toLowerCase(), insertBefore );
     
-                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope );
+                                writeNode( childElement, childJson[ childJsonKey ], properties, writingScope, null! );
                             }
                         }
                     }
@@ -560,7 +575,7 @@ type ElementObject = {
     }
 
     function storeCssStyles( element: HTMLElement, cssStyles: string[], writingScope: WritingScope ) : void {
-        let identifier: string = null!;
+        let identifier: string;
 
         if ( Is.definedString( element.className ) ) {
             const classNameParts: string[] = element.className.split( Char.space );
@@ -730,6 +745,12 @@ type ElementObject = {
                     return scope;
                 },
 
+                ignoreElementIds: ( ids: string[] | string ) : PublicApiJson => {
+                    properties.ignoreElementIds = Default.getStringOrArray( ids, properties.ignoreElementIds );
+
+                    return scope;
+                },
+
                 generateUniqueMissingIds: ( flag: boolean ) : PublicApiJson => {
                     properties.generateUniqueMissingIds = Default.getBoolean( flag, properties.generateUniqueMissingIds );
 
@@ -884,9 +905,9 @@ type ElementObject = {
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
 
-        render: ( element: HTMLElement, options: object ) : PublicApi => {
-            if ( Is.definedObject( element ) && Is.definedObject( options ) ) {
-                renderElement( Binding.Options.getForNewInstance( options, element, getDefaultHtmlProperties() ) );
+        render: ( element: HTMLElement, bindingOptions: BindingOptions ) : PublicApi => {
+            if ( Is.definedObject( element ) && Is.definedObject( bindingOptions ) ) {
+                renderElement( Binding.Options.getForNewInstance( bindingOptions, element, getDefaultHtmlProperties() ) );
             }
     
             return _public;
@@ -905,20 +926,20 @@ type ElementObject = {
          * ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
          */
 
-        setConfiguration: ( newConfiguration: any ) : PublicApi => {
-            if ( Is.definedObject( newConfiguration ) ) {
-                let configurationHasChanged: boolean = false;
-                const newInternalConfiguration: any = _configurationOptions;
+        setConfiguration: ( configurationOptions: ConfigurationOptions ) : PublicApi => {
+            if ( Is.definedObject( configurationOptions ) ) {
+                const existingConfigurationOptions: ConfigurationOptions = _configurationOptions;
+                let configurationOptionsHaveChanged: boolean = false;
             
-                for ( const propertyName in newConfiguration ) {
-                    if ( Object.prototype.hasOwnProperty.call( newConfiguration,  propertyName ) && Object.prototype.hasOwnProperty.call( _configurationOptions,  propertyName ) && newInternalConfiguration[ propertyName ] !== newConfiguration[ propertyName ] ) {
-                        newInternalConfiguration[ propertyName ] = newConfiguration[ propertyName ];
-                        configurationHasChanged = true;
+                for ( const propertyName in configurationOptions ) {
+                    if ( Object.prototype.hasOwnProperty.call( configurationOptions, propertyName ) && Object.prototype.hasOwnProperty.call( existingConfigurationOptions, propertyName ) && existingConfigurationOptions[ propertyName ] !== configurationOptions[ propertyName ] ) {
+                        existingConfigurationOptions[ propertyName ] = configurationOptions[ propertyName ];
+                        configurationOptionsHaveChanged = true;
                     }
                 }
         
-                if ( configurationHasChanged ) {
-                    _configurationOptions = Config.Options.get( newInternalConfiguration );
+                if ( configurationOptionsHaveChanged ) {
+                    _configurationOptions = Configuration.Options.get( existingConfigurationOptions );
                 }
             }
     
@@ -933,7 +954,7 @@ type ElementObject = {
          */
 
         getVersion: () : string => {
-            return "2.4.0";
+            return "2.5.0";
         }
     };
 
@@ -945,9 +966,9 @@ type ElementObject = {
      */
 
     ( () : void => {
-        _configurationOptions = Config.Options.get();
-
-        document.addEventListener( "DOMContentLoaded", () : void => render() );
+        _configurationOptions = Configuration.Options.get();
+        
+        DocumentElement.onContentLoaded( () : void => render() );
 
         if ( !Is.defined( window.$jhson ) ) {
             window.$jhson = _public;

@@ -12,6 +12,7 @@ var _JSON_TEXTAREA = null,
     _IGNORE_NODE_TYPES = null,
     _IGNORE_CSS_PROPERTIES = null,
     _IGNORE_ATTRIBUTES = null,
+    _IGNORE_ELEMENT_IDS = null,
     _GENERATE_UNIQUE_MISSING_IDS = null,
     _GENERATE_UNIQUE_MISSING_NAMES = null;
 
@@ -48,6 +49,7 @@ var _SET_TEMPLATE_DATA = null,
         _IGNORE_NODE_TYPES = document.getElementById( "ignoreNodeTypes" );
         _IGNORE_CSS_PROPERTIES = document.getElementById( "ignoreCssProperties" );
         _IGNORE_ATTRIBUTES = document.getElementById( "ignoreAttributes" );
+        _IGNORE_ELEMENT_IDS = document.getElementById( "ignoreElementIds" );
         _GENERATE_UNIQUE_MISSING_IDS = document.getElementById( "generateUniqueMissingIds" );
         _GENERATE_UNIQUE_MISSING_NAMES = document.getElementById( "generateUniqueMissingNames" );
 
@@ -89,6 +91,7 @@ function getJSONData() {
         .ignoreNodeTypes( _IGNORE_NODE_TYPES.value )
         .ignoreCssProperties( _IGNORE_CSS_PROPERTIES.value )
         .ignoreAttributes( _IGNORE_ATTRIBUTES.value )
+        .ignoreElementIds( _IGNORE_ELEMENT_IDS.value )
         .generateUniqueMissingIds( _GENERATE_UNIQUE_MISSING_IDS.checked )
         .generateUniqueMissingNames( _GENERATE_UNIQUE_MISSING_NAMES.checked )
         .get( _BODY );

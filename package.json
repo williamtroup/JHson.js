@@ -2,7 +2,7 @@
   "name": "jhson.js",
   "title": "JHson.js",
   "description": "A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "homepage": "https://www.william-troup.com/jhson-js/",
   "author": {
     "name": "Bunoon"
@@ -44,12 +44,14 @@
     "build-typescript-minimized": "tsup --config tsup.build.min.config.ts"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.10",
-    "sass": "^1.97.3",
-    "terser": "^5.46.0",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@swc/core": "^1.15.43",
+    "@typescript-eslint/eslint-plugin": "^8.62.0",
+    "@typescript-eslint/parser": "^8.62.0",
+    "sass": "^1.101.0",
+    "terser": "^5.48.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
-    "@typescript-eslint/eslint-plugin": "^8.53.1",
-    "@typescript-eslint/parser": "^8.53.1"
+    "typescript": "^6.0.3"
   }
 }

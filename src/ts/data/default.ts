@@ -4,7 +4,7 @@
  * A JavaScript library for converting between HTML and JSON, with binding, templating, attributes, and CSS support.
  * 
  * @file        default.ts
- * @version     v2.4.0
+ * @version     v2.5.0
  * @author      Bunoon
  * @license     MIT License
  * @copyright   Bunoon 2026
@@ -47,9 +47,7 @@ export namespace Default {
         if ( Is.definedString( value ) ) {
             const values: string[] = value.toString().split( Char.space );
 
-            if ( values.length === 0 ) {
-                value = defaultValue;
-            } else {
+            if ( values.length > 0 ) {
                 result = values;
             }
 

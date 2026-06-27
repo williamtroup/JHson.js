@@ -883,7 +883,7 @@ var l;
             }
             return w;
         },
-        getVersion: () => "2.4.1"
+        getVersion: () => "2.5.0"
     };
     (() => {
         d = a.Options.get();

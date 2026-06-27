@@ -70,9 +70,7 @@ var n;
         let r = n;
         if (t.definedString(e)) {
             const t = e.toString().split(" ");
-            if (t.length === 0) {
-                e = n;
-            } else {
+            if (t.length > 0) {
                 r = t;
             }
         } else {
@@ -659,7 +657,7 @@ var l;
         }
     }
     function S(e, n, r) {
-        let i = null;
+        let i;
         if (t.definedString(e.className)) {
             const t = e.className.split(" ");
             i = `${e.nodeName.toLowerCase()}.${t[0]} {`;

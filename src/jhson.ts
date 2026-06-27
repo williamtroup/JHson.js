@@ -575,7 +575,7 @@ type ElementObject = {
     }
 
     function storeCssStyles( element: HTMLElement, cssStyles: string[], writingScope: WritingScope ) : void {
-        let identifier: string = null!;
+        let identifier: string;
 
         if ( Is.definedString( element.className ) ) {
             const classNameParts: string[] = element.className.split( Char.space );

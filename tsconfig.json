@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "node",
     "declaration": true,
-    "outDir": "./build",                                  
-    "esModuleInterop": true,                         
-    "forceConsistentCasingInFileNames": true,          
+    "outDir": "./build",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "removeComments": true,
     "sourceMap": true,
